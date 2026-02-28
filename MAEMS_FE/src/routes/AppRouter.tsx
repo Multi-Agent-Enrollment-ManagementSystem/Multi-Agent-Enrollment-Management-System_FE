@@ -1,5 +1,12 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { AdmissionPage } from '../features/admissions/pages/AdmissionPage'
+
 export function AppRouter() {
-  // TODO: Replace with react-router configuration and role-based routes.
-  return <div>App Router</div>
+  return (
+    <Routes>
+      <Route path="/" element={<AdmissionPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
 }
 
