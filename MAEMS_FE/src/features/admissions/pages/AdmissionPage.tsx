@@ -12,8 +12,10 @@ import {
   Tabs,
   Typography,
 } from "antd";
+import { ExternalLink } from "lucide-react";
+import { AppHeader } from "../../../shared/components/AppHeader";
 
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 const { Title, Paragraph, Text } = Typography;
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -27,26 +29,7 @@ export function AdmissionPage() {
         alt="Admission Hero Image"
         style={{ width: "100vw", height: "100vh", objectFit: "cover", display: "block" }}
       />
-      <div className="pt-4 px-4 md:pt-6 md:px-6 pb-4">
-        <div className="h-16" aria-hidden />
-        <Header
-          className="!h-auto !leading-none !px-0 !bg-white/75 backdrop-blur-sm rounded-full border border-orange-200/30 shadow-sm fixed top-4 left-4 right-4 md:left-6 md:right-6 z-50"
-          style={{ borderBottom: "none" }}
-        >
-          <div className="flex items-center justify-between gap-6 w-full mx-0 py-3 px-4 md:px-6">
-            <div className="font-extrabold text-xl tracking-[0.12em] uppercase text-orange-500">FPTU</div>
-            <Space size="large" className="flex-1 justify-center text-gray-700 max-md:hidden">
-              <Text strong>Về FPTU</Text>
-              <Text strong>Đào tạo</Text>
-              <Text strong>Tuyển sinh</Text>
-              <Text strong>Đời sống sinh viên</Text>
-            </Space>
-            <Button type="primary" className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600">
-              Đăng ký tuyển sinh
-            </Button>
-          </div>
-        </Header>
-      </div>
+      <AppHeader />
 
       <Content className="w-full py-8 px-6 md:px-10 pb-16 box-border text-gray-900 max-md:px-4">
         <section className="mb-12 min-h-[calc(100vh-160px)] flex items-center">
@@ -54,11 +37,11 @@ export function AdmissionPage() {
             <Col xs={24} md={12}>
               <div className="[&>div]:mb-4 [&>div:last-child]:mb-0">
                 <div className="inline-block py-2 px-4 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
-                  <Tag color="orange" className="mb-3">
+                  <Tag color="orange" className="mb-3 w-full">
                     Tuyển sinh 2026
                   </Tag>
                 </div>
-                <div className="inline-block py-3 px-5 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
+                <div className="w-fit py-3 px-5 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
                   <Title level={1} className="!text-slate-900 !mb-0">
                     Tuyển sinh
                   </Title>
@@ -83,8 +66,9 @@ export function AdmissionPage() {
                   <Space size="middle" className="[&_.ant-btn-primary]:!bg-orange-500 [&_.ant-btn-primary]:!border-orange-500 [&_.ant-btn-primary:hover]:!bg-orange-600 [&_.ant-btn-primary:hover]:!border-orange-600">
                     <Button type="primary" size="large">
                       Đăng ký ngay
+                      <ExternalLink />
                     </Button>
-                    <Button size="large">Tìm hiểu học bổng</Button>
+                    
                   </Space>
                 </div>
               </div>
@@ -249,23 +233,17 @@ export function AdmissionPage() {
                 </div>
                 <div className="relative pl-7 before:content-[''] before:absolute before:left-2 before:top-[1.2em] before:w-2 before:h-2 before:rounded-full before:bg-gradient-to-br before:from-orange-500 before:to-orange-600 before:shadow-sm">
                   <Title level={4}>
-                    Chương trình Tìm kiếm Nhân tài Kỷ nguyên số Việt Nam
+                    Chương trình tìm kiếm nhân tài kỷ nguyên số Việt Nam
                   </Title>
                 </div>
                 <div className="relative pl-7 before:content-[''] before:absolute before:left-2 before:top-[1.2em] before:w-2 before:h-2 before:rounded-full before:bg-gradient-to-br before:from-orange-500 before:to-orange-600 before:shadow-sm">
                   <Paragraph>
-                    Học bổng Nguyễn Văn Đạo nhằm phát hiện và hỗ trợ học sinh có
-                    thành tích, năng lực và phẩm chất nổi bật trên toàn quốc
-                    trong các lĩnh vực học thuật, công nghệ, đổi mới sáng tạo,
-                    lãnh đạo và bản lĩnh vượt khó.
+                    Chương trình Tìm kiếm Nhân tài Kỷ nguyên số Việt Nam – Học bổng Nguyễn Văn Đạo được Trường Đại học FPT xây dựng nhằm phát hiện, lựa chọn và hỗ trợ học sinh phổ thông trên toàn quốc có thành tích, năng lực và phẩm chất nổi bật, thể hiện qua các lĩnh vực học thuật, công nghệ, đổi mới sáng tạo, năng lực lãnh đạo và bản lĩnh vượt khó, qua đó tạo điều kiện để người học phát triển trong môi trường giáo dục hiện đại, phù hợp với bối cảnh tương lai và hội nhập quốc tế.
                   </Paragraph>
                 </div>
-                <div className="relative pl-7 p-4 rounded-xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-300/30 before:content-[''] before:absolute before:left-2 before:top-[1.2em] before:w-2 before:h-2 before:rounded-full before:bg-gradient-to-br before:from-orange-500 before:to-orange-600 before:shadow-sm">
+                <div className="relative pl-7 before:content-[''] before:absolute before:left-2 before:top-[1.2em] before:w-2 before:h-2 before:rounded-full before:bg-gradient-to-br before:from-orange-500 before:to-orange-600 before:shadow-sm">
                   <Paragraph>
-                    Quỹ học bổng lên tới hơn <Text strong>200 tỷ đồng</Text> với
-                    6 nhóm học bổng chuyên biệt, giá trị từ{" "}
-                    <Text strong>50% – 100% học phí toàn khóa</Text> cùng nhiều
-                    quyền lợi đặc biệt.
+                    Thông qua chương trình, Trường Đại học FPT ghi nhận và khuyến khích những nỗ lực học tập xuất sắc, đồng thời góp phần bồi dưỡng thế hệ nhân lực trẻ có khả năng thích ứng cao và sẵn sàng tham gia môi trường học tập, làm việc mang tính toàn cầu, tạo ra giá trị tích cực cho xã hội.
                   </Paragraph>
                 </div>
                 <div className="pt-5 border-none bg-transparent shadow-none">
@@ -276,49 +254,63 @@ export function AdmissionPage() {
               </div>
             </Col>
             <Col xs={24} md={12}>
-              <div className="h-full flex flex-col gap-3 relative p-6 rounded-2xl bg-white border border-orange-200/20 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.05),0_0_0_1px_rgba(255,255,255,0.5)_inset] transition-all duration-200 hover:shadow-[0_10px_25px_-5px_rgba(249,115,22,0.12),0_4px_10px_-4px_rgba(0,0,0,0.08),0_0_0_1px_rgba(255,255,255,0.6)_inset]">
-                <div className="relative pl-7 before:content-[''] before:absolute before:left-2 before:top-[1.2em] before:w-2 before:h-2 before:rounded-full before:bg-gradient-to-br before:from-orange-500 before:to-orange-600 before:shadow-sm">
-                  <Title level={3}>Học phí</Title>
-                </div>
-                <div className="relative pl-7 before:content-[''] before:absolute before:left-2 before:top-[1.2em] before:w-2 before:h-2 before:rounded-full before:bg-gradient-to-br before:from-orange-500 before:to-orange-600 before:shadow-sm">
-                  <Paragraph>
-                    Kế hoạch đóng học phí cho sinh viên nhập học năm 2026 được
-                    cố định trong suốt quá trình học, đã bao gồm giáo trình, học
-                    liệu và trang thiết bị.
-                  </Paragraph>
-                </div>
-                <div className="pl-5">
-                  <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm align-middle" />
-                      <Text strong>Hà Nội</Text>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm align-middle" />
-                      <Text strong>TP. Hồ Chí Minh</Text>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm align-middle" />
-                      <Text strong>Đà Nẵng</Text>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm align-middle" />
-                      <Text strong>Cần Thơ</Text>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-sm align-middle" />
-                      <Text strong>Quy Nhơn</Text>
-                    </div>
+              <img
+                src="https://daihoc.fpt.edu.vn/wp-content/uploads/2025/12/Anh-chup-Man-hinh-2025-12-29-luc-12.37.13-SA.png"
+                alt="Học bổng FPTU 2026"
+              />
+            </Col>
+           
+          </Row>
+        </section>
+
+        <section className="mt-12 w-full">
+          <div className="w-full">
+            {/* Heading + decorative line */}
+            <div className="flex items-center gap-4 w-full mb-4">
+              <Title level={2} className="!text-orange-500 !font-bold !text-2xl md:!text-3xl !mb-0">
+                Học phí
+              </Title>
+              <div
+                className="flex-1 min-w-[60px] h-[3px] opacity-60"
+                style={{
+                  background: "repeating-linear-gradient(90deg, #9ca3af 0, #9ca3af 4px, transparent 4px, transparent 8px)",
+                }}
+              />
+            </div>
+            <Paragraph className="text-gray-700 mb-6 !mb-6 max-w-none">
+              Kế hoạch đóng học phí cho sinh viên nhập học năm 2026 được cố định trong suốt quá trình học, đã bao gồm giáo trình, học liệu và trang thiết bị. Cụ thể theo từng campus và chuyên ngành như sau.
+            </Paragraph>
+
+            {/* Campus cards - 5 cards horizontal */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full">
+              {[
+                { label: "Campus Hà Nội" },
+                { label: "Campus TP.HCM" },
+                { label: "Campus Đà Nẵng" },
+                { label: "Campus Cần Thơ" },
+                { label: "Campus Quy Nhơn" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="flex flex-col p-5 rounded-xl bg-white border border-dashed border-gray-300 shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-shadow"
+                >
+                  <span className="text-sm text-gray-500 mb-1">Học phí</span>
+                  <Text strong className="text-gray-900 mb-4 text-base">
+                    {item.label}
+                  </Text>
+                  <div className="mt-auto pt-2">
+                    <Button
+                      type="primary"
+                      className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600 !rounded-lg !flex !items-center !gap-2 !py-2 !h-auto"
+                    >
+                      Xem thêm
+                      <span className="inline-block text-white ml-0.5">&#8250;</span>
+                    </Button>
                   </div>
                 </div>
-                <div className="pt-5 border-none bg-transparent shadow-none">
-                  <Button type="link" className="!p-0 !text-orange-500">
-                    Xem chi tiết học phí theo campus
-                  </Button>
-                </div>
-              </div>
-            </Col>
-          </Row>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="mt-12">
