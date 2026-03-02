@@ -32,6 +32,7 @@ export function AuthPage() {
   const [loginForm] = Form.useForm<LoginFormValues>();
   const [registerForm] = Form.useForm<RegisterFormValues>();
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("login");
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -56,9 +57,9 @@ export function AuthPage() {
     setLoading(true);
     try {
       const res = await authApi.register(values);
-      setAuth(res.user, res.token, res.refreshToken);
-      message.success("Đăng ký thành công");
-      navigate(roleDashboard[res.user.role] ?? "/", { replace: true });
+      message.success(res.message || "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.");
+      registerForm.resetFields();
+      setActiveTab("login");
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data
@@ -81,7 +82,8 @@ export function AuthPage() {
             </Title>
 
             <Tabs
-              defaultActiveKey="login"
+              activeKey={activeTab}
+              onChange={setActiveTab}
               className="auth-tabs [&_.ant-tabs-nav]:mb-6 [&_.ant-tabs-tab]:py-2 [&_.ant-tabs-ink-bar]:bg-orange-500"
               items={[
                 {

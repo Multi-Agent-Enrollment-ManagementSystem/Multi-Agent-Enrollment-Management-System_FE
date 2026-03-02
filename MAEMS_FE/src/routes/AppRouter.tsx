@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { RoleGuard } from "./RoleGuard";
 // dashboard pages
 import { ApplicantDashboard } from "../pages/applicant/ApplicantDashboard";
+import { ApplicantProfilePage } from "../pages/applicant/ApplicantProfilePage";
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { StaffDashboard } from "../pages/staff/StaffDashboard";
 import { QaDashboard } from "../pages/qa/QaDashboard";
@@ -56,6 +57,14 @@ export function AppRouter() {
         element={
           <RoleGuard allowedRoles={["applicant"]}>
             <SubmitApplication />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/applicant/profile"
+        element={
+          <RoleGuard allowedRoles={["applicant"]}>
+            <ApplicantProfilePage />
           </RoleGuard>
         }
       />
