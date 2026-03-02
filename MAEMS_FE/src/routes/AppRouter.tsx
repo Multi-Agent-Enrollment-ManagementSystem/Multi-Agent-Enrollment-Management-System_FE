@@ -15,7 +15,8 @@ import { SubmitApplication } from "../pages/application/SubmitApplication";
 import { ArticleDetail } from "../pages/articles/ArticleDetail";
 import { ArticleEditor } from "../pages/articles/ArticleEditor";
 import { ArticleList } from "../pages/articles/ArticleList";
-import { AdmissionPage } from "../pages/homepage/AdmissionPage";
+import { AdmissionPage } from "../pages/admission/AdmissionPage";
+import { HomePage } from "../pages/homepage/HomePage";
 import { AuthPage } from "../pages/auth/AuthPage";
 import { RuleConfigPage } from "../pages/eligibility/RuleConfigPage";
 import { ReviewEvaluationPage } from "../pages/qa/ReviewEvaluationPage";
@@ -24,7 +25,8 @@ import { ReportDashboard } from "../pages/reports/ReportDashboard";
 export function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<AdmissionPage />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/tuyen-sinh" element={<AdmissionPage />} />
       <Route path="/auth" element={<AuthPage />} />
 
       {/* applicant */}

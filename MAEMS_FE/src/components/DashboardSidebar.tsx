@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Layout, Menu, Typography } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const { Sider } = Layout;
@@ -31,7 +31,13 @@ export function DashboardSidebar({ menuItems }: DashboardSidebarProps) {
       width={240}
       className="!bg-white border-r border-gray-100 !min-h-screen"
     >
-      <div className="px-5 pt-6 pb-4 border-b border-gray-100">
+      <div className="px-5 pt-5 pb-4 border-b border-gray-100">
+        <Link
+          to="/"
+          className="block font-extrabold text-xl tracking-[0.12em] uppercase !text-orange-500 hover:!text-orange-600 mb-4"
+        >
+          MAEMS
+        </Link>
         <Text className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">
           Xin chào,
         </Text>
