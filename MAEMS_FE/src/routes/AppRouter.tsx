@@ -12,6 +12,8 @@ import { AgentPerformance } from "../pages/agents/AgentPerformance";
 import { ApplicationDetail } from "../pages/application/ApplicationDetail";
 import { ApplicationList } from "../pages/application/ApplicationList";
 import { SubmitApplication } from "../pages/application/SubmitApplication";
+import { SubmitHocBa } from "../pages/application/SubmitHocBa";
+import { SubmitXetTuyenKhac } from "../pages/application/SubmitXetTuyenKhac";
 import { ArticleDetail } from "../pages/articles/ArticleDetail";
 import { ArticleEditor } from "../pages/articles/ArticleEditor";
 import { ArticleList } from "../pages/articles/ArticleList";
@@ -59,6 +61,38 @@ export function AppRouter() {
         element={
           <RoleGuard allowedRoles={["applicant"]}>
             <SubmitApplication />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/applicant/submit-application/hoc-ba"
+        element={
+          <RoleGuard allowedRoles={["applicant"]}>
+            <SubmitHocBa />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/applicant/submit-application/danh-gia-nang-luc"
+        element={
+          <RoleGuard allowedRoles={["applicant"]}>
+            <SubmitXetTuyenKhac />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/applicant/submit-application/tot-nghiep-thpt"
+        element={
+          <RoleGuard allowedRoles={["applicant"]}>
+            <SubmitXetTuyenKhac />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/applicant/submit-application/phuong-thuc-khac"
+        element={
+          <RoleGuard allowedRoles={["applicant"]}>
+            <SubmitXetTuyenKhac />
           </RoleGuard>
         }
       />
