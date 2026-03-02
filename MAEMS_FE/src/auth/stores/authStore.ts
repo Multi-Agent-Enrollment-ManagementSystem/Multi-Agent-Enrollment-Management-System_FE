@@ -10,8 +10,9 @@ import type { AuthUser } from "../../types/auth";
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
+  refreshToken: string | null;
   isInitialized: boolean;
-  setAuth: (user: AuthUser | null, token: string | null) => void;
+  setAuth: (user: AuthUser | null, token: string | null, refreshToken?: string | null) => void;
   logout: () => void;
   initAuth: () => Promise<void>;
 };
@@ -21,16 +22,17 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       token: getStoredToken(),
+      refreshToken: null,
       isInitialized: false,
 
-      setAuth: (user, token) => {
+      setAuth: (user, token, refreshToken = null) => {
         setStoredToken(token);
-        set({ user, token });
+        set({ user, token, refreshToken });
       },
 
       logout: () => {
         setStoredToken(null);
-        set({ user: null, token: null });
+        set({ user: null, token: null, refreshToken: null });
       },
 
       initAuth: async () => {
@@ -50,7 +52,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "maems-auth",
-      partialize: (s) => ({ user: s.user, token: s.token }),
+      partialize: (s) => ({ user: s.user, token: s.token, refreshToken: s.refreshToken }),
       onRehydrateStorage: () => (state) => {
         if (state?.token) setStoredToken(state.token);
       },

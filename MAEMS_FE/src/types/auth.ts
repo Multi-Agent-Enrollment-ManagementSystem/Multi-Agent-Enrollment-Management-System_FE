@@ -1,7 +1,6 @@
 export type AuthRole = "admin" | "staff" | "qa" | "applicant" | "guest";
 
 export type AuthUser = {
-  id: string;
   username: string;
   email: string;
   role: AuthRole;
@@ -20,5 +19,6 @@ export type RegisterRequest = {
 
 export type LoginResponse = {
   token: string;
+  refreshToken: string;
   user: AuthUser;
 };

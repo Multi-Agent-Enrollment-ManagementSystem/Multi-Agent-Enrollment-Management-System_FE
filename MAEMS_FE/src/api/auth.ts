@@ -7,61 +7,71 @@ import type {
   RegisterRequest,
 } from "../types/auth";
 
-type ApiAuthResponse = {
-  token?: string;
-  accessToken?: string;
-  user?: AuthUser;
-  id?: string;
-  userId?: string;
-  username?: string;
-  email?: string;
-  role?: string;
+type ApiWrapper<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+  errors: string[];
 };
 
-function toAuthUser(raw: ApiAuthResponse): AuthUser {
-  if (raw.user) return raw.user;
-  const role = (raw.role ?? "applicant").toLowerCase() as AuthRole;
+type ApiLoginData = {
+  accessToken: string;
+  refreshToken: string;
+  user: { username: string; email: string; role: string };
+};
+
+type ApiProfileData = {
+  username: string;
+  email: string;
+  roleName: string;
+  createdAt: string;
+};
+
+export async function login(data: LoginRequest): Promise<LoginResponse> {
+  const res = await apiClient.post<ApiWrapper<ApiLoginData>>(
+    "/api/Users/login",
+    data
+  );
+  const { accessToken, refreshToken, user } = res.data.data;
   return {
-    id: raw.id ?? raw.userId ?? "",
-    username: raw.username ?? "",
-    email: raw.email ?? "",
-    role,
+    token: accessToken,
+    refreshToken,
+    user: {
+      username: user.username,
+      email: user.email,
+      role: (user.role?.toLowerCase() ?? "applicant") as AuthRole,
+    },
   };
 }
 
-function toLoginResponse(raw: ApiAuthResponse): LoginResponse {
-  const token = raw.token ?? raw.accessToken ?? "";
-  return { token, user: toAuthUser(raw) };
-}
-
-export async function login(data: LoginRequest): Promise<LoginResponse> {
-  const res = await apiClient.post<ApiAuthResponse>("/api/Users/login", data);
-  return toLoginResponse(res.data);
-}
-
 export async function register(data: RegisterRequest): Promise<LoginResponse> {
-  const res = await apiClient.post<ApiAuthResponse>(
+  const res = await apiClient.post<ApiWrapper<ApiLoginData>>(
     "/api/Users/register",
     data
   );
-  return toLoginResponse(res.data);
+  const { accessToken, refreshToken, user } = res.data.data;
+  return {
+    token: accessToken,
+    refreshToken,
+    user: {
+      username: user.username,
+      email: user.email,
+      role: (user.role?.toLowerCase() ?? "applicant") as AuthRole,
+    },
+  };
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
   try {
-    const res = await apiClient.get<ApiAuthResponse | AuthUser>(
+    const res = await apiClient.get<ApiWrapper<ApiProfileData>>(
       "/api/Users/profile"
     );
-    const data = res.data;
-    if (!data) return null;
-    if (
-      typeof data === "object" &&
-      "username" in data &&
-      "role" in data &&
-      ("id" in data || "userId" in data)
-    )
-      return data as AuthUser;
-    return toAuthUser(data as ApiAuthResponse);
+    const { username, email, roleName } = res.data.data;
+    return {
+      username,
+      email,
+      role: (roleName?.toLowerCase() ?? "applicant") as AuthRole,
+    };
   } catch {
     return null;
   }

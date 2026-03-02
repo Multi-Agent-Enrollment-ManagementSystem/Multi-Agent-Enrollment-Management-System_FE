@@ -4,6 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { AppHeader } from "../../components/AppHeader";
 import { useAuth } from "../../hooks/useAuth";
 import * as authApi from "../../api/auth";
+import type { AuthRole } from "../../types/auth";
+
+const roleDashboard: Record<AuthRole, string> = {
+  applicant: "/applicant/dashboard",
+  admin: "/admin/dashboard",
+  staff: "/staff/dashboard",
+  qa: "/qa/dashboard",
+  guest: "/",
+};
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -30,9 +39,9 @@ export function AuthPage() {
     setLoading(true);
     try {
       const res = await authApi.login(values);
-      setAuth(res.user, res.token);
+      setAuth(res.user, res.token, res.refreshToken);
       message.success("Đăng nhập thành công");
-      navigate("/", { replace: true });
+      navigate(roleDashboard[res.user.role] ?? "/", { replace: true });
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data
@@ -47,9 +56,9 @@ export function AuthPage() {
     setLoading(true);
     try {
       const res = await authApi.register(values);
-      setAuth(res.user, res.token);
+      setAuth(res.user, res.token, res.refreshToken);
       message.success("Đăng ký thành công");
-      navigate("/", { replace: true });
+      navigate(roleDashboard[res.user.role] ?? "/", { replace: true });
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data

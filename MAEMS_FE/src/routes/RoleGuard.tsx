@@ -5,15 +5,10 @@ import type { AuthRole } from "../types/auth";
 
 type RoleGuardProps = {
   children: ReactNode;
-  allowedRoles?: AuthRole[];
-  requireAuth?: boolean;
+  allowedRoles: AuthRole[];
 };
 
-export function RoleGuard({
-  children,
-  allowedRoles,
-  requireAuth = true,
-}: RoleGuardProps) {
+export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   const { user, isAuthenticated, isInitialized } = useAuth();
   const location = useLocation();
 
@@ -25,17 +20,11 @@ export function RoleGuard({
     );
   }
 
-  if (requireAuth && !isAuthenticated) {
+  if (!isAuthenticated) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  if (
-    requireAuth &&
-    allowedRoles &&
-    allowedRoles.length > 0 &&
-    user &&
-    !allowedRoles.includes(user.role)
-  ) {
+  if (!user || !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
   }
 
