@@ -1,10 +1,20 @@
 import { Button, Dropdown, Layout, Space, Typography } from "antd";
 import type { MenuProps } from "antd";
+import { LayoutDashboard, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import type { AuthRole } from "../types/auth";
 
 const { Header } = Layout;
 const { Text } = Typography;
+
+const roleDashboard: Record<AuthRole, string> = {
+  applicant: "/applicant/dashboard",
+  admin: "/admin/dashboard",
+  staff: "/staff/dashboard",
+  qa: "/qa/dashboard",
+  guest: "/",
+};
 
 export function AppHeader() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -15,10 +25,20 @@ export function AppHeader() {
     navigate("/auth", { replace: true });
   };
 
+  const dashboardPath = user ? (roleDashboard[user.role] ?? "/") : "/";
+
   const userMenuItems: MenuProps["items"] = [
     {
+      key: "dashboard",
+      icon: <LayoutDashboard size={14} />,
+      label: <Link to={dashboardPath}>Dashboard</Link>,
+    },
+    { type: "divider" },
+    {
       key: "logout",
+      icon: <LogOut size={14} />,
       label: "Đăng xuất",
+      danger: true,
       onClick: handleLogout,
     },
   ];
