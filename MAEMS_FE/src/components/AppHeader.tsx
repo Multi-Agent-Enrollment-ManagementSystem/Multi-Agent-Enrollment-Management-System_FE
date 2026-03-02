@@ -55,14 +55,17 @@ export function AppHeader() {
             to="/"
             className="font-extrabold text-xl tracking-[0.12em] uppercase !text-orange-500 hover:!text-orange-600"
           >
-            FPTU
+            MAEMS
           </Link>
-          <Space size="large" className="flex-1 justify-center text-gray-700 max-md:hidden">
-            <Text strong>Về FPTU</Text>
-            <Text strong>Đào tạo</Text>
-            <Text strong>Tuyển sinh</Text>
-            <Text strong>Tin tức & Sự kiện</Text>
-            <Text strong>Liên hệ</Text>
+          <Space size="large" className="flex-1 justify-center max-md:hidden">
+            <Link to="/" className="!text-gray-700 hover:!text-orange-500 font-semibold text-sm transition-colors">
+              Trang chủ
+            </Link>
+            <Link to="/tuyen-sinh" className="!text-gray-700 hover:!text-orange-500 font-semibold text-sm transition-colors">
+              Tuyển sinh
+            </Link>
+            <Text strong className="text-gray-400 text-sm cursor-default">Tin tức</Text>
+            <Text strong className="text-gray-400 text-sm cursor-default">Liên hệ</Text>
           </Space>
           {isAuthenticated && user ? (
             <Dropdown menu={{ items: userMenuItems }} trigger={["click"]}>
