@@ -23,6 +23,7 @@ import { AuthPage } from "../pages/auth/AuthPage";
 import { RuleConfigPage } from "../pages/eligibility/RuleConfigPage";
 import { ReviewEvaluationPage } from "../pages/qa/ReviewEvaluationPage";
 import { ReportDashboard } from "../pages/reports/ReportDashboard";
+import { AdminApplicationList } from "../pages/admin/AdminApplicationList";
 
 export function AppRouter() {
   return (
@@ -195,6 +196,14 @@ export function AppRouter() {
         element={
           <RoleGuard allowedRoles={["admin"]}>
             <ArticleDetail />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/admin/applications"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminApplicationList />
           </RoleGuard>
         }
       />
