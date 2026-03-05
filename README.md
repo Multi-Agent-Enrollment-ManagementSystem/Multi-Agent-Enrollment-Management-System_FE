@@ -1,119 +1,226 @@
-This is a comprehensive `README.md` template for your project. I have structured it to be professional, clear, and bilingual where appropriate to match your requirements.
-
----
-
 # Multi-Agent Enrollment Management System with LLM Assistance
 
 ### Hệ thống đa tác tử hỗ trợ quản lý tuyển sinh với sự hỗ trợ của LLM
 
-## 📌 Project Overview
+## Project Overview
 
-The **Multi-Agent Enrollment Management System** is a sophisticated digital platform designed to streamline and automate the university admission process. By decomposing complex enrollment workflows into specialized, autonomous agents and integrating Large Language Models (LLMs), the system reduces administrative burden, ensures consistency in decision-making, and provides transparent, natural language explanations to applicants.
+**MAEMS** (Multi-Agent Enrollment Management System) is a web-based platform designed to streamline and automate the university admission process. The system leverages a multi-agent architecture combined with Large Language Models (LLMs) to reduce administrative overhead, ensure consistency in enrollment decisions, and provide transparent, natural language explanations to applicants.
+
+This repository contains the **Frontend** application of the system.
 
 ---
 
-## ✨ Key Features
+## Tech Stack
 
-### 🤖 Multi-Agent Coordination
+| Layer            | Technology                          |
+| ---------------- | ----------------------------------- |
+| Build Tool       | Vite 7                              |
+| Language         | TypeScript 5.9                      |
+| UI Library       | React 19                            |
+| UI Framework     | Ant Design + TailwindCSS            |
+| Routing          | React Router DOM v7                 |
+| State Management | Zustand                             |
+| HTTP Client      | Axios                               |
+| Authentication   | Firebase Auth (Google Sign-In) + JWT |
+| Icons            | Lucide React                        |
+
+---
+
+## Key Features
+
+### Multi-Agent Coordination
 
 The system utilizes specialized agents to handle distinct stages of the enrollment lifecycle:
 
-* **Intake Agent:** Manages application submission and data normalization.
-* **Verification Agent:** Automates document checks for format, completeness, and validity.
-* **Eligibility Agent:** Performs rule-based evaluation against predefined institutional criteria.
-* **Communication Agent:** Powered by LLMs to handle inquiries and generate human-like responses.
+- **Intake Agent** — Application submission and data normalization
+- **Verification Agent** — Automated document checks for format, completeness, and validity
+- **Eligibility Agent** — Rule-based evaluation against predefined admission criteria
+- **Communication Agent** — LLM-powered inquiry handling and response generation
 
-### 🧠 LLM Integration
+### LLM Integration
 
-* **Policy Interpretation:** Translates complex admission regulations into understandable guidance.
-* **Decision Explanation:** Provides transparent "why" behind eligibility results.
-* **Smart Inquiry Handling:** Real-time natural language support for prospective students.
+- Interpretation of enrollment regulations and policy documents
+- Natural language responses to applicant inquiries
+- Transparent explanations for eligibility decisions and missing requirements
 
-### 👥 User Roles & Portals
+### User Roles
 
-| Role | Primary Functions |
-| --- | --- |
-| **System Admin** | Manage configurations, admission rules, and monitor agent health. |
-| **Admission Officer** | Review applicant records, handle escalated cases, and export reports. |
-| **QA Officer** | Validate agent logic, ensure consistency, and refine enrollment rules. |
-| **Applicant** | Submit documents, track status, and receive automated notifications. |
-| **Guest** | Access demos, read school articles, and explore system features. |
+| Role                 | Primary Functions                                                              |
+| -------------------- | ------------------------------------------------------------------------------ |
+| **System Admin**     | Manage enrollment configurations, admission rules, articles, and system reports |
+| **Admission Officer**| Review applicant records, handle escalated cases, monitor agent performance     |
+| **QA Officer**       | Review agent-generated evaluations, validate eligibility logic                 |
+| **Applicant**        | Submit applications, upload documents, track status, receive notifications     |
+| **Guest**            | Browse homepage, view admission information and articles                       |
 
----
+### Admission Methods Supported
 
-## 🛠️ System Architecture
-
-The project follows a modular, microservices-oriented approach using a Multi-Agent System (MAS) design:
-
-1. **Frontend:** Responsive Web Dashboard (Staff) & Applicant Portal (Users).
-2. **Backend:** Multi-agent orchestration layer.
-3. **Intelligence Layer:** Rule-based engines combined with LLM (Large Language Model) reasoning.
-4. **Data Layer:** Secure storage for personal data, documents, and decision logs.
+- Xét kết quả học tập cấp THPT (Học bạ)
+- Xét kết quả thi tốt nghiệp THPT
+- Xét kết quả kỳ thi đánh giá năng lực (ĐHQG Hà Nội / ĐHQG TP.HCM)
+- Phương thức khác (xét tuyển thẳng, văn bằng, chứng chỉ)
 
 ---
 
-## 📋 Functional Requirements
+## Project Structure
 
-* **Role-Based Access Control (RBAC):** Secure authentication for different user types.
-* **Automated Verification:** Instant format and completeness checks on uploaded PDFs/images.
-* **Program Matching:** Automatically suggests programs based on applicant eligibility.
-* **Notifications:** Automated alerts for deadlines and missing requirements via email/system.
-* **Reporting:** Exportable decision logs and enrollment statistics in PDF/CSV.
+```
+MAEMS_FE/
+├── public/
+├── src/
+│   ├── api/                  # API service modules (auth, applicant, application, programs, campuses, admission_types)
+│   ├── app/                  # Root App component & providers
+│   ├── auth/                 # Auth initialization
+│   ├── components/
+│   │   ├── layouts/          # ApplicantLayout, GuestLayout, StaffLayout
+│   │   └── ...               # Shared components (Header, Sidebar, ExportPanel, GoogleLoginButton)
+│   ├── hooks/                # Custom hooks (useAuth, useRoleGuard)
+│   ├── pages/
+│   │   ├── admin/            # Admin dashboard, reports, eligibility rules, articles
+│   │   ├── admission/        # Admission info page
+│   │   ├── agents/           # Agent dashboard & performance monitoring
+│   │   ├── applicant/        # Applicant dashboard & profile
+│   │   ├── application/      # Application submission forms (Học bạ, ĐGNL, THPT, Khác)
+│   │   ├── articles/         # Article management (list, detail, editor)
+│   │   ├── auth/             # Authentication page
+│   │   ├── eligibility/      # Rule configuration
+│   │   ├── homepage/         # Public homepage
+│   │   ├── qa/               # QA dashboard & review evaluation
+│   │   ├── reports/          # Report dashboard
+│   │   └── staff/            # Staff dashboard
+│   ├── routes/               # AppRouter & RoleGuard
+│   ├── services/             # Auth service
+│   ├── stores/               # Zustand auth store
+│   ├── types/                # TypeScript type definitions
+│   ├── firebase.ts           # Firebase configuration
+│   ├── main.tsx              # Application entry point
+│   └── index.css             # Global styles
+├── .env                      # Environment variables
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+└── tailwind.config.*
+```
 
 ---
 
-## 🚀 Proposed Development Tasks
+## Getting Started
 
-* **Task 1:** Analyze enrollment processes and define admission rules.
-* **Task 2:** Design Multi-Agent architecture and coordination protocols.
-* **Task 3:** Implement document intake and data normalization agents.
-* **Task 4:** Build the rule-based eligibility engine and escalation logic.
-* **Task 5:** Integrate LLM for inquiry handling and policy interpretation.
-* **Task 6:** Develop the responsive web-based dashboards and portals.
-* **Task 7:** System validation, deployment, and final documentation.
+### Prerequisites
 
----
+- **Node.js** >= 18
+- **npm** or **yarn**
 
-## 🛠 Installation & Setup
-
-*(Example placeholders - please update based on your specific tech stack)*
+### Installation
 
 1. **Clone the repository:**
+
 ```bash
-git clone https://github.com/your-repo/enrollment-agent-system.git
-
+git clone https://github.com/your-org/Multi-Agent-Enrollment-Management-System_FE.git
+cd Multi-Agent-Enrollment-Management-System_FE/MAEMS_FE
 ```
-
 
 2. **Install dependencies:**
-```bash
-npm install  # for frontend
-pip install -r requirements.txt # for backend/agents
 
+```bash
+npm install
 ```
 
+3. **Configure environment variables:**
 
-3. **Configure Environment Variables:**
-Create a `.env` file and add your LLM API keys (OpenAI/Anthropic/Gemini) and Database credentials.
-4. **Run the application:**
+Create a `.env` file in the `MAEMS_FE/` directory:
+
+```env
+VITE_MAEMS_API_URL=<your-backend-api-url>
+```
+Create firebase.ts file in src directory
+
+4. **Start the development server:**
+
 ```bash
-python main.py
-
+npm run dev
 ```
 
+The application will be available at `http://localhost:5173`.
 
+### Available Scripts
+
+| Script          | Command             | Description                    |
+| --------------- | ------------------- | ------------------------------ |
+| `npm run dev`   | `vite`              | Start development server       |
+| `npm run build` | `tsc -b && vite build` | Type-check and build for production |
+| `npm run lint`  | `eslint .`          | Run ESLint                     |
+| `npm run preview` | `vite preview`    | Preview production build       |
 
 ---
 
-## 📄 Documentation
+## Route Overview
 
-Comprehensive documentation is provided in the `/docs` folder, including:
+### Public Routes
 
-* System Analysis & Requirements Specification
-* Multi-Agent Interaction Design
-* User Manual & Deployment Guidelines
-* API Documentation
+| Path           | Page            |
+| -------------- | --------------- |
+| `/`            | Homepage        |
+| `/tuyen-sinh`  | Admission Info  |
+| `/auth`        | Authentication  |
+
+### Applicant Routes (requires `applicant` role)
+
+| Path                                       | Page                    |
+| ------------------------------------------ | ----------------------- |
+| `/applicant/dashboard`                     | Applicant Dashboard     |
+| `/applicant/profile`                       | Applicant Profile       |
+| `/applicant/applications`                  | Application List        |
+| `/applicant/applications/:id`              | Application Detail      |
+| `/applicant/submit-application`            | Submit Application      |
+| `/applicant/submit-application/hoc-ba`     | Submit via Học bạ       |
+| `/applicant/submit-application/danh-gia-nang-luc` | Submit via ĐGNL  |
+| `/applicant/submit-application/tot-nghiep-thpt`   | Submit via THPT  |
+| `/applicant/submit-application/phuong-thuc-khac`  | Submit via Other  |
+
+### Staff Routes (requires `staff` role)
+
+| Path                         | Page                  |
+| ---------------------------- | --------------------- |
+| `/staff/dashboard`           | Staff Dashboard       |
+| `/staff/agents/dashboard`    | Agent Dashboard       |
+| `/staff/agents/performance`  | Agent Performance     |
+
+### Admin Routes (requires `admin` role)
+
+| Path                        | Page               |
+| --------------------------- | ------------------ |
+| `/admin/dashboard`          | Admin Dashboard    |
+| `/admin/reports`            | Report Dashboard   |
+| `/admin/eligibility/rules`  | Rule Configuration |
+| `/admin/articles`           | Article Management |
+| `/admin/articles/new`       | Create Article     |
+| `/admin/articles/:id`       | Edit Article       |
+
+### QA Routes (requires `qa` role)
+
+| Path                     | Page                |
+| ------------------------ | ------------------- |
+| `/qa/dashboard`          | QA Dashboard        |
+| `/qa/review-evaluation`  | Review Evaluations  |
 
 ---
 
-**Would you like me to help you draft the technical specifications for the "Agent Coordination Rules" or generate a sample database schema for the enrollment records?**
+## Backend API
+
+The frontend communicates with the MAEMS Backend API hosted on Azure. API modules include:
+
+- **Auth** — Authentication and token management
+- **Applicant** — Applicant profile management
+- **Application** — Application CRUD and submission
+- **Programs** — Academic program data
+- **Campuses** — Campus information
+- **Admission Types** — Admission method configurations
+
+---
+
+## Documentation
+
+- `Requirements.md` — Functional and non-functional requirements
+- `Tech.md` — Technology stack decisions
+- `Regist_File.md` — Required enrollment documents reference
