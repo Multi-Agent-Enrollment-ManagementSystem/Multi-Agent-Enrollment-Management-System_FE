@@ -39,7 +39,7 @@ import {
   fetchAllApplications,
   rejectApplication,
   requestAdditionalDocuments,
-} from "../../api/application";
+} from "../../api/applications";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import type { SidebarMenuItem } from "../../components/DashboardSidebar";
 import type { Application, ApplicationStatus } from "../../types/application";

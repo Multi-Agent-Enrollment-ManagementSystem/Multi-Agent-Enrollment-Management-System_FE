@@ -29,7 +29,7 @@ import {
 import dayjs from "dayjs";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { getProfile } from "../../api/auth";
-import { createApplicant, getMyApplicant, patchApplicant } from "../../api/applicant";
+import { createApplicant, getMyApplicant, patchApplicant } from "../../api/applicants";
 import type { UserProfile } from "../../types/auth";
 import type { CreateApplicantRequest, CreateApplicantResponse } from "../../types/applicant";
 import { applicantMenu } from "./applicantMenu";

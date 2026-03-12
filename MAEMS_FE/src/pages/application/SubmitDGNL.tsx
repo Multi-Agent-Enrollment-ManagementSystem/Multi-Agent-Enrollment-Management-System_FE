@@ -20,11 +20,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { applicantMenu } from "../applicant/applicantMenu";
-import { getMyApplicant } from "../../api/applicant";
+import { getMyApplicant } from "../../api/applicants";
 import { getPrograms } from "../../api/programs";
 import { getCampuses } from "../../api/campuses";
 import { getAdmissionTypes } from "../../api/admission_types";
-import { submitApplication } from "../../api/application";
+import { submitApplication } from "../../api/applications";
 import type { CreateApplicantResponse } from "../../types/applicant";
 import type { Program } from "../../types/program";
 import type { Campus } from "../../types/campus";

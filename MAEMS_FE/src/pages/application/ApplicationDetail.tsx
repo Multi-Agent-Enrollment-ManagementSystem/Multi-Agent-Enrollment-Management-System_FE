@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { applicantMenu } from "../applicant/applicantMenu";
-import { fetchMyApplicationDetail } from "../../api/application";
+import { fetchMyApplicationDetail } from "../../api/applications";
 import type { Application, ApplicationStatus, Document } from "../../types/application";
 
 const { Title, Text } = Typography;
