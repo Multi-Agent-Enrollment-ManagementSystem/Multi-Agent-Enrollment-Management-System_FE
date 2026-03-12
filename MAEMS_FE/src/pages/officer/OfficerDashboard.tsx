@@ -26,7 +26,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { fetchAllApplications } from "../../api/application";
+import { fetchAllApplications } from "../../api/applications";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import type { SidebarMenuItem } from "../../components/DashboardSidebar";
 import type { Application } from "../../types/application";

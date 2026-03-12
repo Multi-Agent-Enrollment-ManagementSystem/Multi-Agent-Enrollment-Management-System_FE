@@ -20,8 +20,8 @@ import {
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { applicantMenu } from "./applicantMenu";
 import { useAuthStore } from "../../stores/authStore";
-import { getMyApplicant } from "../../api/applicant";
-import { fetchMyApplications } from "../../api/application";
+import { getMyApplicant } from "../../api/applicants";
+import { fetchMyApplications } from "../../api/applications";
 import type { CreateApplicantResponse } from "../../types/applicant";
 import type { Application, ApplicationStatus } from "../../types/application";
 
