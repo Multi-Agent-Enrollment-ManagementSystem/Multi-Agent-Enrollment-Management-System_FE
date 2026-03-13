@@ -14,16 +14,15 @@ import { AgentPerformance } from "../pages/agents/AgentPerformance";
 import { ApplicationDetail } from "../pages/application/ApplicationDetail";
 import { ApplicationList } from "../pages/application/ApplicationList";
 import { SubmitApplication } from "../pages/application/SubmitApplication";
-import { SubmitHocBa } from "../pages/application/SubmitHocBa";
-import { SubmitDGNL } from "../pages/application/SubmitDGNL";
-import { SubmitTHPT } from "../pages/application/SubmitTHPT";
-import { SubmitKhac } from "../pages/application/SubmitKhac";
+import { SubmitForm } from "../pages/application/SubmitForm";
 import { ArticleDetail } from "../pages/articles/ArticleDetail";
 import { ArticleEditor } from "../pages/articles/ArticleEditor";
 import { ArticleList } from "../pages/articles/ArticleList";
 import { AdmissionPage } from "../pages/admission/AdmissionPage";
 import { HomePage } from "../pages/homepage/HomePage";
 import { AuthPage } from "../pages/auth/AuthPage";
+import { ProgramList } from "../pages/programs/ProgramList";
+import { ProgramDetail } from "../pages/programs/ProgramDetail";
 import { RuleConfigPage } from "../pages/eligibility/RuleConfigPage";
 import { ReviewEvaluationPage } from "../pages/qa/ReviewEvaluationPage";
 import { ReportDashboard } from "../pages/reports/ReportDashboard";
@@ -33,6 +32,8 @@ export function AppRouter() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/tuyen-sinh" element={<AdmissionPage />} />
+      <Route path="/dao-tao" element={<ProgramList />} />
+      <Route path="/dao-tao/:id" element={<ProgramDetail />} />
       <Route path="/auth" element={<AuthPage />} />
 
       {/* applicant */}
@@ -69,34 +70,10 @@ export function AppRouter() {
         }
       />
       <Route
-        path="/applicant/submit-application/hoc-ba"
+        path="/applicant/submit-application/form"
         element={
           <RoleGuard allowedRoles={["applicant"]}>
-            <SubmitHocBa />
-          </RoleGuard>
-        }
-      />
-      <Route
-        path="/applicant/submit-application/danh-gia-nang-luc"
-        element={
-          <RoleGuard allowedRoles={["applicant"]}>
-            <SubmitDGNL />
-          </RoleGuard>
-        }
-      />
-      <Route
-        path="/applicant/submit-application/tot-nghiep-thpt"
-        element={
-          <RoleGuard allowedRoles={["applicant"]}>
-            <SubmitTHPT />
-          </RoleGuard>
-        }
-      />
-      <Route
-        path="/applicant/submit-application/phuong-thuc-khac"
-        element={
-          <RoleGuard allowedRoles={["applicant"]}>
-            <SubmitKhac />
+            <SubmitForm />
           </RoleGuard>
         }
       />
