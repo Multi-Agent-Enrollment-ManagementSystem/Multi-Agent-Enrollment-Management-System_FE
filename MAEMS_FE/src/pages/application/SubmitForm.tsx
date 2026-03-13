@@ -11,25 +11,16 @@ import {
   Typography,
   message,
 } from "antd";
-import {
-  ArrowLeft,
-  BookOpen,
-  GraduationCap,
-  User,
-} from "lucide-react";
+import { ArrowLeft, ClipboardList, GraduationCap, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { applicantMenu } from "../applicant/applicantMenu";
 import { getMyApplicant } from "../../api/applicants";
 import { getPrograms } from "../../api/programs";
-import { getCampuses } from "../../api/campuses";
-import { getAdmissionTypes } from "../../api/admission_types";
 import { submitApplication } from "../../api/applications";
-import { getProgramAdmissionConfigsFilter } from "../../api/program.admission.configs";
+import { getProgramAdmissionConfigsFilter } from "../../api/program-admission-configs";
 import type { CreateApplicantResponse } from "../../types/applicant";
 import type { Program } from "../../types/program";
-import type { Campus } from "../../types/campus";
-import type { AdmissionType } from "../../types/admission_type";
 
 const { Title, Text } = Typography;
 
@@ -38,6 +29,11 @@ type FormValues = {
   campusId: number;
   admissionTypeId: number;
 };
+
+type FilterLoading = "campus" | "admissionType" | "config" | null;
+
+type CampusOption = { campusId: number; campusName: string };
+type AdmTypeOption = { admissionTypeId: number; admissionTypeName: string };
 
 function ApplicantInfoCard({ applicant }: { applicant: CreateApplicantResponse }) {
   const formatDate = (iso: string) =>
@@ -96,61 +92,130 @@ function ApplicantInfoCard({ applicant }: { applicant: CreateApplicantResponse }
   );
 }
 
-export function SubmitHocBa() {
+export function SubmitForm() {
   const navigate = useNavigate();
   const [form] = Form.useForm<FormValues>();
   const [messageApi, contextHolder] = message.useMessage();
 
   const [applicant, setApplicant] = useState<CreateApplicantResponse | null>(null);
   const [programs, setPrograms] = useState<Program[]>([]);
-  const [campuses, setCampuses] = useState<Campus[]>([]);
-  const [admissionTypes, setAdmissionTypes] = useState<AdmissionType[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  // Cascading options derived from API
+  const [availableCampuses, setAvailableCampuses] = useState<CampusOption[]>([]);
+  const [availableAdmTypes, setAvailableAdmTypes] = useState<AdmTypeOption[]>([]);
+
+  // Which step is currently loading
+  const [filterLoading, setFilterLoading] = useState<FilterLoading>(null);
   const [configId, setConfigId] = useState<number | null>(null);
-  const [configLoading, setConfigLoading] = useState(false);
   const [configError, setConfigError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
       getMyApplicant().catch(() => null),
       getPrograms().catch(() => []),
-      getCampuses().catch(() => []),
-      getAdmissionTypes().catch(() => []),
-    ]).then(([applicantData, programsData, campusesData, admTypesData]) => {
+    ]).then(([applicantData, programsData]) => {
       setApplicant(applicantData);
       setPrograms(programsData ?? []);
-      setCampuses(campusesData ?? []);
-      setAdmissionTypes(
-        (admTypesData ?? []).filter(
-          (t) => t.type === "PT1" || t.admissionTypeName?.toLowerCase().includes("học bạ")
-        )
-      );
       setLoading(false);
     });
   }, []);
 
-  async function handleValuesChange(_: Partial<FormValues>, all: FormValues) {
-    const { programId, campusId, admissionTypeId } = all;
-    if (!programId || !campusId || !admissionTypeId) {
+  async function handleValuesChange(
+    changedValues: Partial<FormValues>,
+    allValues: FormValues
+  ) {
+    // ── Program changed ──────────────────────────────────────────────────────
+    if ("programId" in changedValues) {
+      form.setFieldsValue({ campusId: undefined, admissionTypeId: undefined });
+      setAvailableCampuses([]);
+      setAvailableAdmTypes([]);
       setConfigId(null);
       setConfigError(null);
+
+      if (!changedValues.programId) return;
+
+      setFilterLoading("campus");
+      try {
+        const configs = await getProgramAdmissionConfigsFilter(changedValues.programId);
+        const campusMap = new Map<number, string>();
+        const admTypeMap = new Map<number, string>();
+        configs?.forEach((c) => {
+          campusMap.set(c.campusId, c.campusName);
+          admTypeMap.set(c.admissionTypeId, c.admissionTypeName);
+        });
+        setAvailableCampuses(
+          Array.from(campusMap, ([campusId, campusName]) => ({ campusId, campusName }))
+        );
+        setAvailableAdmTypes(
+          Array.from(admTypeMap, ([admissionTypeId, admissionTypeName]) => ({
+            admissionTypeId,
+            admissionTypeName,
+          }))
+        );
+      } catch {
+        setConfigError("Không thể tải danh sách cơ sở. Vui lòng thử lại.");
+      } finally {
+        setFilterLoading(null);
+      }
       return;
     }
-    setConfigLoading(true);
-    setConfigError(null);
-    setConfigId(null);
-    try {
-      const configs = await getProgramAdmissionConfigsFilter(programId, campusId, admissionTypeId);
-      if (configs && configs.length > 0) {
-        setConfigId(configs[0].configId);
-      } else {
-        setConfigError("Không tìm thấy cấu hình xét tuyển phù hợp với lựa chọn này.");
+
+    // ── Campus changed ───────────────────────────────────────────────────────
+    if ("campusId" in changedValues) {
+      form.setFieldsValue({ admissionTypeId: undefined });
+      setAvailableAdmTypes([]);
+      setConfigId(null);
+      setConfigError(null);
+
+      const { programId } = allValues;
+      if (!programId || !changedValues.campusId) return;
+
+      setFilterLoading("admissionType");
+      try {
+        const configs = await getProgramAdmissionConfigsFilter(programId, changedValues.campusId);
+        const admTypeMap = new Map<number, string>();
+        configs?.forEach((c) => admTypeMap.set(c.admissionTypeId, c.admissionTypeName));
+        setAvailableAdmTypes(
+          Array.from(admTypeMap, ([admissionTypeId, admissionTypeName]) => ({
+            admissionTypeId,
+            admissionTypeName,
+          }))
+        );
+      } catch {
+        setConfigError("Không thể tải danh sách phương thức. Vui lòng thử lại.");
+      } finally {
+        setFilterLoading(null);
       }
-    } catch {
-      setConfigError("Không thể kiểm tra cấu hình xét tuyển. Vui lòng thử lại.");
-    } finally {
-      setConfigLoading(false);
+      return;
+    }
+
+    // ── Admission type changed ────────────────────────────────────────────────
+    if ("admissionTypeId" in changedValues) {
+      setConfigId(null);
+      setConfigError(null);
+
+      const { programId, campusId } = allValues;
+      if (!programId || !campusId || !changedValues.admissionTypeId) return;
+
+      setFilterLoading("config");
+      try {
+        const configs = await getProgramAdmissionConfigsFilter(
+          programId,
+          campusId,
+          changedValues.admissionTypeId
+        );
+        if (configs && configs.length > 0) {
+          setConfigId(configs[0].configId);
+        } else {
+          setConfigError("Không tìm thấy cấu hình xét tuyển phù hợp với lựa chọn này.");
+        }
+      } catch {
+        setConfigError("Không thể kiểm tra cấu hình xét tuyển. Vui lòng thử lại.");
+      } finally {
+        setFilterLoading(null);
+      }
     }
   }
 
@@ -162,10 +227,11 @@ export function SubmitHocBa() {
     setSubmitting(true);
     try {
       await submitApplication({ configId });
-      messageApi.success("Đăng ký xét tuyển theo học bạ thành công! Vui lòng nộp tài liệu trong trang đơn đăng ký.");
-      setTimeout(() => navigate("/applicant/applications"), 1500);
+      messageApi.success("Đăng ký xét tuyển thành công! Vui lòng nộp tài liệu trong trang Hồ sơ cá nhân.");
+      setTimeout(() => navigate("/applicant/profile"), 1500);
     } catch (err: unknown) {
-      const errData = (err as { response?: { data?: { message?: string; errors?: string[] } } }).response?.data;
+      const errData = (err as { response?: { data?: { message?: string; errors?: string[] } } })
+        .response?.data;
       const msg =
         errData?.message ||
         (errData?.errors?.length ? errData.errors.join("; ") : null) ||
@@ -176,6 +242,9 @@ export function SubmitHocBa() {
     }
   }
 
+  const programId = Form.useWatch("programId", form);
+  const campusId = Form.useWatch("campusId", form);
+
   return (
     <DashboardLayout menuItems={applicantMenu}>
       {contextHolder}
@@ -185,17 +254,19 @@ export function SubmitHocBa() {
           className="flex items-center gap-2 text-gray-400 hover:text-orange-500 text-sm mb-6 transition-colors cursor-pointer bg-transparent border-0 p-0"
         >
           <ArrowLeft size={15} />
-          Quay lại chọn phương thức
+          Quay lại xem phương thức xét tuyển
         </button>
 
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center">
-            <BookOpen size={20} className="text-orange-500" />
+            <ClipboardList size={20} className="text-orange-500" />
           </div>
           <div>
-            <Text className="text-xs text-gray-400 uppercase tracking-wider">PT1 — Phương thức xét tuyển</Text>
+            <Text className="text-xs text-gray-400 uppercase tracking-wider">
+              Tuyển sinh 2026 — FPT University
+            </Text>
             <Title level={4} className="!mb-0 !text-gray-800 !font-bold">
-              Xét kết quả học tập cấp THPT (Học bạ)
+              Đăng ký xét tuyển đại học
             </Title>
           </div>
         </div>
@@ -215,7 +286,11 @@ export function SubmitHocBa() {
                 message="Chưa có hồ sơ thí sinh"
                 description="Bạn cần hoàn thiện hồ sơ cá nhân trước khi đăng ký xét tuyển."
                 action={
-                  <Button size="small" onClick={() => navigate("/applicant/profile")} className="!rounded-lg">
+                  <Button
+                    size="small"
+                    onClick={() => navigate("/applicant/profile")}
+                    className="!rounded-lg"
+                  >
                     Cập nhật hồ sơ
                   </Button>
                 }
@@ -223,7 +298,13 @@ export function SubmitHocBa() {
             )}
 
             <div className="rounded-2xl bg-white border border-gray-100 shadow-sm p-6 md:p-8">
-              <Form form={form} layout="vertical" onFinish={handleSubmit} onValuesChange={handleValuesChange} requiredMark={false}>
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleSubmit}
+                onValuesChange={handleValuesChange}
+                requiredMark={false}
+              >
                 {applicant ? (
                   <ApplicantInfoCard applicant={applicant} />
                 ) : (
@@ -244,6 +325,7 @@ export function SubmitHocBa() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                  {/* ── Ngành ─────────────────────────────────────────────── */}
                   <Form.Item
                     name="programId"
                     label={<Text strong>Ngành đăng ký xét tuyển</Text>}
@@ -265,32 +347,80 @@ export function SubmitHocBa() {
                     />
                   </Form.Item>
 
+                  {/* ── Cơ sở ─────────────────────────────────────────────── */}
                   <Form.Item
                     name="campusId"
-                    label={<Text strong>Cơ sở đăng ký</Text>}
+                    label={
+                      <span className="flex items-center gap-1.5">
+                        <Text strong>Cơ sở đăng ký</Text>
+                        {filterLoading === "campus" && <Spin size="small" />}
+                        {!programId && (
+                          <Text className="!text-xs !text-gray-400 !font-normal">
+                            — chọn ngành trước
+                          </Text>
+                        )}
+                        {programId && !filterLoading && availableCampuses.length > 0 && (
+                          <Tag color="green" className="!rounded-full !text-xs !py-0">
+                            {availableCampuses.length} khả dụng
+                          </Tag>
+                        )}
+                      </span>
+                    }
                     rules={[{ required: true, message: "Vui lòng chọn cơ sở" }]}
                   >
                     <Select
-                      placeholder="Chọn cơ sở"
+                      placeholder={
+                        !programId
+                          ? "Vui lòng chọn ngành trước"
+                          : filterLoading === "campus"
+                          ? "Đang tải..."
+                          : "Chọn cơ sở"
+                      }
                       size="large"
                       className="w-full"
-                      options={campuses.map((c) => ({
+                      disabled={!programId || filterLoading === "campus"}
+                      loading={filterLoading === "campus"}
+                      options={availableCampuses.map((c) => ({
                         value: c.campusId,
-                        label: c.name,
+                        label: c.campusName,
                       }))}
                     />
                   </Form.Item>
 
+                  {/* ── Phương thức ────────────────────────────────────────── */}
                   <Form.Item
                     name="admissionTypeId"
-                    label={<Text strong>Phương thức xét tuyển</Text>}
+                    label={
+                      <span className="flex items-center gap-1.5">
+                        <Text strong>Phương thức xét tuyển</Text>
+                        {filterLoading === "admissionType" && <Spin size="small" />}
+                        {!campusId && (
+                          <Text className="!text-xs !text-gray-400 !font-normal">
+                            — chọn cơ sở trước
+                          </Text>
+                        )}
+                        {campusId && !filterLoading && availableAdmTypes.length > 0 && (
+                          <Tag color="green" className="!rounded-full !text-xs !py-0">
+                            {availableAdmTypes.length} khả dụng
+                          </Tag>
+                        )}
+                      </span>
+                    }
                     rules={[{ required: true, message: "Vui lòng chọn phương thức" }]}
                   >
                     <Select
-                      placeholder="Chọn phương thức học bạ"
+                      placeholder={
+                        !campusId
+                          ? "Vui lòng chọn cơ sở trước"
+                          : filterLoading === "admissionType"
+                          ? "Đang tải..."
+                          : "Chọn phương thức xét tuyển"
+                      }
                       size="large"
                       className="w-full"
-                      options={admissionTypes.map((a) => ({
+                      disabled={!campusId || filterLoading === "admissionType"}
+                      loading={filterLoading === "admissionType"}
+                      options={availableAdmTypes.map((a) => ({
                         value: a.admissionTypeId,
                         label: a.admissionTypeName,
                       }))}
@@ -298,27 +428,28 @@ export function SubmitHocBa() {
                   </Form.Item>
                 </div>
 
-                {configLoading && (
+                {/* ── Config status ─────────────────────────────────────────── */}
+                {filterLoading === "config" && (
                   <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 mb-4 text-xs text-gray-500 flex items-center gap-2">
                     <Spin size="small" />
-                    Đang kiểm tra cấu hình xét tuyển...
+                    Đang xác nhận cấu hình xét tuyển...
                   </div>
                 )}
-                {!configLoading && configError && (
+                {filterLoading !== "config" && configError && (
                   <Alert type="error" showIcon className="mb-4 rounded-lg" message={configError} />
                 )}
-                {!configLoading && configId && (
+                {filterLoading !== "config" && configId && (
                   <Alert
                     type="success"
                     showIcon
                     className="mb-4 rounded-lg"
-                    message={`Cấu hình xét tuyển hợp lệ (ID: ${configId}). Bạn có thể tiến hành đăng ký.`}
+                    message={`Cấu hình xét tuyển hợp lệ. Bạn có thể tiến hành đăng ký.`}
                   />
                 )}
 
-                <div className="rounded-lg bg-blue-50 border border-blue-100 p-3 mb-6 text-xs text-blue-700">
+                <div className="rounded-lg bg-blue-50 border border-blue-100 p-3 mb-6 text-xs text-blue-700 mt-4">
                   Sau khi đăng ký, bạn cần <strong>nộp tài liệu</strong> trong trang{" "}
-                  <span className="font-semibold">Đơn đăng ký của tôi</span> để hoàn tất hồ sơ.
+                  <span className="font-semibold">Hồ sơ cá nhân</span> để hoàn tất hồ sơ.
                 </div>
 
                 <Button
@@ -327,10 +458,10 @@ export function SubmitHocBa() {
                   size="large"
                   block
                   loading={submitting}
-                  disabled={!applicant || !configId || configLoading}
+                  disabled={!applicant || !configId || !!filterLoading}
                   className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 !rounded-xl !h-12 !font-semibold"
                 >
-                  Đăng ký xét tuyển học bạ
+                  Xác nhận đăng ký xét tuyển
                 </Button>
               </Form>
             </div>
