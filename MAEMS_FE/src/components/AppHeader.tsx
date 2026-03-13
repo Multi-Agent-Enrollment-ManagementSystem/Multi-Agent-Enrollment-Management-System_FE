@@ -64,6 +64,9 @@ export function AppHeader() {
             <Link to="/tuyen-sinh" className="!text-gray-700 hover:!text-orange-500 font-semibold text-sm transition-colors">
               Tuyển sinh
             </Link>
+            <Link to="/dao-tao" className="!text-gray-700 hover:!text-orange-500 font-semibold text-sm transition-colors">
+              Đào tạo
+            </Link>
             <Text strong className="text-gray-400 text-sm cursor-default">Tin tức</Text>
             <Text strong className="text-gray-400 text-sm cursor-default">Liên hệ</Text>
           </Space>
