@@ -21,7 +21,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AppHeader } from "../../components/AppHeader";
+import { GuestLayout } from "../../components/layouts/GuestLayout";
 import { filterPrograms } from "../../api/programs";
 import { getActiveMajorsBasic } from "../../api/majors";
 import type { Program } from "../../types/program";
@@ -149,8 +149,7 @@ export function ProgramList() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <AppHeader />
+    <GuestLayout>
 
       {/* Hero */}
       <section className="relative py-28 px-6 overflow-hidden">
@@ -330,12 +329,6 @@ export function ProgramList() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-8 px-6 text-center">
-        <Text className="!text-gray-600 text-xs">
-          © 2026 Multi-Agent Enrollment Management System – Trường Đại học FPT. All rights reserved.
-        </Text>
-      </footer>
-    </div>
+    </GuestLayout>
   );
 }
