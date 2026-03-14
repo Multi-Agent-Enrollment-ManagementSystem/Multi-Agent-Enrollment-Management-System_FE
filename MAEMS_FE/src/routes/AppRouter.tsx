@@ -26,6 +26,7 @@ import { ProgramDetail } from "../pages/programs/ProgramDetail";
 import { RuleConfigPage } from "../pages/eligibility/RuleConfigPage";
 import { ReviewEvaluationPage } from "../pages/qa/ReviewEvaluationPage";
 import { ReportDashboard } from "../pages/reports/ReportDashboard";
+import { ContactPage } from "../pages/contact/ContactPage";
 
 export function AppRouter() {
   return (
@@ -34,6 +35,7 @@ export function AppRouter() {
       <Route path="/tuyen-sinh" element={<AdmissionPage />} />
       <Route path="/dao-tao" element={<ProgramList />} />
       <Route path="/dao-tao/:id" element={<ProgramDetail />} />
+      <Route path="/lien-he" element={<ContactPage />} />
       <Route path="/auth" element={<AuthPage />} />
 
       {/* applicant */}

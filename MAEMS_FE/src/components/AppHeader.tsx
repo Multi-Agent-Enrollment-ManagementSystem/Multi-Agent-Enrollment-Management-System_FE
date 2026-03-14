@@ -68,7 +68,7 @@ export function AppHeader() {
               Đào tạo
             </Link>
             <Text strong className="text-gray-400 text-sm cursor-default">Tin tức</Text>
-            <Text strong className="text-gray-400 text-sm cursor-default">Liên hệ</Text>
+            <Link to="/lien-he" className="!text-gray-700 hover:!text-orange-500 font-semibold text-sm transition-colors">Liên hệ</Link>
           </Space>
           {isAuthenticated && user ? (
             <Dropdown menu={{ items: userMenuItems }} trigger={["click"]}>
