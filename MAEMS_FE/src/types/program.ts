@@ -1,3 +1,5 @@
+import type { Campus } from './campus';
+
 export interface Program {
   programId: number;
   programName: string;
@@ -7,4 +9,5 @@ export interface Program {
   careerProspects: string;
   duration: string;
   isActive: boolean;
+  campuses: Campus[];
 }
