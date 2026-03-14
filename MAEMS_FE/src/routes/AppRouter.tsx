@@ -19,6 +19,7 @@ import { ArticleDetail } from "../pages/articles/ArticleDetail";
 import { ArticleEditor } from "../pages/articles/ArticleEditor";
 import { ArticleList } from "../pages/articles/ArticleList";
 import { AdmissionPage } from "../pages/admission/AdmissionPage";
+import { AdmissionTypesPage } from "../pages/admission/AdmissionTypesPage";
 import { HomePage } from "../pages/homepage/HomePage";
 import { AuthPage } from "../pages/auth/AuthPage";
 import { ProgramList } from "../pages/programs/ProgramList";
@@ -33,6 +34,7 @@ export function AppRouter() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/tuyen-sinh" element={<AdmissionPage />} />
+      <Route path="/tuyen-sinh/phuong-thuc" element={<AdmissionTypesPage />} />
       <Route path="/dao-tao" element={<ProgramList />} />
       <Route path="/dao-tao/:id" element={<ProgramDetail />} />
       <Route path="/lien-he" element={<ContactPage />} />

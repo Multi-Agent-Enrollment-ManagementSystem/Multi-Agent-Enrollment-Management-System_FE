@@ -11,12 +11,14 @@ import {
   Typography,
 } from "antd";
 import { ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { GuestLayout } from "../../components/layouts/GuestLayout";
 
 const { Title, Paragraph, Text } = Typography;
 const { Option } = Select;
 
 export function AdmissionPage() {
+  const navigate = useNavigate();
   return (
     <GuestLayout>
       <div className="bg-gradient-to-br from-orange-200 via-amber-50 to-gray-50">
@@ -164,6 +166,7 @@ export function AdmissionPage() {
               <Button
                 type="primary"
                 className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600 rounded-full py-2 px-6"
+                onClick={() => navigate("/tuyen-sinh/phuong-thuc")}
               >
                 Xem thêm
                 <span className="ml-2">→</span>
