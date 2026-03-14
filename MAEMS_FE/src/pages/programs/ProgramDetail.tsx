@@ -9,8 +9,11 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
+  FileCheck2,
   GraduationCap,
+  MapPin,
   Sparkles,
+  Users,
 } from "lucide-react";
 import { AppHeader } from "../../components/AppHeader";
 import { getProgramById } from "../../api/programs";
@@ -216,6 +219,91 @@ export function ProgramDetail() {
                       </div>
                     </div>
                   </div>
+                )}
+
+                {/* Campuses & Admission Methods */}
+                {program.campuses && program.campuses.length > 0 && (
+                  <>
+                    <Divider className="!my-0" />
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-1 h-6 bg-orange-500 rounded-full" />
+                        <Title level={4} className="!mb-0 !text-gray-800 !font-bold">
+                          Cơ sở đào tạo & Phương thức xét tuyển
+                        </Title>
+                      </div>
+                      <Paragraph className="!text-gray-500 text-sm !mb-5 ml-4">
+                        Chương trình hiện có mặt tại{" "}
+                        <span className="font-semibold text-orange-600">
+                          {program.campuses.length} cơ sở
+                        </span>{" "}
+                        trên toàn quốc
+                      </Paragraph>
+
+                      <div className="space-y-4">
+                        {program.campuses.map((campus) => (
+                          <div
+                            key={campus.campusId}
+                            className="border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-orange-50 to-white border-b border-orange-100/60">
+                              <div className="w-9 h-9 rounded-xl bg-orange-500 flex items-center justify-center flex-shrink-0">
+                                <MapPin size={16} className="text-white" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <Text strong className="!text-gray-800 text-base block">
+                                  Cơ sở {campus.campusName}
+                                </Text>
+                              </div>
+                              {campus.admissions && (
+                                <span className="text-xs text-orange-600 bg-orange-100 font-medium px-2.5 py-1 rounded-full whitespace-nowrap">
+                                  {campus.admissions.filter((a) => a.isActive).length} phương thức
+                                </span>
+                              )}
+                            </div>
+
+                            {campus.admissions && campus.admissions.length > 0 ? (
+                              <div className="divide-y divide-gray-50">
+                                {campus.admissions.map((admission) => (
+                                  <div
+                                    key={admission.configId}
+                                    className="flex items-center gap-3 px-5 py-3.5 hover:bg-orange-50/40 transition-colors"
+                                  >
+                                    <div className="w-7 h-7 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
+                                      <FileCheck2 size={14} className="text-orange-400" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <Text className="!text-gray-700 text-sm block truncate">
+                                        {admission.admissionTypeName}
+                                      </Text>
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                      <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
+                                        <Users size={12} />
+                                        <span className="font-semibold text-gray-700">
+                                          {admission.quota}
+                                        </span>
+                                        <span>chỉ tiêu</span>
+                                      </div>
+                                      {admission.isActive ? (
+                                        <span className="w-2 h-2 rounded-full bg-green-400" title="Đang mở" />
+                                      ) : (
+                                        <span className="w-2 h-2 rounded-full bg-gray-300" title="Đã đóng" />
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="px-5 py-4 text-center text-sm text-gray-400">
+                                Chưa có phương thức xét tuyển
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 {/* Highlights */}

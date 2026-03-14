@@ -19,6 +19,7 @@ import { ArticleDetail } from "../pages/articles/ArticleDetail";
 import { ArticleEditor } from "../pages/articles/ArticleEditor";
 import { ArticleList } from "../pages/articles/ArticleList";
 import { AdmissionPage } from "../pages/admission/AdmissionPage";
+import { AdmissionTypesPage } from "../pages/admission/AdmissionTypesPage";
 import { HomePage } from "../pages/homepage/HomePage";
 import { AuthPage } from "../pages/auth/AuthPage";
 import { ProgramList } from "../pages/programs/ProgramList";
@@ -26,14 +27,17 @@ import { ProgramDetail } from "../pages/programs/ProgramDetail";
 import { RuleConfigPage } from "../pages/eligibility/RuleConfigPage";
 import { ReviewEvaluationPage } from "../pages/qa/ReviewEvaluationPage";
 import { ReportDashboard } from "../pages/reports/ReportDashboard";
+import { ContactPage } from "../pages/contact/ContactPage";
 
 export function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/tuyen-sinh" element={<AdmissionPage />} />
+      <Route path="/tuyen-sinh/phuong-thuc" element={<AdmissionTypesPage />} />
       <Route path="/dao-tao" element={<ProgramList />} />
       <Route path="/dao-tao/:id" element={<ProgramDetail />} />
+      <Route path="/lien-he" element={<ContactPage />} />
       <Route path="/auth" element={<AuthPage />} />
 
       {/* applicant */}
