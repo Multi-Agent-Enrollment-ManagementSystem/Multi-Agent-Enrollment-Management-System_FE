@@ -14,7 +14,13 @@ import {
   Divider,
   message,
   Tag,
+  Upload,
+  Modal,
+  Spin,
+  Empty,
+  Tooltip,
 } from "antd";
+import type { UploadFile } from "antd";
 import {
   CalendarDays,
   Mail,
@@ -25,21 +31,59 @@ import {
   Phone,
   CheckCircle2,
   GraduationCap,
+  Paperclip,
+  UploadCloud,
+  FileText,
+  Eye,
+  FileImage,
 } from "lucide-react";
 import dayjs from "dayjs";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { getProfile } from "../../api/auth";
-import { createApplicant, getMyApplicant, patchApplicant } from "../../api/applicant";
+import { createApplicant, getMyApplicant, patchApplicant, uploadApplicantDocuments, getApplicantDocuments } from "../../api/applicants";
 import type { UserProfile } from "../../types/auth";
 import type { CreateApplicantRequest, CreateApplicantResponse } from "../../types/applicant";
+import type { Document as ApplicantDocument } from "../../types/document";
 import { applicantMenu } from "./applicantMenu";
 
 const { Title, Text } = Typography;
 
+const IMAGE_FORMATS = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"];
+
+function isImageFormat(fileFormat?: string) {
+  return IMAGE_FORMATS.includes((fileFormat ?? "").toLowerCase());
+}
+
+const VERIFICATION_BADGE: Record<string, { color: string; label: string }> = {
+  PENDING:  { color: "orange",  label: "Chờ duyệt" },
+  APPROVED: { color: "success", label: "Đã duyệt" },
+  VERIFIED: { color: "success", label: "Đã duyệt" },
+  REJECTED: { color: "error",   label: "Từ chối" },
+  FAILED:   { color: "error",   label: "Từ chối" },
+};
+
+function getVerificationBadge(result?: string | null) {
+  if (!result) return { color: "default", label: "—" };
+  return VERIFICATION_BADGE[result.toUpperCase()] ?? { color: "default", label: result };
+}
+
+const DOC_TYPE_OPTIONS = [
+  { value: "CCCD_FRONT",  label: "CCCD/CMND mặt trước" },
+  { value: "CCCD_BACK",   label: "CCCD/CMND mặt sau" },
+  { value: "HOC_BA",      label: "Học bạ / Bảng điểm" },
+  { value: "DGNL",        label: "Giấy chứng nhận ĐGNL" },
+  { value: "THPT",        label: "Giấy chứng nhận tốt nghiệp THPT" },
+  { value: "SCHOOL_RANK", label: "Xác nhận xếp hạng SchoolRank" },
+  { value: "UU_TIEN",     label: "Đơn ưu tiên xét tuyển" },
+  { value: "BIEN_LAI",    label: "Biên lai nộp phí" },
+  { value: "VAN_BANG",    label: "Văn bằng / Chứng chỉ" },
+  { value: "KHAC",        label: "Tài liệu khác" },
+];
+
 const roleLabel: Record<string, string> = {
   applicant: "Thí sinh",
   admin: "Quản trị viên",
-  staff: "Nhân viên",
+  officer: "Nhân viên",
   qa: "Kiểm duyệt viên",
 };
 
@@ -92,7 +136,28 @@ export function ApplicantProfilePage() {
   const [submitting, setSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm<ApplicantFormValues>();
+  const [docForm] = Form.useForm<{ documentType: string }>();
   const [messageApi, contextHolder] = message.useMessage();
+
+  // Document state
+  const [documents, setDocuments] = useState<ApplicantDocument[]>([]);
+  const [docsLoading, setDocsLoading] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [previewDoc, setPreviewDoc] = useState<ApplicantDocument | null>(null);
+
+  async function loadDocuments() {
+    setDocsLoading(true);
+    try {
+      const docs = await getApplicantDocuments();
+      setDocuments(docs);
+    } catch {
+      setDocuments([]);
+    } finally {
+      setDocsLoading(false);
+    }
+  }
 
   useEffect(() => {
     Promise.all([
@@ -102,8 +167,45 @@ export function ApplicantProfilePage() {
       setProfile(profileData);
       setApplicant(applicantData);
       setLoading(false);
+      if (applicantData) loadDocuments();
     });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleUploadDoc() {
+    let values: { documentType: string };
+    try {
+      values = await docForm.validateFields();
+    } catch {
+      return;
+    }
+    if (fileList.length === 0) {
+      messageApi.warning("Vui lòng chọn file cần tải lên.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("documentType", values.documentType);
+    formData.append("file", fileList[0].originFileObj as File);
+    setUploading(true);
+    try {
+      await uploadApplicantDocuments(formData);
+      messageApi.success("Tải lên tài liệu thành công!");
+      setUploadOpen(false);
+      docForm.resetFields();
+      setFileList([]);
+      loadDocuments();
+    } catch (err: unknown) {
+      const errData = (err as { response?: { data?: { message?: string } } }).response?.data;
+      messageApi.error(errData?.message ?? "Tải lên thất bại. Vui lòng thử lại.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleCloseUpload() {
+    docForm.resetFields();
+    setFileList([]);
+    setUploadOpen(false);
+  }
 
   const initial = profile?.username?.charAt(0).toUpperCase() ?? "U";
 
@@ -147,6 +249,7 @@ export function ApplicantProfilePage() {
         setApplicant(response);
         messageApi.success("Hồ sơ thí sinh đã được tạo thành công!");
         form.resetFields();
+        loadDocuments();
       }
     } catch {
       messageApi.error(
@@ -311,10 +414,259 @@ export function ApplicantProfilePage() {
             <ReadOnlyField label="Địa chỉ liên lạc" value={applicant.contactAddress} />
           </div>
         </Card>
-      ) : !loading ? (
+      ) : null}
+
+      {/* Document section — shown when applicant exists and not editing */}
+      {!loading && applicant && !isEditing && (
+        <Card
+          className="rounded-2xl border border-gray-100 shadow-sm max-w-3xl mt-6"
+          styles={{ body: { padding: "32px" } }}
+        >
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              <Paperclip size={16} className="text-orange-500" />
+              <Title level={5} className="!mb-0 !text-gray-800">
+                Tài liệu đính kèm
+              </Title>
+            </div>
+            <Button
+              icon={<UploadCloud size={14} />}
+              className="!rounded-lg !border-orange-200 !text-orange-600 hover:!bg-orange-50"
+              onClick={() => setUploadOpen(true)}
+            >
+              Tải lên tài liệu
+            </Button>
+          </div>
+          <Text className="text-gray-400 text-sm block mb-5">
+            Các tài liệu bạn nộp sẽ được đính kèm vào hồ sơ và dùng cho quá trình xét tuyển.
+          </Text>
+
+          {docsLoading ? (
+            <div className="flex justify-center py-8">
+              <Spin />
+            </div>
+          ) : documents.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={<Text className="text-gray-400 text-sm">Chưa có tài liệu nào.</Text>}
+              className="py-6"
+            />
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {documents.map((doc, idx) => {
+                const typeLabel = DOC_TYPE_OPTIONS.find((o) => o.value === doc.documentType)?.label ?? doc.documentType ?? "Tài liệu";
+                const isImage = isImageFormat(doc.fileFormat);
+                const badge = getVerificationBadge(doc.verificationResult);
+                return (
+                  <Tooltip key={doc.documentId ?? idx} title="Nhấn để xem chi tiết">
+                    <div
+                      className="group relative flex flex-col rounded-xl border border-gray-100 bg-white overflow-hidden cursor-pointer hover:border-orange-300 hover:shadow-md transition-all"
+                      onClick={() => setPreviewDoc(doc)}
+                    >
+                      {/* Thumbnail area */}
+                      <div className="relative w-full h-24 bg-gray-50 flex items-center justify-center overflow-hidden">
+                        {isImage ? (
+                          <img
+                            src={doc.filePath}
+                            alt={doc.fileName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).style.display = "none";
+                              (e.currentTarget.nextElementSibling as HTMLElement | null)?.style.setProperty("display", "flex");
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-full h-full items-center justify-center flex-col gap-1"
+                          style={{ display: isImage ? "none" : "flex" }}
+                        >
+                          <FileText size={28} className="text-orange-300" />
+                          <span className="text-xs text-gray-400 uppercase">{doc.fileFormat ?? "file"}</span>
+                        </div>
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Eye size={20} className="text-white" />
+                        </div>
+                        {/* Verification badge */}
+                        <div className="absolute top-1.5 right-1.5">
+                          <Tag color={badge.color} className="!text-[10px] !px-1.5 !py-0 !leading-4 !m-0 !rounded-full">
+                            {badge.label}
+                          </Tag>
+                        </div>
+                      </div>
+
+                      {/* Info */}
+                      <div className="px-2.5 py-2">
+                        <p className="text-xs font-medium text-gray-700 truncate leading-tight" title={doc.fileName}>
+                          {doc.fileName || typeLabel}
+                        </p>
+                        <p className="text-[10px] text-gray-400 truncate mt-0.5 leading-tight flex items-center gap-1">
+                          <FileImage size={10} className="shrink-0" />
+                          {typeLabel}
+                        </p>
+                        {doc.uploadedAt && (
+                          <p className="text-[10px] text-gray-300 mt-0.5 leading-tight">
+                            {new Date(doc.uploadedAt).toLocaleDateString("vi-VN")}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+      )}
+
+      {/* Document preview modal */}
+      <Modal
+        open={!!previewDoc}
+        onCancel={() => setPreviewDoc(null)}
+        footer={null}
+        destroyOnClose
+        width={720}
+        title={
+          previewDoc && (
+            <div className="flex items-center gap-2 pr-4">
+              <FileText size={16} className="text-orange-500 shrink-0" />
+              <span className="text-sm font-semibold text-gray-800 truncate">
+                {previewDoc.fileName || DOC_TYPE_OPTIONS.find((o) => o.value === previewDoc.documentType)?.label || "Tài liệu"}
+              </span>
+              {previewDoc.verificationResult && (() => {
+                const b = getVerificationBadge(previewDoc.verificationResult);
+                return <Tag color={b.color} className="!rounded-full !ml-1">{b.label}</Tag>;
+              })()}
+            </div>
+          )
+        }
+      >
+        {previewDoc && (
+          <div className="flex flex-col gap-4 pt-2">
+            {/* Preview area */}
+            <div className="rounded-xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center min-h-[320px]">
+              {isImageFormat(previewDoc.fileFormat) ? (
+                <img
+                  src={previewDoc.filePath}
+                  alt={previewDoc.fileName}
+                  className="max-w-full max-h-[480px] object-contain"
+                />
+              ) : (
+                <iframe
+                  src={previewDoc.filePath}
+                  title={previewDoc.fileName}
+                  className="w-full h-[480px] border-0"
+                />
+              )}
+            </div>
+
+            {/* Meta info */}
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <Text className="!text-xs !text-gray-400 block">Loại tài liệu</Text>
+                <Text className="!text-sm !text-gray-700 !font-medium">
+                  {DOC_TYPE_OPTIONS.find((o) => o.value === previewDoc.documentType)?.label ?? previewDoc.documentType ?? "—"}
+                </Text>
+              </div>
+              <div>
+                <Text className="!text-xs !text-gray-400 block">Định dạng</Text>
+                <Text className="!text-sm !text-gray-700 !font-medium uppercase">
+                  {previewDoc.fileFormat ?? "—"}
+                </Text>
+              </div>
+              <div>
+                <Text className="!text-xs !text-gray-400 block">Ngày tải lên</Text>
+                <Text className="!text-sm !text-gray-700 !font-medium">
+                  {previewDoc.uploadedAt ? new Date(previewDoc.uploadedAt).toLocaleDateString("vi-VN", { year: "numeric", month: "long", day: "numeric" }) : "—"}
+                </Text>
+              </div>
+              {previewDoc.verificationDetails && (
+                <div className="col-span-2">
+                  <Text className="!text-xs !text-gray-400 block">Ghi chú duyệt</Text>
+                  <Text className="!text-sm !text-gray-700">{previewDoc.verificationDetails}</Text>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end">
+              <a href={previewDoc.filePath} target="_blank" rel="noopener noreferrer">
+                <Button icon={<Eye size={14} />} className="!rounded-lg !border-orange-200 !text-orange-600 hover:!bg-orange-50">
+                  Mở trong tab mới
+                </Button>
+              </a>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Upload modal */}
+      <Modal
+        open={uploadOpen}
+        onCancel={handleCloseUpload}
+        title={
+          <div className="flex items-center gap-2">
+            <UploadCloud size={18} className="text-orange-500" />
+            <span className="text-base font-bold text-gray-800">Tải lên tài liệu</span>
+          </div>
+        }
+        footer={null}
+        destroyOnClose
+        width={480}
+      >
+        <Form form={docForm} layout="vertical" requiredMark={false} className="mt-4">
+          <Form.Item
+            name="documentType"
+            label={<Text strong>Loại tài liệu</Text>}
+            rules={[{ required: true, message: "Vui lòng chọn loại tài liệu" }]}
+          >
+            <Select
+              placeholder="Chọn loại tài liệu"
+              size="large"
+              options={DOC_TYPE_OPTIONS}
+            />
+          </Form.Item>
+
+          <Form.Item label={<Text strong>File tài liệu</Text>}>
+            <Upload.Dragger
+              accept="image/*,.pdf"
+              maxCount={1}
+              beforeUpload={() => false}
+              fileList={fileList}
+              onChange={({ fileList: fl }) => setFileList(fl)}
+              className="!rounded-xl"
+            >
+              <div className="flex flex-col items-center gap-1.5 py-4">
+                <UploadCloud size={28} className="text-gray-300" />
+                <Text className="text-sm text-gray-500">
+                  Kéo thả file vào đây hoặc{" "}
+                  <span className="text-orange-500 font-medium">nhấn để chọn</span>
+                </Text>
+                <Text className="text-xs text-gray-400">JPG, PNG, PDF — tối đa 10 MB</Text>
+              </div>
+            </Upload.Dragger>
+          </Form.Item>
+
+          <div className="flex gap-2 justify-end mt-2">
+            <Button onClick={handleCloseUpload} className="!rounded-xl">
+              Hủy
+            </Button>
+            <Button
+              type="primary"
+              loading={uploading}
+              onClick={handleUploadDoc}
+              icon={<UploadCloud size={14} />}
+              className="!rounded-xl !bg-orange-500 !border-orange-500 hover:!bg-orange-600"
+            >
+              Tải lên
+            </Button>
+          </div>
+        </Form>
+      </Modal>
+
+      {!loading && (!applicant || isEditing) ? (
         /* Creation / Edit form */
         <Card
-          className="rounded-2xl border border-gray-100 shadow-sm max-w-3xl"
+          className="rounded-2xl border border-gray-100 shadow-sm max-w-3xl mt-6"
           styles={{ body: { padding: "32px" } }}
         >
           <Title level={5} className="!mb-1 !text-gray-800">
@@ -544,11 +896,11 @@ export function ApplicantProfilePage() {
             </div>
           </Form>
         </Card>
-      ) : (
-        <Card className="rounded-2xl border border-gray-100 shadow-sm max-w-3xl" styles={{ body: { padding: "32px" } }}>
+      ) : loading ? (
+        <Card className="rounded-2xl border border-gray-100 shadow-sm max-w-3xl mt-6" styles={{ body: { padding: "32px" } }}>
           <Skeleton active paragraph={{ rows: 8 }} />
         </Card>
-      )}
+      ) : null}
     </DashboardLayout>
   );
 }

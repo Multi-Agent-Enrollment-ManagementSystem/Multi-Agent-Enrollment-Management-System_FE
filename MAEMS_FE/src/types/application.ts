@@ -1,26 +1,60 @@
-export type ApplicationStatus = 'pending' | 'approved' | 'rejected'
+export type ApplicationStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'under_review'
 
 export type Application = {
-  id: string
-  applicantName: string
-  createdAt: string
-  status: ApplicationStatus
-}
-
-export type CreateApplicationRequest = {
-  programId: number
-  enrollmentYearId: number
-  campusId: number
-  admissionTypeId: number
-}
-
-// Chưa có response từ API thực tế, nên tạm thời để như thế này
-export type CreateApplicationResponse = {
   applicationId: number
   applicantId: number
   programId: number
   enrollmentYearId: number
   campusId: number
   admissionTypeId: number
+  applicantName: string
+  programName: string
+  enrollmentYear: string
+  campusName: string
+  admissionTypeName: string
+  status: ApplicationStatus
+  submittedAt: string
+  lastUpdated: string
+  assignedOfficerId : number | null
+  assignedOfficerName: string | null
+  notes: string | null
+  requiresReview: boolean
+  documents: Document[]
+}
+
+export type Document = {
+  documentId: number
+  applicationId: number
+  documentType: string
+  filePath: string
+  uploadedAt: string
+  fileName: string
+  fileFormat: string
+  verificationResult: string
+  verificationDetails: string
+}
+
+export type CreateApplicationRequest = {
+  configId: number
+}
+
+export type CreateApplicationResponse = {
+  applicationId: number
+  applicantId: number
+  applicantName: string
+  programId: number
+  programName: string
+  enrollmentYearId: number
+  enrollmentYear: string
+  campusId: number
+  campusName: string
+  admissionTypeId: number
+  admissionTypeName: string
+  status: ApplicationStatus
+  submittedAt: string
+  lastUpdated: string
+  assignedOfficerId:string | null
+  assignedOfficerName:string | null
+  requiresReview: boolean
   createdAt: string
 }

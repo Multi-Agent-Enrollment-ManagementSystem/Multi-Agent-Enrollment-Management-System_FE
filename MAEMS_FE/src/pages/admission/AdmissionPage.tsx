@@ -1,10 +1,8 @@
 import {
   Button,
   Col,
-  Collapse,
   Form,
   Input,
-  Layout,
   Row,
   Select,
   Space,
@@ -13,16 +11,17 @@ import {
   Typography,
 } from "antd";
 import { ExternalLink } from "lucide-react";
-import { AppHeader } from "../../components/AppHeader";
+import { useNavigate } from "react-router-dom";
+import { GuestLayout } from "../../components/layouts/GuestLayout";
 
-const { Content, Footer } = Layout;
 const { Title, Paragraph, Text } = Typography;
-const { Panel } = Collapse;
 const { Option } = Select;
 
 export function AdmissionPage() {
+  const navigate = useNavigate();
   return (
-    <Layout className="min-h-screen bg-gradient-to-br from-orange-200 via-amber-50 to-gray-50">
+    <GuestLayout>
+      <div className="bg-gradient-to-br from-orange-200 via-amber-50 to-gray-50">
       <img
         src="https://daihoc.fpt.edu.vn/wp-content/uploads/2026/01/Bannerweb-kythisotuyenArtboard-2-copy100.png"
         alt="Admission Hero Image"
@@ -33,9 +32,8 @@ export function AdmissionPage() {
           display: "block",
         }}
       />
-      <AppHeader />
 
-      <Content className="w-full py-8 px-6 md:px-10 pb-16 box-border text-gray-900 max-md:px-4">
+      <div className="w-full py-8 px-6 md:px-10 pb-16 box-border text-gray-900 max-md:px-4">
         <section className="mb-12 min-h-[calc(100vh-160px)] flex items-center">
           <Row gutter={[24, 24]} align="stretch">
             <Col xs={24} md={12}>
@@ -168,6 +166,7 @@ export function AdmissionPage() {
               <Button
                 type="primary"
                 className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600 rounded-full py-2 px-6"
+                onClick={() => navigate("/tuyen-sinh/phuong-thuc")}
               >
                 Xem thêm
                 <span className="ml-2">→</span>
@@ -291,37 +290,8 @@ export function AdmissionPage() {
             </Form>
           </div>
         </section>
-      </Content>
-
-      <Footer className="bg-gray-50 border-t border-gray-200 py-8 px-6 text-gray-600">
-        <Row gutter={[24, 24]}>
-          <Col xs={24} md={8}>
-            <Title level={4}>Giới thiệu chung</Title>
-            <Space direction="vertical">
-              <Text>Về FPTU</Text>
-              <Text>Cơ sở vật chất & campus</Text>
-            </Space>
-          </Col>
-          <Col xs={24} md={8}>
-            <Title level={4}>Truy cập nhanh</Title>
-            <Space direction="vertical">
-              <Text>Thông tin tuyển sinh năm 2026</Text>
-              <Text>Học phí</Text>
-              <Text>Học bổng</Text>
-            </Space>
-          </Col>
-          <Col xs={24} md={8}>
-            <Title level={4}>Liên hệ</Title>
-            <Space direction="vertical">
-              <Text>Hà Nội: Khu GD&ĐT – Khu CNC Hòa Lạc</Text>
-              <Text>TP.HCM: Lô E2a-7, Đường D1, Khu CNC</Text>
-            </Space>
-          </Col>
-        </Row>
-        <div className="mt-6 text-center text-[13px] text-gray-400">
-          <Text>© 2026 Trường Đại học FPT.</Text>
-        </div>
-      </Footer>
-    </Layout>
+      </div>
+      </div>
+    </GuestLayout>
   );
 }
