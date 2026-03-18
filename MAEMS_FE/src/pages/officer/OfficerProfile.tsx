@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { getProfile } from "../../api/auth";
-import type { AuthUser } from "../../types/auth";
+import type { UserProfile } from "../../types/auth";
 import type { SidebarMenuItem } from "../../components/DashboardSidebar";
 
 const { Title, Text } = Typography;
@@ -97,7 +97,7 @@ function InfoRow({
 }
 
 export function OfficerProfile() {
-  const [profile, setProfile] = useState<AuthUser | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
