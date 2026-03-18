@@ -7,19 +7,16 @@ import {
   Typography,
 } from "antd";
 import {
-  AlertTriangle,
-  BarChart2,
   CalendarDays,
-  ClipboardList,
-  LayoutDashboard,
   Mail,
-  Newspaper,
   ShieldCheck,
   User,
+  BarChart2,
+  LayoutDashboard,
 } from "lucide-react";
 import { DashboardLayout } from "../../components/DashboardLayout";
 import { getProfile } from "../../api/auth";
-import type { AuthUser } from "../../types/auth";
+import type { UserProfile } from "../../types/auth";
 import type { SidebarMenuItem } from "../../components/DashboardSidebar";
 
 const { Title, Text } = Typography;
@@ -27,39 +24,27 @@ const { Title, Text } = Typography;
 const menuItems: SidebarMenuItem[] = [
   {
     key: "dashboard",
-    label: "Dashboard",
+    label: "Tổng quan",
     icon: <LayoutDashboard size={16} />,
-    path: "/officer/dashboard",
-  },
-  {
-    key: "review-applications",
-    label: "Đánh giá đơn ĐK",
-    icon: <ClipboardList size={16} />,
-    path: "/officer/review-applications",
-  },
-  {
-    key: "escalations",
-    label: "Các trường hợp leo thang",
-    icon: <AlertTriangle size={16} />,
-    path: "/officer/escalations",
+    path: "/admin/dashboard",
   },
   {
     key: "reports",
     label: "Báo cáo",
     icon: <BarChart2 size={16} />,
-    path: "/officer/reports",
+    path: "/admin/reports",
   },
   {
-    key: "articles",
-    label: "Bài viết",
-    icon: <Newspaper size={16} />,
-    path: "/officer/articles",
+    key: "eligibility",
+    label: "Quy tắc xét duyệt",
+    icon: <ShieldCheck size={16} />,
+    path: "/admin/eligibility/rules",
   },
   {
     key: "profile",
     label: "Hồ sơ cá nhân",
     icon: <User size={16} />,
-    path: "/officer/profile",
+    path: "/admin/profile",
   },
 ];
 
@@ -96,8 +81,8 @@ function InfoRow({
   );
 }
 
-export function OfficerProfile() {
-  const [profile, setProfile] = useState<AuthUser | null>(null);
+export function AdminProfile() {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
