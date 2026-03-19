@@ -3,27 +3,73 @@ import {
   Col,
   Form,
   Input,
+  Result,
   Row,
   Select,
   Space,
   Tag,
   Tabs,
   Typography,
+  message,
 } from "antd";
-import { ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CheckCircle } from "lucide-react";
+import { ExternalLink, SquareArrowOutUpRight } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { GuestLayout } from "../../components/layouts/GuestLayout";
 
 const { Title, Paragraph, Text } = Typography;
 const { Option } = Select;
 
+const NoteSection = () => (
+  <div className="mt-6 flex items-start gap-3 rounded-lg bg-gray-50/80 px-5 py-4">
+    <span className="text-orange-500 text-2xl leading-none mt-0.5 shrink-0">✳︎</span>
+    <div className="text-sm text-gray-700 leading-relaxed">
+      <span className="font-bold text-gray-900">LƯU Ý</span>
+      <span className="ml-3">
+        Các thí sinh đăng ký học ngành Luật phải đảm bảo điều kiện theo quy định tại Quyết định số 678/QĐ-BGDĐT ngày 14 tháng 03 năm 2025 của Bộ trưởng Bộ Giáo dục và Đào tạo Ban hành Chuẩn chương trình đào tạo lĩnh vực pháp luật trình độ đại học.
+      </span>
+    </div>
+  </div>
+);
+
+type AdmissionFormValues = {
+  fullName: string;
+  province: string;
+  phone: string;
+  email?: string;
+};
+
 export function AdmissionPage() {
   const navigate = useNavigate();
+  const [form] = Form.useForm<AdmissionFormValues>();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (values: AdmissionFormValues) => {
+    setSubmitting(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Admission form submitted:", values);
+      setSubmitted(true);
+      message.success("Đăng ký tuyển sinh thành công!");
+    } catch {
+      message.error("Có lỗi xảy ra, vui lòng thử lại.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleReset = () => {
+    form.resetFields();
+    setSubmitted(false);
+  };
+
   return (
     <GuestLayout>
       <div className="bg-gradient-to-br from-orange-200 via-amber-50 to-gray-50">
       <img
-        src="https://daihoc.fpt.edu.vn/wp-content/uploads/2026/01/Bannerweb-kythisotuyenArtboard-2-copy100.png"
+        src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773932965/Bannerweb-kythisotuyenArtboard-2-copy100_mnyvhw.png"
         alt="Admission Hero Image"
         style={{
           width: "100vw",
@@ -38,16 +84,13 @@ export function AdmissionPage() {
           <Row gutter={[24, 24]} align="stretch">
             <Col xs={24} md={12}>
               <div className="[&>div]:mb-4 [&>div:last-child]:mb-0">
-                <div className="inline-block py-2 px-4 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
-                  <Tag color="orange" className="mb-3 w-full">
-                    Tuyển sinh 2026
-                  </Tag>
-                </div>
-                <div className="w-fit py-3 px-5 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
-                  <Title level={1} className="!text-slate-900 !mb-0">
-                    Tuyển sinh
-                  </Title>
-                </div>
+                <Tag color="orange" className="!mb-4 text-xs font-semibold tracking-widest uppercase px-3 py-1">
+                  Tuyển sinh 2026
+                </Tag>
+                <Title level={1} className="!text-slate-900 !mb-8 !mt-0 !leading-tight ">
+                  Tuyển sinh
+                </Title>
+              
                 <div className="p-4 py-5 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
                   <Paragraph className="text-base text-gray-600">
                     Trường Đại học FPT chào đón thế hệ sinh viên đại học chính
@@ -55,9 +98,7 @@ export function AdmissionPage() {
                     còn khát khao tạo ra giá trị mới trong kỷ nguyên số đang
                     không ngừng chuyển động.
                   </Paragraph>
-                </div>
-                <div className="p-4 py-5 mb-3 rounded-xl bg-white border border-orange-200/20 shadow-sm">
-                  <Paragraph>
+                  <Paragraph className="!mb-0">
                     Chương trình đào tạo đa ngành được xây dựng trên nền tảng
                     công nghệ, tinh thần dám nghĩ dám làm và tư duy hội nhập,
                     giúp sinh viên sẵn sàng bước vào môi trường sự nghiệp toàn
@@ -69,10 +110,12 @@ export function AdmissionPage() {
                     size="middle"
                     className="[&_.ant-btn-primary]:!bg-orange-500 [&_.ant-btn-primary]:!border-orange-500 [&_.ant-btn-primary:hover]:!bg-orange-600 [&_.ant-btn-primary:hover]:!border-orange-600"
                   >
+                    <Link to="/auth">
                     <Button type="primary" size="large">
                       Đăng ký ngay
                       <ExternalLink />
                     </Button>
+                    </Link>
                   </Space>
                 </div>
               </div>
@@ -80,7 +123,7 @@ export function AdmissionPage() {
             <Col xs={24} md={12}>
               <div className="flex items-center justify-center h-full">
                 <img
-                  src="https://daihoc.fpt.edu.vn/wp-content/uploads/2026/01/491019351_1072133974944865_282059016334971388_n.jpg"
+                  src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773934919/491019351_1072133974944865_282059016334971388_n_npcbok.jpg"
                   alt="Admission Hero Image"
                   className="w-full max-w-full h-auto object-cover rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(249,115,22,0.1)]"
                 />
@@ -89,12 +132,14 @@ export function AdmissionPage() {
           </Row>
         </section>
 
-        <section className="mt-12">
-          <div className="block max-w-[900px] mx-auto relative p-6 rounded-2xl bg-white border border-orange-200/20 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.05)] [&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-nav-list]:flex [&_.ant-tabs-nav-list]:w-full [&_.ant-tabs-nav-list]:gap-0 [&_.ant-tabs-tab]:flex-1 [&_.ant-tabs-tab]:m-0 [&_.ant-tabs-tab]:py-3 [&_.ant-tabs-tab]:px-4 [&_.ant-tabs-tab]:border [&_.ant-tabs-tab]:border-b-0 [&_.ant-tabs-tab]:border-gray-200 [&_.ant-tabs-tab]:bg-gray-50 [&_.ant-tabs-tab]:text-gray-400 [&_.ant-tabs-tab:first-child]:rounded-t-lg [&_.ant-tabs-tab:not(:first-child)]:border-l-0 [&_.ant-tabs-tab-active]:bg-white [&_.ant-tabs-tab-active]:text-gray-900 [&_.ant-tabs-tab-active]:border-orange-500 [&_.ant-tabs-tab-active]:border-b-2 [&_.ant-tabs-tab-active]:border-b-white [&_.ant-tabs-tab-active]:-mb-0.5 [&_.ant-tabs-tab-active]:z-[1] [&_.ant-tabs-tab-active_.admission-tab-label-top]:text-gray-900 [&_.ant-tabs-tab-active_.admission-tab-label-top]:font-semibold [&_.ant-tabs-tab-active_.admission-tab-label-bottom]:text-gray-900 [&_.ant-tabs-tab-active_.admission-tab-label-bottom]:font-semibold [&_.ant-tabs-content-holder]:border [&_.ant-tabs-content-holder]:border-t-0 [&_.ant-tabs-content-holder]:border-gray-200 [&_.ant-tabs-content-holder]:rounded-b-lg [&_.ant-tabs-tabpane]:p-6 max-md:[&_.ant-tabs-nav-list]:flex-col max-md:[&_.ant-tabs-tab]:border-b-0 max-md:[&_.ant-tabs-tab:last-child]:border-b max-md:[&_.ant-tabs-tab:last-child]:border-gray-200 max-md:[&_.ant-tabs-tab-active]:border-b max-md:[&_.ant-tabs-tab-active]:border-b-white">
-            <Title level={2} className="!text-center !mb-6">
-              Dự kiến phương thức tuyển sinh 2026
-            </Title>
+        <section className="mt-12 max-w-[900px] mx-auto">
+          <Title level={2} className="!text-center !mb-8 !text-3xl md:!text-4xl">
+            Dự kiến phương thức tuyển sinh 2026
+          </Title>
+
+          <div className="admission-tabs-card">
             <Tabs
+              type="card"
               defaultActiveKey="1"
               items={[
                 {
@@ -111,10 +156,11 @@ export function AdmissionPage() {
                   ),
                   children: (
                     <div className="min-h-[120px]">
-                      <Paragraph>
+                      <p className="text-sm text-gray-700 leading-relaxed">
                         Áp dụng cho thí sinh thuộc diện xét tuyển thẳng theo quy
                         định hiện hành của Bộ Giáo dục và Đào tạo.
-                      </Paragraph>
+                      </p>
+                      <NoteSection />
                     </div>
                   ),
                 },
@@ -131,11 +177,28 @@ export function AdmissionPage() {
                     </span>
                   ),
                   children: (
-                    <div className="min-h-[120px]">
-                      <Paragraph>
-                        Xét tuyển dựa trên kết quả kỳ thi tốt nghiệp THPT kết
-                        hợp với kết quả học tập THPT.
-                      </Paragraph>
+                    <div className="min-h-[120px] text-sm text-gray-700 leading-relaxed space-y-1">
+                      <p>
+                        Xét tuyển dựa trên kết quả kỳ thi tốt nghiệp THPT kết hợp với kết quả học tập THPT, cùng với điểm ưu tiên theo quy định, nhằm đánh giá toàn diện quá trình học tập của thí sinh thay vì chỉ dựa trên một tiêu chí đơn lẻ.
+                      </p>
+                      <p>Điểm xét tuyển dự kiến được xác định như sau:</p>
+                      <p>Điểm xét tuyển = (Điểm thi THPT + ĐTB các năm học)/2 + Điểm ưu tiên</p>
+                      <p>Điểm xét tuyển làm tròn đến 2 số lẻ.</p>
+                      <p>Trong đó:</p>
+                      <p><strong>Điểm thi THPT quy định như sau:</strong></p>
+                      <ul className="list-disc pl-6 space-y-1">
+                        <li>Tổ hợp Axx = (Điểm Toán*2 + Điểm 2 môn)/4*3, làm tròn đến 2 số lẻ; áp dụng đối với thí sinh đăng ký vào tất cả các ngành.</li>
+                        <li>Tổ hợp Cxx = (Điểm Văn*2 + Điểm 2 môn)/4*3, làm tròn đến 2 số lẻ; áp dụng đối với thí sinh đăng ký vào các ngành ngoài các ngành Công nghệ thông tin và Khoa học máy tính</li>
+                      </ul>
+                      <p><strong>ĐTB các năm học được tính như sau:</strong></p>
+                      <ul className="list-disc pl-6 space-y-1">
+                        <li>ĐTB các năm học = [(ĐTB lớp 10) + (ĐTB lớp 11)*2 + (ĐTB lớp 12)*3]/2</li>
+                        <li>ĐTB các năm học được làm tròn đến 2 số lẻ.</li>
+                      </ul>
+                      <p>
+                        Điểm ưu tiên theo quy định tại Điều 7 Quy chế Tuyển sinh đại học, tuyển sinh cao đẳng ngành Giáo dục Mầm non <em>(Ban hành kèm theo Thông tư ban hành Quy chế tuyển sinh đại học, tuyển sinh cao đẳng ngành Giáo dục Mầm non)</em>
+                      </p>
+                      <NoteSection />
                     </div>
                   ),
                 },
@@ -152,50 +215,68 @@ export function AdmissionPage() {
                     </span>
                   ),
                   children: (
-                    <div className="min-h-[120px]">
-                      <Paragraph>
-                        Áp dụng đối với các nhóm thí sinh có nền tảng học tập
-                        phù hợp.
-                      </Paragraph>
+                    <div className="min-h-[120px] text-sm text-gray-700 leading-relaxed space-y-2">
+                      <p>
+                        Áp dụng đối với các nhóm thí sinh có nền tảng học tập hoặc quá trình đào tạo phù hợp, bao gồm:
+                      </p>
+                      <ul className="list-disc pl-6 space-y-1">
+                        <li>Thí sinh tốt nghiệp THPT nước ngoài, tốt nghiệp THPT các trường thuộc Tổ chức giáo dục FPT;</li>
+                        <li>Thí sinh có các chứng chỉ hoặc văn bằng: Chứng chỉ APTECH HDSE/ADSE, ARENA ADIM, SKILLKING, JETKING; Tốt nghiệp chương trình BTEC HND, Melbourne Polytechnic, FUNiX Software Engineering, Cao đẳng FPT Polytechnic.</li>
+                      </ul>
+                      <NoteSection />
                     </div>
                   ),
                 },
               ]}
             />
-            <div className="flex justify-center pt-6">
-              <Button
-                type="primary"
-                className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600 rounded-full py-2 px-6"
-                onClick={() => navigate("/tuyen-sinh/phuong-thuc")}
-              >
-                Xem thêm
-                <span className="ml-2">→</span>
-              </Button>
-            </div>
+
+           
+          </div>
+
+          <div className="flex justify-center pt-8">
+            <Button
+              type="primary"
+              className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600 !rounded-lg !py-5 !px-8 !text-base !font-medium"
+              onClick={() => navigate("/tuyen-sinh/phuong-thuc")}
+            >
+              Xem thêm
+              <span className="ml-2"><SquareArrowOutUpRight size={18} /></span>
+            </Button>
           </div>
         </section>
 
         <section className="mt-12">
-          <Title level={2} className="!mb-6">
-            Học bổng & Học phí
+          <Title level={2} className="!mb-8 !text-right !font-black !text-3xl md:!text-4xl">
+            Học bổng <span className="text-orange-500">FPTU 2026</span>
           </Title>
-          <Row gutter={[24, 24]} align="stretch">
-            <Col xs={24} md={12}>
-              <div className="h-full flex flex-col gap-3 relative p-6 rounded-2xl bg-white border border-orange-200/20 shadow-sm">
-                <Title level={2}>Học bổng FPTU 2026</Title>
-                <Paragraph>
-                  Chương trình Tìm kiếm Nhân tài Kỷ nguyên số Việt Nam – Học bổng
-                  Nguyễn Văn Đạo.
-                </Paragraph>
-                <Button type="link" className="!p-0 !text-orange-500">
-                  Xem chi tiết chương trình học bổng
-                </Button>
+          <Row gutter={[48, 24]} align="middle">
+            <Col xs={24} md={14}>
+              <div className="flex flex-col gap-4">
+                <h3 className="text-lg font-bold text-gray-900 leading-snug">
+                  Chương trình tìm kiếm nhân tài kỷ nguyên số Việt Nam
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Chương trình Tìm kiếm Nhân tài Kỷ nguyên số Việt Nam – Học bổng Nguyễn Văn Đạo được Trường Đại học FPT xây dựng nhằm phát hiện, lựa chọn và hỗ trợ học sinh phổ thông trên toàn quốc có thành tích, năng lực và phẩm chất nổi bật, thể hiện qua các lĩnh vực học thuật, công nghệ, đổi mới sáng tạo, năng lực lãnh đạo và bản lĩnh vượt khó, qua đó tạo điều kiện để người học phát triển trong môi trường giáo dục hiện đại, phù hợp với bối cảnh tương lai và hội nhập quốc tế.
+                </p>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Thông qua chương trình, Trường Đại học FPT ghi nhận và khuyến khích những nỗ lực học tập xuất sắc, đồng thời góp phần bồi dưỡng thế hệ nhân lực trẻ có khả năng thích ứng cao và sẵn sàng tham gia môi trường học tập, làm việc mang tính toàn cầu, tạo ra giá trị tích cực cho xã hội.
+                </p>
+                <div className="pt-2">
+                  <Button
+                    type="primary"
+                    className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 hover:!border-orange-600 !rounded-lg !font-semibold"
+                  >
+                    Xem thêm
+                    <SquareArrowOutUpRight size={15} className="ml-1" />
+                  </Button>
+                </div>
               </div>
             </Col>
-            <Col xs={24} md={12}>
+            <Col xs={24} md={10}>
               <img
-                src="https://daihoc.fpt.edu.vn/wp-content/uploads/2025/12/Anh-chup-Man-hinh-2025-12-29-luc-12.37.13-SA.png"
+                src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773934999/Anh-chup-Man-hinh-2025-12-29-luc-12.37.13-SA_usn9hq.png"
                 alt="Học bổng FPTU 2026"
+                className="w-full h-auto rounded-2xl object-cover shadow-md"
               />
             </Col>
           </Row>
@@ -228,6 +309,16 @@ export function AdmissionPage() {
                 <Button
                   type="primary"
                   className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 !rounded-lg !mt-auto"
+                  onClick={() => {
+                    const routes: Record<string, string> = {
+                      "Campus Hà Nội": "/tuyen-sinh/hoc-phi-ha-noi",
+                      "Campus TP.HCM": "/tuyen-sinh/hoc-phi-hcm",
+                      "Campus Đà Nẵng": "/tuyen-sinh/hoc-phi-da-nang",
+                      "Campus Cần Thơ": "/tuyen-sinh/hoc-phi-can-tho",
+                      "Campus Quy Nhơn": "/tuyen-sinh/hoc-phi-quy-nhon",
+                    };
+                    if (routes[label]) navigate(routes[label]);
+                  }}
                 >
                   Xem thêm
                 </Button>
@@ -241,53 +332,99 @@ export function AdmissionPage() {
             Đăng ký tuyển sinh vào FPTU 2026
           </Title>
           <div className="p-6 rounded-2xl bg-white border border-orange-200/20 shadow-sm">
-            <Form layout="vertical">
-              <Form.Item
-                label="Họ và tên"
-                name="fullName"
-                rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
+            {submitted ? (
+              <Result
+                icon={<CheckCircle size={64} className="text-green-500 mx-auto" />}
+                title={
+                  <span className="text-xl font-bold text-gray-900">
+                    Đăng ký thành công!
+                  </span>
+                }
+                subTitle={
+                  <span className="text-gray-500">
+                    Cảm ơn bạn đã đăng ký tuyển sinh tại FPTU 2026.
+                    Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.
+                  </span>
+                }
+                extra={
+                  <Button
+                    type="primary"
+                    size="large"
+                    className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600"
+                    onClick={handleReset}
+                  >
+                    Đăng ký mới
+                  </Button>
+                }
+              />
+            ) : (
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleSubmit}
+                disabled={submitting}
               >
-                <Input placeholder="Nguyễn Văn A" />
-              </Form.Item>
-              <Form.Item
-                label="Tỉnh thành"
-                name="province"
-                rules={[
-                  { required: true, message: "Vui lòng chọn tỉnh thành" },
-                ]}
-              >
-                <Select placeholder="Chọn tỉnh thành">
-                  <Option value="ha-noi">Hà Nội</Option>
-                  <Option value="tp-hcm">TP. Hồ Chí Minh</Option>
-                  <Option value="da-nang">Đà Nẵng</Option>
-                  <Option value="can-tho">Cần Thơ</Option>
-                  <Option value="quy-nhon">Quy Nhơn</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item
-                label="Số điện thoại"
-                name="phone"
-                rules={[
-                  { required: true, message: "Vui lòng nhập số điện thoại" },
-                ]}
-              >
-                <Input placeholder="Số điện thoại liên hệ" />
-              </Form.Item>
-              <Form.Item label="Email" name="email">
-                <Input placeholder="example@domain.com" />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  size="large"
-                  htmlType="submit"
-                  block
-                  className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600"
-                >
-                  Đăng ký ngay
-                </Button>
-              </Form.Item>
-            </Form>
+                <Row gutter={[16, 0]}>
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Họ và tên"
+                      name="fullName"
+                      rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
+                    >
+                      <Input placeholder="Nguyễn Văn A" size="large" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Tỉnh thành"
+                      name="province"
+                      rules={[{ required: true, message: "Vui lòng chọn tỉnh thành" }]}
+                    >
+                      <Select placeholder="Chọn tỉnh thành" size="large">
+                        <Option value="ha-noi">Hà Nội</Option>
+                        <Option value="tp-hcm">TP. Hồ Chí Minh</Option>
+                        <Option value="da-nang">Đà Nẵng</Option>
+                        <Option value="can-tho">Cần Thơ</Option>
+                        <Option value="quy-nhon">Quy Nhơn</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Số điện thoại"
+                      name="phone"
+                      rules={[
+                        { required: true, message: "Vui lòng nhập số điện thoại" },
+                        { pattern: /^[0-9]{9,11}$/, message: "Số điện thoại không hợp lệ" },
+                      ]}
+                    >
+                      <Input placeholder="Số điện thoại liên hệ" size="large" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Email"
+                      name="email"
+                      rules={[{ type: "email", message: "Email không hợp lệ" }]}
+                    >
+                      <Input placeholder="example@domain.com" size="large" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Form.Item className="!mb-0">
+                  <Button
+                    type="primary"
+                    size="large"
+                    htmlType="submit"
+                    block
+                    loading={submitting}
+                    className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600"
+                  >
+                    {submitting ? "Đang gửi..." : "Đăng ký ngay"}
+                  </Button>
+                </Form.Item>
+              </Form>
+            )}
           </div>
         </section>
       </div>

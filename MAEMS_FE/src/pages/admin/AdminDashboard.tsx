@@ -5,7 +5,6 @@ import {
   DollarSign,
   FileText,
   LayoutDashboard,
-  Newspaper,
   ShieldCheck,
   TrendingUp,
   User,
