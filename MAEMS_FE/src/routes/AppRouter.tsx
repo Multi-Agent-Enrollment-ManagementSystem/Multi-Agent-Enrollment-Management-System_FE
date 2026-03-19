@@ -38,6 +38,13 @@ import { RuleConfigPage } from "../pages/eligibility/RuleConfigPage";
 import { ReviewEvaluationPage } from "../pages/qa/ReviewEvaluationPage";
 import { ReportDashboard } from "../pages/reports/ReportDashboard";
 import { ContactPage } from "../pages/contact/ContactPage";
+import { AdminApplicationList } from "../pages/admin/AdminApplicationList";
+import { AdminStudentManagement } from "../pages/admin/AdminStudentManagement";
+import { AdminProgramManagement } from "../pages/admin/AdminProgramManagement";
+import { AdminPaymentManagement } from "../pages/admin/AdminPaymentManagement";
+import { AdminReports } from "../pages/admin/AdminReports";
+import { AdminSettings } from "../pages/admin/AdminSettnigs";
+import { AdminUserManagement } from "../pages/admin/AdminUserManagement";
 
 export function AppRouter() {
   return (
@@ -228,7 +235,7 @@ export function AppRouter() {
         path="/admin/reports"
         element={
           <RoleGuard allowedRoles={["admin"]}>
-            <ReportDashboard />
+            <AdminReports />
           </RoleGuard>
         }
       />
@@ -248,6 +255,55 @@ export function AppRouter() {
           </RoleGuard>
         }
       />
+      <Route
+        path="/admin/applications"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminApplicationList />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/admin/students"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminStudentManagement />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/admin/programs"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminProgramManagement />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/admin/payments"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminPaymentManagement />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/admin/settings"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminSettings />
+          </RoleGuard>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <RoleGuard allowedRoles={["admin"]}>
+            <AdminUserManagement />
+          </RoleGuard>
+        }
+      />
+      
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
