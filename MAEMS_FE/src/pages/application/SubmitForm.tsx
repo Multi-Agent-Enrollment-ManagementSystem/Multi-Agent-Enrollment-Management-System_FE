@@ -20,7 +20,7 @@ import { getActiveProgramsBasic } from "../../api/programs";
 import { submitApplication } from "../../api/applications";
 import { getProgramAdmissionConfigsFilter } from "../../api/program-admission-configs";
 import type { CreateApplicantResponse } from "../../types/applicant";
-import type { Program } from "../../types/program";
+import type { ProgramBasic } from "../../types/program";
 
 const { Title, Text } = Typography;
 
@@ -98,7 +98,7 @@ export function SubmitForm() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [applicant, setApplicant] = useState<CreateApplicantResponse | null>(null);
-  const [programs, setPrograms] = useState<Program[]>([]);
+  const [programs, setPrograms] = useState<ProgramBasic[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 

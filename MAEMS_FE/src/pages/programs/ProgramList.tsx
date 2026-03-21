@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import { GuestLayout } from "../../components/layouts/GuestLayout";
 import { getActiveProgramsBasic, getFilteredProgramsBasic } from "../../api/programs";
 import { getActiveMajorsBasic } from "../../api/majors";
-import type { Program } from "../../types/program";
+import type { Program, ProgramBasic } from "../../types/program";
 import type { MajorBasic } from "../../types/major";
 
 const { Title, Paragraph, Text } = Typography;
@@ -51,7 +51,9 @@ function getMajorColor(majorId: number): string {
   return majorColors[majorId];
 }
 
-function ProgramCard({ program }: { program: Program }) {
+type ProgramListItem = ProgramBasic & Partial<Program>;
+
+function ProgramCard({ program }: { program: ProgramListItem }) {
   return (
     <Link to={`/dao-tao/${program.programId}`} className="h-full block group">
       <div className="h-full flex flex-col bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden">
@@ -113,7 +115,7 @@ function SkeletonCard() {
 }
 
 export function ProgramList() {
-  const [programs, setPrograms] = useState<Program[]>([]);
+  const [programs, setPrograms] = useState<ProgramListItem[]>([]);
   const [majors, setMajors] = useState<MajorBasic[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMajorId, setSelectedMajorId] = useState<number | undefined>(undefined);
