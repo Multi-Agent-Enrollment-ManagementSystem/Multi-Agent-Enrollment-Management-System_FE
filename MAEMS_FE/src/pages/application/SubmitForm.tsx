@@ -14,13 +14,13 @@ import {
 import { ArrowLeft, ClipboardList, GraduationCap, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../components/DashboardLayout";
-import { applicantMenu } from "../applicant/applicantMenu";
+import { ApplicantMenu } from "../applicant/ApplicantMenu";
 import { getMyApplicant } from "../../api/applicants";
 import { getActiveProgramsBasic } from "../../api/programs";
 import { submitApplication } from "../../api/applications";
 import { getProgramAdmissionConfigsFilter } from "../../api/program-admission-configs";
 import type { CreateApplicantResponse } from "../../types/applicant";
-import type { Program } from "../../types/program";
+import type { ProgramBasic } from "../../types/program";
 
 const { Title, Text } = Typography;
 
@@ -98,7 +98,7 @@ export function SubmitForm() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [applicant, setApplicant] = useState<CreateApplicantResponse | null>(null);
-  const [programs, setPrograms] = useState<Program[]>([]);
+  const [programs, setPrograms] = useState<ProgramBasic[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -246,7 +246,7 @@ export function SubmitForm() {
   const campusId = Form.useWatch("campusId", form);
 
   return (
-    <DashboardLayout menuItems={applicantMenu}>
+    <DashboardLayout menuItems={ApplicantMenu}>
       {contextHolder}
       <div className="max-w-2xl mx-auto">
         <button
