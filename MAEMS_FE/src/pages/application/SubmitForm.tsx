@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { ArrowLeft, ClipboardList, GraduationCap, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { DashboardLayout } from "../../components/DashboardLayout";
+import { ApplicantLayout } from "../../components/layouts/ApplicantLayout";
 import { ApplicantMenu } from "../applicant/ApplicantMenu";
 import { getMyApplicant } from "../../api/applicants";
 import { getActiveProgramsBasic } from "../../api/programs";
@@ -246,7 +246,7 @@ export function SubmitForm() {
   const campusId = Form.useWatch("campusId", form);
 
   return (
-    <DashboardLayout menuItems={ApplicantMenu}>
+    <ApplicantLayout menuItems={ApplicantMenu}>
       {contextHolder}
       <div className="max-w-2xl mx-auto">
         <button
@@ -468,6 +468,6 @@ export function SubmitForm() {
           </>
         )}
       </div>
-    </DashboardLayout>
+    </ApplicantLayout>
   );
 }

@@ -33,7 +33,7 @@ import {
   User,
   XCircle,
 } from "lucide-react";
-import { DashboardLayout } from "../../components/DashboardLayout";
+import { ApplicantLayout } from "../../components/layouts/ApplicantLayout";
 import { ApplicantMenu } from "../applicant/ApplicantMenu";
 import { fetchApplicationDetail } from "../../api/applications";
 import type { Application, ApplicationStatus, Document } from "../../types/application";
@@ -315,7 +315,7 @@ export function ApplicationDetail() {
   }, [id]);
 
   return (
-    <DashboardLayout menuItems={ApplicantMenu}>
+    <ApplicantLayout menuItems={ApplicantMenu}>
       {/* Back */}
       <Button
         type="text"
@@ -646,6 +646,6 @@ export function ApplicationDetail() {
           </div>
         )}
       </Modal>
-    </DashboardLayout>
+    </ApplicantLayout>
   );
 }
