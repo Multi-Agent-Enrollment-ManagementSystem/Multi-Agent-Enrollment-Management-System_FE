@@ -28,7 +28,7 @@ import {
   SendHorizonal,
   XCircle,
 } from "lucide-react";
-import { DashboardLayout } from "../../components/DashboardLayout";
+import { ApplicantLayout } from "../../components/layouts/ApplicantLayout";
 import { ApplicantMenu } from "../applicant/ApplicantMenu";
 import { fetchMyApplications, submitApplicationFinal } from "../../api/applications";
 import type { Application, ApplicationStatus } from "../../types/application";
@@ -194,7 +194,8 @@ function ApplicationCard({
   const progress = pipelineProgress(app.status);
   const sc = statusConfig[app.status];
   const isAiProcessing = app.status === "under_review" || app.status === "submitted";
-  const canSubmitFinal = app.status === "draft";
+  const canSubmitFinal = app.status === "draft" || app.status === "document_required";
+  const isResubmit = app.status === "document_required";
   const isSubmitting = submittingId === app.applicationId;
 
   return (
@@ -255,14 +256,17 @@ function ApplicationCard({
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {canSubmitFinal && (
             <Popconfirm
-              title="Xác nhận nộp đơn đăng ký"
+              title={isResubmit ? "Xác nhận nộp lại đơn đăng ký" : "Xác nhận nộp đơn đăng ký"}
               description={
                 <span className="text-xs text-gray-500">
-                  Sau khi nộp, đơn sẽ được gửi đến hệ thống xét duyệt.<br />
+                  {isResubmit
+                    ? "Sau khi nộp lại, đơn sẽ được gửi lại vào hệ thống xét duyệt."
+                    : "Sau khi nộp, đơn sẽ được gửi đến hệ thống xét duyệt."}
+                  <br />
                   Bạn sẽ không thể chỉnh sửa sau khi xác nhận.
                 </span>
               }
-              okText="Xác nhận nộp"
+              okText={isResubmit ? "Xác nhận nộp lại" : "Xác nhận nộp"}
               cancelText="Hủy"
               okButtonProps={{ className: "!bg-green-600 !border-green-600" }}
               onConfirm={() => onSubmitFinal(app)}
@@ -272,7 +276,7 @@ function ApplicationCard({
                 loading={isSubmitting}
                 className="!rounded-xl !border-green-400 !text-green-600 hover:!bg-green-50"
               >
-                Nộp đơn
+                {isResubmit ? "Nộp lại" : "Nộp đơn"}
               </Button>
             </Popconfirm>
           )}
@@ -358,7 +362,7 @@ export function ApplicationList() {
   }
 
   return (
-    <DashboardLayout menuItems={ApplicantMenu}>
+    <ApplicantLayout menuItems={ApplicantMenu}>
       {contextHolder}
       {/* ── Page header ── */}
       <div className="flex items-start justify-between mb-6 flex-wrap gap-3">
@@ -431,6 +435,6 @@ export function ApplicationList() {
           </div>
         </>
       )}
-    </DashboardLayout>
+    </ApplicantLayout>
   );
 }

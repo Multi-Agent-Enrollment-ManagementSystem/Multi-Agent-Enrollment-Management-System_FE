@@ -236,6 +236,5 @@ The frontend communicates with the MAEMS Backend API. API modules include:
 
 ## Documentation
 
-- `Requirements.md` — Functional and non-functional requirements
 - `Tech.md` — Technology stack decisions
 - `Regist_File.md` — Required enrollment documents reference

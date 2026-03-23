@@ -11,7 +11,7 @@ import {
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { getActiveAdmissionTypes } from "../../api/admission-types";
-import { DashboardLayout } from "../../components/DashboardLayout";
+import { ApplicantLayout } from "../../components/layouts/ApplicantLayout";
 import type { AdmissionType } from "../../types/admission.type";
 import { ApplicantMenu } from "../applicant/ApplicantMenu";
 
@@ -172,7 +172,7 @@ export function SubmitApplication() {
   };
 
   return (
-    <DashboardLayout menuItems={ApplicantMenu}>
+    <ApplicantLayout menuItems={ApplicantMenu}>
       <div style={{ maxWidth: 780, margin: "0 auto", paddingBottom: 48 }}>
 
         {/* Hero */}
@@ -503,6 +503,6 @@ export function SubmitApplication() {
           </div>
         )}
       </Modal>
-    </DashboardLayout>
+    </ApplicantLayout>
   );
 }

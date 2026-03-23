@@ -39,7 +39,7 @@ import {
   Trash2,
 } from "lucide-react";
 import dayjs from "dayjs";
-import { DashboardLayout } from "../../components/DashboardLayout";
+import { ApplicantLayout } from "../../components/layouts/ApplicantLayout";
 import { getProfile } from "../../api/users";
 import { createApplicant, getMyApplicant, patchApplicant, uploadApplicantDocuments, getApplicantDocuments } from "../../api/applicants";
 import { deleteDocument } from "../../api/documents";
@@ -85,13 +85,13 @@ function getVerificationBadge(result?: string | null) {
 const DOC_TYPE_OPTIONS = [
   { value: "CCCD_FRONT",  label: "CCCD/CMND mặt trước" },
   { value: "CCCD_BACK",   label: "CCCD/CMND mặt sau" },
-  { value: "HOC_BA",      label: "Học bạ / Bảng điểm" },
-  { value: "DGNL",        label: "Giấy chứng nhận ĐGNL" },
-  { value: "THPT",        label: "Giấy chứng nhận tốt nghiệp THPT" },
-  { value: "SCHOOL_RANK", label: "Xác nhận xếp hạng SchoolRank" },
-  { value: "UU_TIEN",     label: "Đơn ưu tiên xét tuyển" },
+  { value: "HOC_BA",      label: "Học bạ THPT bản gốc hoặc bản sao công chứng" },
+  { value: "DGNL",        label: "Bản sao chứng thực Giấy chứng nhận kết quả thi ĐGNL của ĐHQG TP.HCM năm 2026 (đạt từ 670/1200 điểm trở lên)" },
+  { value: "THPT",        label: "Giấy chứng nhận tốt nghiệp THPT hoặc bằng tốt nghiệp THPT" },
+  { value: "THPT_RESULT", label: "Bản sao Giấy chứng nhận kết quả thi tốt nghiệp THPT năm 2026" },
+  { value: "SCHOOL_RANK", label: "Giấy chứng nhận xếp hạng Top 50 SchoolRank tại schoolrank.fpt.edu.vn" },
   { value: "BIEN_LAI",    label: "Biên lai nộp phí" },
-  { value: "VAN_BANG",    label: "Văn bằng / Chứng chỉ" },
+  { value: "VAN_BANG",    label: "Chứng chỉ ngoại ngữ quốc tế còn hiệu lực (không quá 2 năm tính đến 01/09/2026): IELTS Academic từ 6.0, hoặc TOEFL iBT từ 80, hoặc VSTEP bậc 4 trở lên, hoặc JLPT từ N3, hoặc TOPIK II cấp độ 4, hoặc HSK cấp độ 4 trở lên" },
   { value: "KHAC",        label: "Tài liệu khác" },
 ];
 
@@ -300,7 +300,7 @@ export function ApplicantProfilePage() {
   }
 
   return (
-    <DashboardLayout menuItems={ApplicantMenu}>
+    <ApplicantLayout menuItems={ApplicantMenu}>
       {contextHolder}
       <Title level={4} className="!mb-6 !text-gray-700 !font-semibold">
         Hồ sơ cá nhân
@@ -948,7 +948,7 @@ export function ApplicantProfilePage() {
           <Skeleton active paragraph={{ rows: 8 }} />
         </Card>
       ) : null}
-    </DashboardLayout>
+    </ApplicantLayout>
   );
 }
 
