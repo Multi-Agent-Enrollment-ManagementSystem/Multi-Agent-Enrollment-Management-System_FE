@@ -94,7 +94,7 @@ function useEscalatedColumns(navigate: ReturnType<typeof useNavigate>): ColumnsT
       width: 130,
       render: (status: string, record: Application) => {
         if (status === "under_review")
-          return <Tag color="error">Leo thang</Tag>;
+          return <Tag color="error">Cần xem xét</Tag>;
         if (record.requiresReview)
           return <Tag color="warning">Cần quyết định</Tag>;
         return <Tag color="processing">Đang chờ</Tag>;
@@ -429,7 +429,7 @@ export function OfficerDashboard() {
                 Danh sách hồ sơ cần xử lý
               </Title>
               <Text className="text-xs text-gray-400">
-                Các hồ sơ bị leo thang hoặc cần quyết định thủ công
+                Các hồ sơ cần xem xét hoặc cần kiểm tra thủ công
                 {!loading && escalatedList.length > 0 && (
                   <span className="ml-1 text-rose-500 font-medium">
                     ({escalatedList.length})
@@ -512,7 +512,7 @@ export function OfficerDashboard() {
                 </div>
                 <div>
                   <div className="font-semibold text-amber-700 text-sm">
-                    Hồ sơ bị agent escalated
+                    Hồ sơ cần kiểm tra thủ công
                   </div>
                   <div className="text-xs text-amber-400">
                     {loading ? "—" : `${escalatedList.length} hồ sơ cần xem xét`}
