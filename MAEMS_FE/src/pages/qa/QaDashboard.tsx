@@ -1,30 +1,7 @@
 import { Card, Col, Row, Typography } from "antd";
-import { ClipboardCheck, LayoutDashboard, User } from "lucide-react";
-import { DashboardLayout } from "../../components/layouts/DashboardLayout";
-import type { SidebarMenuItem } from "../../components/DashboardSidebar";
+import { QALayout } from "../../components/layouts/QALayout";
 
 const { Title, Text } = Typography;
-
-const menuItems: SidebarMenuItem[] = [
-  {
-    key: "dashboard",
-    label: "Tổng quan",
-    icon: <LayoutDashboard size={16} />,
-    path: "/qa/dashboard",
-  },
-  {
-    key: "review",
-    label: "Xem xét & Đánh giá",
-    icon: <ClipboardCheck size={16} />,
-    path: "/qa/review-evaluation",
-  },
-  {
-    key: "profile",
-    label: "Hồ sơ cá nhân",
-    icon: <User size={16} />,
-    path: "/qa/profile",
-  },
-];
 
 const stats = [
   { label: "Hồ sơ cần đánh giá", value: "—", color: "text-orange-500" },
@@ -35,7 +12,7 @@ const stats = [
 
 export function QaDashboard() {
   return (
-    <DashboardLayout menuItems={menuItems}>
+    <QALayout>
       <Title level={4} className="!mb-6 !text-gray-700 !font-semibold">
         Tổng quan kiểm duyệt
       </Title>
@@ -69,6 +46,6 @@ export function QaDashboard() {
           Không có hồ sơ nào cần xử lý.
         </Text>
       </Card>
-    </DashboardLayout>
+    </QALayout>
   );
 }

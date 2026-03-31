@@ -8,39 +8,16 @@ import {
 } from "antd";
 import {
   CalendarDays,
-  ClipboardCheck,
-  LayoutDashboard,
   Mail,
   ShieldCheck,
   User,
 } from "lucide-react";
-import { DashboardLayout } from "../../components/layouts/DashboardLayout";
 import { getProfile } from "../../api/users";
 import type { UserProfile } from "../../types/auth";
-import type { SidebarMenuItem } from "../../components/DashboardSidebar";
+import { QALayout } from "../../components/layouts/QALayout";
 
 const { Title, Text } = Typography;
 
-const menuItems: SidebarMenuItem[] = [
-  {
-    key: "dashboard",
-    label: "Tổng quan",
-    icon: <LayoutDashboard size={16} />,
-    path: "/qa/dashboard",
-  },
-  {
-    key: "review",
-    label: "Xem xét & Đánh giá",
-    icon: <ClipboardCheck size={16} />,
-    path: "/qa/review-evaluation",
-  },
-  {
-    key: "profile",
-    label: "Hồ sơ cá nhân",
-    icon: <User size={16} />,
-    path: "/qa/profile",
-  },
-];
 
 const roleLabel: Record<string, string> = {
   applicant: "Thí sinh",
@@ -89,7 +66,7 @@ export function QAProfile() {
   const initial = profile?.username?.charAt(0).toUpperCase() ?? "U";
 
   return (
-    <DashboardLayout menuItems={menuItems}>
+    <QALayout>
       <Title level={4} className="!mb-6 !text-gray-700 !font-semibold">
         Hồ sơ cá nhân
       </Title>
@@ -157,6 +134,6 @@ export function QAProfile() {
           </div>
         )}
       </Card>
-    </DashboardLayout>
+    </QALayout>
   );
 }
