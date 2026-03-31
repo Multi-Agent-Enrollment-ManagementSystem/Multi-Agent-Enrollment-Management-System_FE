@@ -48,6 +48,8 @@ type OfficerLayoutProps = {
 
 export function OfficerLayout({ children }: OfficerLayoutProps) {
   return (
-    <DashboardLayout menuItems={officerMenuItems}>{children}</DashboardLayout>
+    <DashboardLayout menuItems={officerMenuItems} showNotifications>
+      {children}
+      </DashboardLayout>
   );
 }
