@@ -627,7 +627,7 @@ export function OfficerApplicationList() {
             </Select>
           </Col>
 
-          {/* Hồ sơ leo thang */}
+          {/* Hồ sơ cần xem xét */}
           <Col xs={12} md={4}>
             <Select
               value={onlyEscalated ? "escalated" : "all"}

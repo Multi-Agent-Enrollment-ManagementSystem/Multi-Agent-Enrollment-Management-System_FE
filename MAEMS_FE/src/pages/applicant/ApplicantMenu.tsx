@@ -1,4 +1,11 @@
-import { FileText, FilePlus, LayoutDashboard, User, DollarSign } from "lucide-react";
+import {
+  FileText,
+  FilePlus,
+  LayoutDashboard,
+  User,
+  DollarSign,
+  MessagesSquare,
+} from "lucide-react";
 import type { SidebarMenuItem } from "../../components/DashboardSidebar";
 
 export const ApplicantMenu: SidebarMenuItem[] = [
@@ -25,6 +32,12 @@ export const ApplicantMenu: SidebarMenuItem[] = [
     label: "Lịch sử thanh toán",
     icon: <DollarSign size={16} />,
     path: "/applicant/history-payments",
+  },
+  {
+    key: "chat-history",
+    label: "Lịch sử chat AI",
+    icon: <MessagesSquare size={16} />,
+    path: "/applicant/chat-history",
   },
   {
     key: "profile",

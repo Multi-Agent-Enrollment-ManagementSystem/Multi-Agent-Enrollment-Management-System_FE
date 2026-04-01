@@ -14,11 +14,12 @@ import {
 } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { Dayjs } from "dayjs";
-import { Filter, RotateCcw } from "lucide-react";
+import { ArrowDownWideNarrow, ArrowUpNarrowWide, Filter, RotateCcw } from "lucide-react";
 import { getMyPayments } from "../../api/payments";
 import { ApplicantLayout } from "../../components/layouts/ApplicantLayout";
 import { ApplicantMenu } from "./ApplicantMenu";
-import type { Payment } from "../../types/payment";
+import type { Payment, PaymentStatus } from "../../types/payment";
+import { formatCurrency, toIsoBoundary } from "../../utils/payment";
 
 const { RangePicker } = DatePicker;
 const { Title, Text } = Typography;
@@ -30,25 +31,36 @@ type PaymentFilters = {
   paidTo?: string;
 };
 
+const paymentStatusValues: PaymentStatus[] = [
+  "pending",
+  "outdated",
+  "processing",
+  "paid",
+  "need_checking",
+];
+const paymentStatusSet = new Set<string>(paymentStatusValues);
+
+function normalizePaymentStatus(value?: string | null): PaymentStatus | undefined {
+  const normalized = value?.toLowerCase().trim();
+  if (!normalized) return undefined;
+  return paymentStatusSet.has(normalized) ? (normalized as PaymentStatus) : undefined;
+}
+
+const paymentStatusLabelMap: Partial<Record<PaymentStatus, string>> = {
+  paid: "Đã thanh toán",
+  pending: "Chờ thanh toán",
+  processing: "Đang xử lý",
+  outdated: "Hết hạn",
+  need_checking: "Thất bại",
+};
+
 const statusColorMap: Record<string, string> = {
   paid: "success",
   pending: "processing",
-  failed: "error",
-  refunded: "warning",
+  processing: "processing",
+  outdated: "warning",
+  need_checking: "warning",
 };
-
-function toIsoBoundary(value: Dayjs | null, endOfDay = false): string | undefined {
-  if (!value) return undefined;
-  return endOfDay ? value.endOf("day").toISOString() : value.startOf("day").toISOString();
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
 
 function formatDateTime(value: string | null): string {
   if (!value) return "--";
@@ -96,7 +108,13 @@ export function ApplicantPaymentHistoryPage() {
 
   const statusOptions = useMemo(() => {
     const uniq = new Set(rows.map((item) => item.paymentStatus).filter(Boolean));
-    return Array.from(uniq).map((value) => ({ label: value, value }));
+    return Array.from(uniq).map((value) => {
+      const normalized = normalizePaymentStatus(value);
+      return {
+        label: normalized ? paymentStatusLabelMap[normalized] ?? value : value,
+        value,
+      };
+    });
   }, [rows]);
 
   const currentPageTotal = useMemo(
@@ -170,7 +188,11 @@ export function ApplicantPaymentHistoryPage() {
       key: "paymentStatus",
       width: 120,
       render: (value: string) => (
-        <Tag color={statusColorMap[value?.toLowerCase()] ?? "default"}>{value || "--"}</Tag>
+        <Tag color={statusColorMap[normalizePaymentStatus(value) ?? ""] ?? "default"}>
+          {normalizePaymentStatus(value)
+            ? paymentStatusLabelMap[normalizePaymentStatus(value) as PaymentStatus] ?? value
+            : value || "--"}
+        </Tag>
       ),
     },
     {
@@ -214,6 +236,7 @@ export function ApplicantPaymentHistoryPage() {
             <RangePicker
               size="large"
               className="w-full"
+              placeholder={["Từ ngày", "Đến ngày"]}
               value={paidRange}
               onChange={(value) => setPaidRange((value as [Dayjs | null, Dayjs | null]) ?? null)}
             />
@@ -235,9 +258,10 @@ export function ApplicantPaymentHistoryPage() {
                 value={sortDesc ? "desc" : "asc"}
                 onChange={(value) => setSortDesc(value === "desc")}
                 options={[
-                  { label: "Mới đến cũ / Cao đến thấp", value: "desc" },
-                  { label: "Cũ đến mới / Thấp đến cao", value: "asc" },
+                  { label: <ArrowDownWideNarrow size={16} />, value: "desc" },
+                  { label: <ArrowUpNarrowWide size={16} />, value: "asc" },
                 ]}
+                className="!w-[64px]"
               />
             </Space.Compact>
           </div>
@@ -254,7 +278,7 @@ export function ApplicantPaymentHistoryPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Card className="rounded-xl">
-            <Statistic title="Tổng giao dịch (all pages)" value={totalCount} />
+            <Statistic title="Tổng giao dịch" value={totalCount} />
           </Card>
           <Card className="rounded-xl">
             <Statistic title="Đã thanh toán (trang hiện tại)" value={paidCount} />

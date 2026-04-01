@@ -6,6 +6,7 @@ import {
 } from "../services/axios";
 import * as authApi from "../api/auth";
 import type { AuthUser } from "../types/auth";
+import { clearApplicantChatForEmail } from "../utils/applicantChatStorage";
 
 type AuthState = {
   user: AuthUser | null;
@@ -31,6 +32,10 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        const current = get().user;
+        if (current?.email) {
+          clearApplicantChatForEmail(current.email);
+        }
         setStoredToken(null);
         set({ user: null, token: null, refreshToken: null });
       },

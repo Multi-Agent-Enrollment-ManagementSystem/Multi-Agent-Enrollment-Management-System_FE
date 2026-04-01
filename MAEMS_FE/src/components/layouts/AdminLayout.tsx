@@ -67,7 +67,7 @@ const menuItems: SidebarMenuItem[] = [
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   return (
-    <DashboardLayout menuItems={menuItems}>
+    <DashboardLayout menuItems={menuItems} showNotifications>
       {children}
     </DashboardLayout>
   );

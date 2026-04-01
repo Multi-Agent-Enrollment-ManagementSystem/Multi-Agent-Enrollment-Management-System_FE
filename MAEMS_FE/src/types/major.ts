@@ -20,14 +20,6 @@ export interface MajorQueryParams {
   pageSize?: number;
 }
 
-export interface MajorListResponse {
-  items: Major[];
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-}
-
 export interface CreateMajorRequest {
   majorCode: string;
   majorName: string;

@@ -1,9 +1,9 @@
 import { apiClient } from "../services/axios";
-import type { ApiWrapper } from "../types/api.wrapper";
-import type { CreateMajorRequest, Major, MajorBasic, MajorListResponse, MajorQueryParams, UpdateMajorRequest } from "../types/major";
+import type { ApiWrapper, PagedResult } from "../types/api.wrapper";
+import type { CreateMajorRequest, Major, MajorBasic, MajorQueryParams, UpdateMajorRequest } from "../types/major";
 
 export async function getMajors(params: MajorQueryParams) {
-  const res = await apiClient.get<ApiWrapper<MajorListResponse>>(
+  const res = await apiClient.get<ApiWrapper<PagedResult<Major>>>(
     "/api/Majors",
     { params }
   );

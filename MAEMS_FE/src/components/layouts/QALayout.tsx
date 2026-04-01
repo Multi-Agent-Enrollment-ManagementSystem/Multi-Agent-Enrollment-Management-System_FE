@@ -1,0 +1,37 @@
+import type { ReactNode } from "react";
+import { ClipboardCheck, LayoutDashboard, User } from "lucide-react";
+import { DashboardLayout } from "./DashboardLayout";
+import type { SidebarMenuItem } from "../DashboardSidebar";
+
+type QALayoutProps = {
+  children: ReactNode;
+};
+
+const qaMenuItems: SidebarMenuItem[] = [
+  {
+    key: "dashboard",
+    label: "Tổng quan",
+    icon: <LayoutDashboard size={16} />,
+    path: "/qa/dashboard",
+  },
+  {
+    key: "review",
+    label: "Xem xét & Đánh giá",
+    icon: <ClipboardCheck size={16} />,
+    path: "/qa/review-evaluation",
+  },
+  {
+    key: "profile",
+    label: "Hồ sơ cá nhân",
+    icon: <User size={16} />,
+    path: "/qa/profile",
+  },
+];
+
+export function QALayout({ children }: QALayoutProps) {
+  return (
+    <DashboardLayout menuItems={qaMenuItems} showNotifications>
+      {children}
+    </DashboardLayout>
+  );
+}
