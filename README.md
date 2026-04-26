@@ -85,29 +85,86 @@ flowchart LR
     EXT[Email/SMS Service]
     SYS((MAEMS))
 
-    A -->|Submit application| SYS
-    A -->|Upload documents| SYS
-    A -->|Check status| SYS
-    SYS -->|Eligibility result| A
-    SYS -->|Notifications| A
+    A -->|Create account| SYS
+    A -->|Submit profile information| SYS
+    A -->|Submit application form| SYS
+    A -->|Upload identity document| SYS
+    A -->|Upload academic transcript| SYS
+    A -->|Upload exam result certificate| SYS
+    A -->|Submit supporting certificates| SYS
+    A -->|Pay application fee request| SYS
+    A -->|Ask enrollment question| SYS
+    A -->|Track application status request| SYS
+    SYS -->|Account verification result| A
+    SYS -->|Application receipt confirmation| A
+    SYS -->|Document validation feedback| A
+    SYS -->|Eligibility evaluation result| A
+    SYS -->|Missing document notice| A
+    SYS -->|Payment status result| A
+    SYS -->|Answer to enrollment question| A
+    SYS -->|Application timeline update| A
 
-    G -->|View admission info| SYS
-    G -->|Read public articles| SYS
-    SYS -->|Public content| G
+    G -->|Open homepage| SYS
+    G -->|View admission methods| SYS
+    G -->|View tuition information| SYS
+    G -->|View campus information| SYS
+    G -->|Read public article detail| SYS
+    G -->|Search public information| SYS
+    SYS -->|Homepage content| G
+    SYS -->|Admission method details| G
+    SYS -->|Tuition details| G
+    SYS -->|Campus details| G
+    SYS -->|Article content| G
+    SYS -->|Search results| G
 
-    AO -->|Review applications| SYS
-    AO -->|Update decisions| SYS
-    SYS -->|Application details| AO
+    AO -->|Open assigned application list| SYS
+    AO -->|Open application detail| SYS
+    AO -->|Request applicant verification data| SYS
+    AO -->|Record review note| SYS
+    AO -->|Request applicant supplement| SYS
+    AO -->|Submit final admission decision| SYS
+    AO -->|Open agent performance dashboard| SYS
+    SYS -->|Assigned application list| AO
+    SYS -->|Application detail data| AO
+    SYS -->|Document verification output| AO
+    SYS -->|Eligibility scoring result| AO
+    SYS -->|Applicant response to supplement request| AO
+    SYS -->|Decision history record| AO
+    SYS -->|Agent performance metrics| AO
 
-    QA -->|Audit evaluations| SYS
-    QA -->|Validate eligibility logic| SYS
-    SYS -->|Evaluation logs| QA
+    QA -->|Open evaluation audit queue| SYS
+    QA -->|Open evaluation detail| SYS
+    QA -->|Validate rule execution trace| SYS
+    QA -->|Submit QA finding| SYS
+    QA -->|Approve evaluation quality| SYS
+    QA -->|Reject evaluation quality| SYS
+    SYS -->|Evaluation audit queue| QA
+    SYS -->|Evaluation reasoning log| QA
+    SYS -->|Rule execution logs| QA
+    SYS -->|Previous QA decisions| QA
+    SYS -->|Quality trend report| QA
 
-    SA -->|Manage rules & configs| SYS
-    SA -->|Manage article content| SYS
-    SYS -->|System reports| SA
+    SA -->|Create admission season| SYS
+    SA -->|Configure admission method| SYS
+    SA -->|Configure eligibility rule| SYS
+    SA -->|Configure required document list| SYS
+    SA -->|Manage campus and program data| SYS
+    SA -->|Create public article| SYS
+    SA -->|Publish announcement| SYS
+    SA -->|Open system report dashboard| SYS
+    SYS -->|Configuration save result| SA
+    SYS -->|Rule version history| SA
+    SYS -->|Program and campus data status| SA
+    SYS -->|Article publication status| SA
+    SYS -->|System activity report| SA
+    SYS -->|Admission funnel report| SA
+    SYS -->|User and role audit log| SA
 
-    SYS -->|Send email/SMS| EXT
+    SYS -->|Send account verification message| EXT
+    SYS -->|Send application status update message| EXT
+    SYS -->|Send missing document reminder| EXT
+    SYS -->|Send payment status message| EXT
+    SYS -->|Send final decision notification| EXT
     EXT -->|Delivery status| SYS
 ```
 
