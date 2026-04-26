@@ -44,15 +44,72 @@ The system utilizes specialized agents to handle distinct stages of the enrollme
 - Natural language responses to applicant inquiries
 - Transparent explanations for eligibility decisions and missing requirements
 
-### User Roles
+### User Roles & Separated Functions
 
-| Role                     | Primary Functions                                                                |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| **System Admin**         | Manage enrollment configurations, admission rules, articles, and system reports  |
-| **Admission Officer**    | Review applicant records, handle escalated cases, monitor agent performance      |
-| **QA Officer**           | Review agent-generated evaluations, validate eligibility logic                   |
-| **Applicant**            | Submit applications, upload documents, track status, receive notifications       |
-| **Guest**                | Browse homepage, view admission information and articles                         |
+- **System Admin**
+  - Manage enrollment configurations
+  - Configure admission rules
+  - Manage articles and announcement content
+  - Monitor system-level reports
+
+- **Admission Officer**
+  - Review applicant records
+  - Handle escalated enrollment cases
+  - Monitor agent processing outcomes
+
+- **QA Officer**
+  - Review agent-generated evaluations
+  - Validate eligibility decision logic
+  - Audit evaluation quality and consistency
+
+- **Applicant**
+  - Submit applications
+  - Upload required documents
+  - Track application status
+  - Receive notifications and updates
+
+- **Guest**
+  - Browse homepage content
+  - View admission information
+  - Read public articles
+
+### Context Diagram (Rewritten)
+
+```mermaid
+flowchart LR
+    A[Applicant]
+    G[Guest]
+    AO[Admission Officer]
+    QA[QA Officer]
+    SA[System Admin]
+    EXT[Email/SMS Service]
+    SYS((MAEMS))
+
+    A -->|Submit application| SYS
+    A -->|Upload documents| SYS
+    A -->|Check status| SYS
+    SYS -->|Eligibility result| A
+    SYS -->|Notifications| A
+
+    G -->|View admission info| SYS
+    G -->|Read public articles| SYS
+    SYS -->|Public content| G
+
+    AO -->|Review applications| SYS
+    AO -->|Update decisions| SYS
+    SYS -->|Application details| AO
+
+    QA -->|Audit evaluations| SYS
+    QA -->|Validate eligibility logic| SYS
+    SYS -->|Evaluation logs| QA
+
+    SA -->|Manage rules & configs| SYS
+    SA -->|Manage article content| SYS
+    SYS -->|System reports| SA
+
+    SYS -->|Send email/SMS| EXT
+    EXT -->|Delivery status| SYS
+```
 
 ### Admission Methods Supported
 
