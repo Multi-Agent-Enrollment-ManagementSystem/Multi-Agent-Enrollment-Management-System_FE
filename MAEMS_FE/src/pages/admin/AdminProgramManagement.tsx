@@ -131,8 +131,7 @@ export function AdminProgramManagement() {
       setDetailOpen(false);
       setEditing(false);
 
-      const data = await getPrograms();
-      setPrograms(data);
+      fetchPrograms();
     } catch (err) {
       console.error(err);
       message.error("Cập nhật chương trình thất bại");
@@ -155,8 +154,8 @@ export function AdminProgramManagement() {
       setOpen(false);
       form.resetFields();
 
-      const data = await getPrograms();
-      setPrograms(data);
+      
+      fetchPrograms();
     } catch (err) {
       console.error(err);
       message.error("Tạo chương trình thất bại");
