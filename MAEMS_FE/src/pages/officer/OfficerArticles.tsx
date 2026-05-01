@@ -109,6 +109,9 @@ export function OfficerArticles() {
   const [regModalTitle, setRegModalTitle] = useState("");
   const [regModalLoading, setRegModalLoading] = useState(false);
   const [regModalData, setRegModalData] = useState<RegisterEventData[]>([]);
+  // Quản lý phân trang danh sách đăng ký trong modal (item/page)
+  const [regPageNumber, setRegPageNumber] = useState(1);
+  const [regPageSize, setRegPageSize] = useState(10);
 
   const editorKeySeed = useMemo(
     () =>
@@ -203,6 +206,8 @@ export function OfficerArticles() {
   async function openRegistersModal(articleId: number, articleTitle: string) {
     setRegModalTitle(articleTitle);
     setRegModalData([]);
+    // Mỗi lần mở modal sẽ quay lại trang đầu để tránh lệch dữ liệu cũ
+    setRegPageNumber(1);
     setRegModalOpen(true);
     setRegModalLoading(true);
     try {
@@ -219,6 +224,12 @@ export function OfficerArticles() {
     } finally {
       setRegModalLoading(false);
     }
+  }
+
+  function closeRegistersModal() {
+    // Đóng modal và reset về trang đầu cho lần xem kế tiếp
+    setRegModalOpen(false);
+    setRegPageNumber(1);
   }
 
   function ensureDraftPayload(status: ArticleStatus): CreateArticleRequest {
@@ -844,12 +855,12 @@ export function OfficerArticles() {
           </div>
         }
         open={regModalOpen}
-        onCancel={() => setRegModalOpen(false)}
+        onCancel={closeRegistersModal}
         footer={
           <div className="flex justify-end">
             <Button
               className="!rounded-xl"
-              onClick={() => setRegModalOpen(false)}
+              onClick={closeRegistersModal}
             >
               Đóng
             </Button>
@@ -868,14 +879,29 @@ export function OfficerArticles() {
           <Table<RegisterEventData>
             dataSource={regModalData}
             rowKey="registerId"
-            pagination={{ pageSize: 10, size: "small" }}
+            pagination={{
+              // Hiển thị đầy đủ item/page cho danh sách đăng ký trong modal
+              current: regPageNumber,
+              pageSize: regPageSize,
+              total: regModalData.length,
+              size: "small",
+              showSizeChanger: true,
+              pageSizeOptions: ["5", "10", "20", "50"],
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} / ${total} mục`,
+              onChange: (page, size) => {
+                setRegPageNumber(page);
+                setRegPageSize(size);
+              },
+            }}
             locale={{ emptyText: "Chưa có ai đăng ký." }}
             size="middle"
             columns={[
               {
                 title: "STT",
                 width: 56,
-                render: (_v, _r, i) => i + 1,
+                // STT tính theo toàn bộ danh sách để không bị reset mỗi trang
+                render: (_v, _r, i) => (regPageNumber - 1) * regPageSize + i + 1,
               },
               {
                 title: "Họ và tên",
