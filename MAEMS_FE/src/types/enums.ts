@@ -18,7 +18,7 @@ export type AuthRole = "admin" | "officer" | "qa" | "applicant";
 
 // ─── Article ──────────────────────────────────────────────────────────────────
 
-export type ArticleStatus = "draft" | "publish" | "deleted";
+export type ArticleStatus = "draft" | "publish" | "archived";
 
 // ─── Payment ──────────────────────────────────────────────────────────────────
 export type PaymentStatus =
@@ -27,3 +27,5 @@ export type PaymentStatus =
   | "processing"
   | "paid"
   | "need_checking";
+
+export type ApplicationLevel = "Normal" | "Good" | "Great" | "Excellent" | null;
