@@ -20,7 +20,9 @@ export function showApiWrapperFailure(
   fallback?: string,
 ) {
   const main = wrapper?.message?.trim();
-  const errors = (wrapper?.errors ?? []).map((e) => e?.trim()).filter(Boolean) as string[];
+  const errors = (wrapper?.errors ?? [])
+    .map((e) => e?.trim())
+    .filter(Boolean) as string[];
 
   if (main) {
     messageApi.error(main);

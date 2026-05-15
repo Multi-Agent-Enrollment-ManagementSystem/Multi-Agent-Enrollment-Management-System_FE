@@ -123,7 +123,9 @@ export function ApplicantScoresTab({
                     <Text className="block font-semibold text-gray-800 text-sm sm:text-base">
                       {section.title}
                     </Text>
-                    <Text className="text-xs text-gray-500">{section.description}</Text>
+                    <Text className="text-xs text-gray-500">
+                      {section.description}
+                    </Text>
                   </motion.div>
                   <motion.div
                     variants={listVariants}
@@ -137,7 +139,11 @@ export function ApplicantScoresTab({
                           key={field.key}
                           variants={itemVariants}
                           whileHover={{ y: -2 }}
-                          transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 28,
+                          }}
                           className={`rounded-xl border px-3 py-2.5 transition-shadow ${
                             hasValue
                               ? "border-white/80 bg-white/90 shadow-sm"
