@@ -21,6 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { AppHeader } from "../../components/AppHeader";
 import { GoogleLoginButton } from "../../components/GoogleLoginButton";
+import { PasswordField } from "./components/PasswordField";
 import { useAuth } from "../../hooks/useAuth";
 import * as authApi from "../../api/auth";
 import type { AuthRole } from "../../types/auth";
@@ -30,6 +31,12 @@ import {
   isEmailLike,
   type ResetPasswordApiResponse,
 } from "../../utils/authReset";
+import {
+  loginPasswordFormRules,
+  newPasswordFormRules,
+  passwordFormRules,
+} from "../../utils/passwordValidation";
+import { usernameFormRules } from "../../utils/usernameValidation";
 
 const roleDashboard: Record<AuthRole, string> = {
   applicant: "/applicant/dashboard",
@@ -394,17 +401,13 @@ export function AuthPage() {
                             <Form.Item
                               name="password"
                               label={<Text strong>Mật khẩu</Text>}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Vui lòng nhập mật khẩu",
-                                },
-                              ]}
+                              rules={loginPasswordFormRules}
                             >
-                              <Input.Password
+                              <PasswordField
                                 placeholder="Nhập mật khẩu"
                                 size="large"
                                 className="rounded-lg"
+                                autoComplete="current-password"
                               />
                             </Form.Item>
 
@@ -472,12 +475,8 @@ export function AuthPage() {
                             <Form.Item
                               name="username"
                               label={<Text strong>Tên đăng nhập</Text>}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Vui lòng nhập tên đăng nhập",
-                                },
-                              ]}
+                              rules={usernameFormRules}
+                              validateTrigger={["onChange", "onBlur"]}
                             >
                               <Input
                                 placeholder="Nhập tên đăng nhập"
@@ -510,21 +509,15 @@ export function AuthPage() {
                             <Form.Item
                               name="password"
                               label={<Text strong>Mật khẩu</Text>}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Vui lòng nhập mật khẩu",
-                                },
-                                {
-                                  min: 6,
-                                  message: "Mật khẩu tối thiểu 6 ký tự",
-                                },
-                              ]}
+                              rules={passwordFormRules}
+                              validateTrigger={["onChange", "onBlur"]}
                             >
-                              <Input.Password
+                              <PasswordField
                                 placeholder="Nhập mật khẩu"
                                 size="large"
                                 className="rounded-lg"
+                                showStrengthMeter
+                                autoComplete="new-password"
                               />
                             </Form.Item>
 
@@ -787,19 +780,15 @@ export function AuthPage() {
                     <Form.Item
                       name="newPassword"
                       label={<Text strong>Mật khẩu mới</Text>}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Vui lòng nhập mật khẩu mới",
-                        },
-                        { min: 6, message: "Mật khẩu tối thiểu 6 ký tự" },
-                      ]}
+                      rules={newPasswordFormRules}
+                      validateTrigger={["onChange", "onBlur"]}
                     >
-                      <Input.Password
+                      <PasswordField
                         size="large"
                         placeholder="Nhập mật khẩu mới"
                         className="rounded-xl"
                         disabled={isResetExpired}
+                        showStrengthMeter
                         autoComplete="new-password"
                       />
                     </Form.Item>
@@ -822,7 +811,9 @@ export function AuthPage() {
                               return Promise.resolve();
                             }
                             return Promise.reject(
-                              new Error("Mật khẩu xác nhận không khớp"),
+                              new Error(
+                                "Mật khẩu xác nhận không trùng khớp với mật khẩu mới",
+                              ),
                             );
                           },
                         }),
