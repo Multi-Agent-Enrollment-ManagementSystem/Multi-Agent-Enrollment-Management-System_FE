@@ -1,8 +1,10 @@
-import { AuthCredentialsPanel } from "./components/AuthCredentialsPanel";
-import { AuthPageLayout } from "./components/AuthPageLayout";
-import { ResetPasswordRequestView } from "./components/ResetPasswordRequestView";
-import { ResetPasswordVerifyView } from "./components/ResetPasswordVerifyView";
-import { useAuthPage } from "./hooks/useAuthPage";
+import {
+  AuthCredentialsPanel,
+  AuthPageLayout,
+  ResetPasswordRequestView,
+  ResetPasswordVerifyView,
+} from "./components";
+import { useAuthPage } from "./hooks";
 
 /** Trang xác thực: ghép layout, điều phối view và ủy logic cho hook. */
 export function AuthPage() {
