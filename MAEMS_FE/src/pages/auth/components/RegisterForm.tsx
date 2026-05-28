@@ -1,9 +1,8 @@
 import { Button, Divider, Form, Input, Typography } from "antd";
 import type { FormInstance } from "antd";
 import { GoogleLoginButton } from "../../../components/GoogleLoginButton";
-import {
-  passwordFormRules,
-} from "../../../utils/passwordValidation";
+import { passwordFormRules } from "../../../utils/passwordValidation";
+import { emailFormRules } from "../../../utils/emailValidation";
 import { usernameFormRules } from "../../../utils/usernameValidation";
 import type { AuthApiErrorState, RegisterFormValues } from "../types";
 import { AuthApiErrorAlert } from "./AuthApiErrorAlert";
@@ -49,10 +48,8 @@ export function RegisterForm({
       <Form.Item
         name="email"
         label={<Text strong>Email</Text>}
-        rules={[
-          { required: true, message: "Vui lòng nhập email" },
-          { type: "email", message: "Email không hợp lệ" },
-        ]}
+        rules={emailFormRules}
+        validateTrigger={["onChange", "onBlur"]}
       >
         <Input placeholder="Nhập email" size="large" className="rounded-lg" />
       </Form.Item>

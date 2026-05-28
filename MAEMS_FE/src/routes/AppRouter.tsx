@@ -30,7 +30,7 @@ import { DaNangTuitionPage } from "../pages/admission/DaNangTuitionPage";
 import { CanThoTuitionPage } from "../pages/admission/CanThoTuitionPage";
 import { QuyNhonTuitionPage } from "../pages/admission/QuyNhonTuitionPage";
 import { HomePage } from "../pages/homepage/HomePage";
-import { AuthPage } from "../pages/auth/AuthPage";
+import { AuthPage } from "../pages/auth";
 import { ProgramList } from "../pages/programs/ProgramList";
 import { ProgramDetail } from "../pages/programs/ProgramDetail";
 import { AgentLogsPage } from "../pages/qa/AgentLogsPage";
