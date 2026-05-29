@@ -1,13 +1,4 @@
-import {
-  Button,
-  Card,
-  Col,
-  Row,
-  Spin,
-  Table,
-  Tag,
-  Typography,
-} from "antd";
+import { Button, Card, Col, Row, Spin, Table, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
   AlertTriangle,
@@ -45,7 +36,14 @@ import {
   type ApplicationStatus,
 } from "../../types/application";
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
+
+/** Rút gọn nội dung dài trong ô bảng — dùng Paragraph ellipsis của Ant Design */
+const TABLE_NOTE_ELLIPSIS = {
+  rows: 3,
+  expandable: "collapsible" as const,
+  symbol: (isExpanded: boolean) => (isExpanded ? "Thu gọn" : "Xem thêm"),
+};
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -98,17 +96,24 @@ function useEscalatedColumns(
       ),
     },
     {
+      // Độ rộng cố định để tên không bị wrap từng chữ khi cột "Lý do" chiếm phần lớn bảng
       title: "Tên thí sinh",
       dataIndex: "applicantName",
       key: "name",
+      width: 168,
+      ellipsis: { showTitle: true },
       render: (name: string) => (
-        <Text className="font-medium text-gray-800">{name}</Text>
+        <Text className="font-medium text-gray-800 whitespace-nowrap">
+          {name}
+        </Text>
       ),
     },
     {
       title: "Ngành đăng ký",
       dataIndex: "programName",
       key: "major",
+      width: 200,
+      ellipsis: { showTitle: true },
       render: (prog: string) => (
         <Text className="text-gray-600 text-sm">{prog}</Text>
       ),
@@ -155,7 +160,14 @@ function useEscalatedColumns(
           );
         }
         if (notes)
-          return <Text className="text-gray-500 text-xs">{notes}</Text>;
+          return (
+            <Paragraph
+              className="!mb-0 !text-xs !text-gray-500"
+              ellipsis={TABLE_NOTE_ELLIPSIS}
+            >
+              {notes}
+            </Paragraph>
+          );
         return (
           <Text className="text-gray-300 text-xs">
             {record.requiresReview
@@ -593,6 +605,8 @@ export function OfficerDashboard() {
             rowKey="applicationId"
             pagination={false}
             size="small"
+            tableLayout="fixed"
+            scroll={{ x: 720 }}
             locale={{ emptyText: "Không có hồ sơ cần xử lý" }}
             rowClassName="hover:bg-gray-50 transition-colors"
           />
