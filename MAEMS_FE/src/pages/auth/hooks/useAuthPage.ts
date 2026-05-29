@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Form, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import * as authApi from "../../../api/auth";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../auth";
 import {
   extractApiError,
   isEmailLike,

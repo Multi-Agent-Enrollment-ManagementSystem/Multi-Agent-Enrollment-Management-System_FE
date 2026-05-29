@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Bot, MessageCircle, Send, X } from "lucide-react";
 import { askChatbox } from "../../api/chatbox";
-import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore } from "../../auth";
 import {
   LEGACY_APPLICANT_CHAT_KEY,
   loadApplicantChatThread,

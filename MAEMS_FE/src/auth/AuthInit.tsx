@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useAuthStore } from "../stores/authStore";
+import { useAuthStore } from "./authStore";
 import * as authApi from "../api/auth";
 
 // Chu kỳ refresh định kỳ sau lần refresh đầu tiên (55 phút/lần).
