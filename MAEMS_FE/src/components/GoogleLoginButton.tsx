@@ -3,7 +3,7 @@ import { Button, message } from "antd";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import * as authApi from "../api/auth";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../auth";
 import { useNavigate } from "react-router-dom";
 import type { AuthRole } from "../types/auth";
 

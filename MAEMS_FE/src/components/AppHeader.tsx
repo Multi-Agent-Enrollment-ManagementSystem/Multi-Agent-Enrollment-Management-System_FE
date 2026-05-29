@@ -16,7 +16,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PRIMARY_THEME_COLOR } from "../constants/colors";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../auth";
 import type { AuthRole } from "../types/auth";
 
 const { Header } = Layout;

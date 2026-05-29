@@ -16,8 +16,7 @@ import {
   type FetchAllApplicationsParams,
 } from "../../api/applications";
 import { OfficerLayout } from "../../layouts/OfficerLayout";
-import { useAuth } from "../../hooks/useAuth";
-import { useAuthStore } from "../../stores/authStore";
+import { useAuth, useAuthStore } from "../../auth";
 import type { Application } from "../../types/application";
 import { getNumericUserIdFromToken } from "../../utils/jwtUserId";
 import {
