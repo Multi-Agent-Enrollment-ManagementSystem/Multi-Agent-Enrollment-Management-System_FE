@@ -19,10 +19,7 @@ import {
   showAxiosApiFailure,
 } from "../../../../utils/apiFeedback";
 import { pickPrimaryScore } from "../../../../utils/scoreDisplay";
-import {
-  ApplicationExportCancelledError,
-  downloadApplicationDetail,
-} from "../utils/exportApplicationDetail";
+import { downloadApplicationDetail } from "../utils/exportApplicationDetail";
 import { normalizeRequiredDocumentList } from "../utils/displayHelpers";
 
 /** Hook tập trung state và xử lý nghiệp vụ trang chi tiết hồ sơ (cán bộ) */
@@ -228,27 +225,15 @@ export function useOfficerApplicationDetail() {
     setPreviewDetailExpanded(false);
   };
 
-  /** Tải về → 1 file zip vào Downloads, giải nén ra folder APP-{id}/ */
+  /** Tải về → file Excel APP-{id}.xlsx (dữ liệu gốc từ API) */
   const handleDownloadExport = async () => {
     if (!app) return;
     setExportLoading(true);
     try {
       const result = await downloadApplicationDetail(app);
-      const base = `Đã tải "${result.folderName}.zip" vào Thư mục Tải xuống — giải nén để mở folder ${result.folderName}`;
-      if (result.documentFailures.length > 0) {
-        messageApi.warning(
-          `${base}. ${result.documentFailures.length} tài liệu không tải được.`,
-        );
-      } else {
-        messageApi.success(
-          `${base} (${result.folderName}.xlsx + ${result.documentsOk} tài liệu trong tai-lieu).`,
-        );
-      }
-    } catch (err) {
-      if (err instanceof ApplicationExportCancelledError) {
-        return;
-      }
-      messageApi.error("Không thể tải hồ sơ. Vui lòng thử lại.");
+      messageApi.success(`Đã tải "${result.fileName}" vào Thư mục Tải xuống.`);
+    } catch {
+      messageApi.error("Không thể tải Excel. Vui lòng thử lại.");
     } finally {
       setExportLoading(false);
     }
