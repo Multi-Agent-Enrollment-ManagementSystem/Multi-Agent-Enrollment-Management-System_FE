@@ -19,6 +19,7 @@ import {
 } from "../../api/admission-types";
 import { getActiveProgramsBasic } from "../../api/programs";
 import type { ProgramBasic } from "../../types/program";
+import { Pencil } from "lucide-react";
 
 const { Search } = Input;
 
@@ -171,7 +172,7 @@ export function AdminProgramAdmissionConfig() {
             type="link"
             onClick={() => handleEdit(record.configId)}
           >
-            Edit
+            <Pencil color="#3b82f6" size={16} />
           </Button>
         </Space>
       ),
@@ -230,7 +231,7 @@ export function AdminProgramAdmissionConfig() {
             onChange={(value) => updateFilter({ admissionTypeId: value })}
           />
           <Button type="primary" onClick={handleCreate}>
-            + Create Config
+            + Tạo kế hoạch mới
           </Button>
         </Space>
 
