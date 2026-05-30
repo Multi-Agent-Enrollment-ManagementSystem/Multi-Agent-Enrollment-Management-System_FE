@@ -1,12 +1,12 @@
 import { Button, Empty, Spin, Typography } from "antd";
 import { GraduationCap, RefreshCw } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import type { Score } from "../../../types/score";
+import type { Score } from "../../../../types/score";
 import {
   SCORE_SECTIONS,
   formatScoreValue,
   isScoreRecordEmpty,
-} from "../../../utils/scoreDisplay";
+} from "../../../../utils/scoreDisplay";
 
 const { Text, Title } = Typography;
 
