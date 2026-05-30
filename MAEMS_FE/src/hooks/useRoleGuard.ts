@@ -1,4 +1,4 @@
-import { useAuth } from "./useAuth";
+import { useAuth } from "../auth";
 import type { AuthRole } from "../types/auth";
 
 export function useRoleGuard(allowedRoles: AuthRole[]) {

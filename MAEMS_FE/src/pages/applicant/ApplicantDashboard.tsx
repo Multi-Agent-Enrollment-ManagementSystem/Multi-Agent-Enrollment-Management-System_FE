@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { ApplicantLayout } from "../../layouts/ApplicantLayout";
 import { ApplicantMenu } from "./ApplicantMenu";
-import { useAuthStore } from "../../stores/authStore";
+import { useAuthStore } from "../../auth";
 import { getMyApplicant } from "../../api/applicants";
 import { fetchMyApplications } from "../../api/applications";
 import type { CreateApplicantResponse } from "../../types/applicant";

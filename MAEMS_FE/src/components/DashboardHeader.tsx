@@ -1,7 +1,7 @@
 import { Avatar, Button, Space, Typography } from "antd";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../auth";
 import { HeaderNotifications } from "./HeaderNotifications";
 
 const { Text } = Typography;

@@ -20,6 +20,7 @@ import {
   Spin,
   Empty,
   Tooltip,
+  Alert,
 } from "antd";
 import {
   CalendarDays,
@@ -62,6 +63,13 @@ import type { DocumentStatus } from "../../types/enums";
 import { DOCUMENT_STATUS } from "../../constants/labels";
 import { ApplicantMenu } from "./ApplicantMenu";
 import { ensureUtc } from "../../utils/date";
+import {
+  ALLOWED_DOCUMENT_ACCEPT,
+  ALLOWED_DOCUMENT_FORMATS_LABEL,
+  formatDocumentFileSize,
+  isDocumentImageFile,
+  validateDocumentFile,
+} from "../../utils/documentFileValidation";
 
 const { Title, Text } = Typography;
 
@@ -167,7 +175,16 @@ type DocUploadItem = {
   documentType: string;
   status: "idle" | "uploading" | "success" | "error";
   errorMsg?: string;
+  /** URL blob để xem trước ảnh cục bộ; cần revoke khi xóa item hoặc đóng modal. */
+  previewUrl?: string;
 };
+
+// Giải phóng bộ nhớ object URL khi không còn hiển thị preview.
+function revokeDocItemPreviews(items: DocUploadItem[]) {
+  items.forEach((item) => {
+    if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+  });
+}
 
 function SectionHeader({
   icon,
@@ -264,6 +281,16 @@ export function ApplicantProfilePage() {
       return;
     }
 
+    // Lớp bảo vệ cuối: kiểm tra lại kích thước/đuôi file trước khi gọi API
+    const invalidItem = idleItems.find(
+      (item) => !validateDocumentFile(item.file).valid,
+    );
+    if (invalidItem) {
+      const check = validateDocumentFile(invalidItem.file);
+      if (!check.valid) messageApi.error(check.error);
+      return;
+    }
+
     setUploading(true);
     // Chuyển toàn bộ item đang chờ sang trạng thái "đang tải" để hiển thị spinner
     setDocItems((prev) =>
@@ -307,9 +334,19 @@ export function ApplicantProfilePage() {
   // Đóng modal upload: reset toàn bộ docItems và tải lại danh sách nếu có file nào thành công
   function handleCloseUpload() {
     const hadSuccess = docItems.some((i) => i.status === "success");
+    revokeDocItemPreviews(docItems);
     setDocItems([]);
     setUploadOpen(false);
     if (hadSuccess) loadDocuments();
+  }
+
+  // Thu hồi một preview URL khi user xóa file khỏi danh sách chờ upload
+  function removeDocUploadItem(uid: string) {
+    setDocItems((prev) => {
+      const removed = prev.find((i) => i.uid === uid);
+      if (removed?.previewUrl) URL.revokeObjectURL(removed.previewUrl);
+      return prev.filter((i) => i.uid !== uid);
+    });
   }
 
   // Hàm xác nhận và xoá tài liệu; hiển thị hộp thoại confirm trước để tránh xoá nhầm
@@ -906,22 +943,56 @@ export function ApplicantProfilePage() {
           centered
         >
           <div className="mt-3 space-y-3">
+            <Alert
+              type="info"
+              showIcon
+              className="!rounded-2xl !border-orange-100 !bg-orange-50/90"
+              message={
+                <span className="text-sm font-semibold text-gray-800">
+                  Định dạng cho phép: {ALLOWED_DOCUMENT_FORMATS_LABEL}
+                </span>
+              }
+              description={
+                <span className="text-xs text-gray-600">
+                  Mỗi file tối đa <strong>10 MB</strong>. Tải tối đa{" "}
+                  <strong>5 file</strong> mỗi lần.
+                </span>
+              }
+            />
+
             {/* Vùng kéo thả — ẩn khi đã đủ 5 file hoặc đang upload */}
             {docItems.length < 5 && !uploading && (
               <Upload.Dragger
-                accept="image/*,.pdf"
+                accept={ALLOWED_DOCUMENT_ACCEPT}
                 multiple
                 showUploadList={false}
                 fileList={[]}
                 beforeUpload={(file) => {
-                  // Thêm từng file vào docItems; bỏ qua nếu đã đủ 5 hoặc trùng uid
                   const f = file as File & { uid: string };
+
+                  // Kiểm tra dung lượng và đuôi file trước khi thêm vào hàng đợi
+                  const validation = validateDocumentFile(f);
+                  if (!validation.valid) {
+                    messageApi.error(validation.error);
+                    return Upload.LIST_IGNORE;
+                  }
+
+                  const previewUrl = isDocumentImageFile(f)
+                    ? URL.createObjectURL(f)
+                    : undefined;
+
                   setDocItems((prev) => {
                     if (prev.length >= 5) return prev;
                     if (prev.some((i) => i.uid === f.uid)) return prev;
                     return [
                       ...prev,
-                      { uid: f.uid, file: f, documentType: "", status: "idle" },
+                      {
+                        uid: f.uid,
+                        file: f,
+                        documentType: "",
+                        status: "idle",
+                        previewUrl,
+                      },
                     ];
                   });
                   return false;
@@ -936,8 +1007,12 @@ export function ApplicantProfilePage() {
                       nhấn để chọn
                     </span>
                   </Text>
-                  <Text className="text-xs text-gray-400">
-                    JPG, PNG, PDF — tối đa 10 MB ·{" "}
+                  <Text className="text-xs text-gray-500 text-center px-4">
+                    <span className="font-semibold text-gray-700">
+                      {ALLOWED_DOCUMENT_FORMATS_LABEL}
+                    </span>
+                    {" · "}
+                    tối đa 10 MB/file ·{" "}
                     <strong>Còn thêm được {5 - docItems.length} file</strong>
                   </Text>
                 </div>
@@ -961,9 +1036,17 @@ export function ApplicantProfilePage() {
                             : "border-gray-100 bg-gray-50"
                     }`}
                   >
-                    {/* Dòng 1: icon + tên file + dung lượng + status + nút xóa */}
+                    {/* Dòng 1: preview/icon + tên file + dung lượng + status + nút xóa */}
                     <div className="flex items-center gap-2">
-                      <FileText size={16} className="text-gray-400 shrink-0" />
+                      {item.previewUrl ? (
+                        <img
+                          src={item.previewUrl}
+                          alt={`Xem trước ${item.file.name}`}
+                          className="h-12 w-12 shrink-0 rounded-lg border border-gray-200 object-cover"
+                        />
+                      ) : (
+                        <FileText size={16} className="text-gray-400 shrink-0" />
+                      )}
                       <div className="flex-1 min-w-0">
                         <p
                           className="text-sm text-gray-700 font-medium truncate leading-tight"
@@ -972,7 +1055,7 @@ export function ApplicantProfilePage() {
                           {item.file.name}
                         </p>
                         <p className="text-xs text-gray-400">
-                          {(item.file.size / 1024).toFixed(0)} KB
+                          {formatDocumentFileSize(item.file.size)}
                         </p>
                       </div>
 
@@ -996,11 +1079,7 @@ export function ApplicantProfilePage() {
                       {/* Xóa file — chỉ cho phép khi chưa upload */}
                       {item.status === "idle" && (
                         <button
-                          onClick={() =>
-                            setDocItems((prev) =>
-                              prev.filter((i) => i.uid !== item.uid),
-                            )
-                          }
+                          onClick={() => removeDocUploadItem(item.uid)}
                           className="text-gray-300 hover:text-red-400 transition-colors shrink-0 ml-1"
                           title="Xóa"
                         >

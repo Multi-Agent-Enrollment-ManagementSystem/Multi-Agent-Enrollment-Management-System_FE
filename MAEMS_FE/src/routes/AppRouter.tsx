@@ -9,7 +9,7 @@ import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { AdminProfile } from "../pages/admin/AdminProfile";
 import { OfficerDashboard } from "../pages/officer/OfficerDashboard";
 import { OfficerApplicationList } from "../pages/officer/OfficerApplicationList";
-import { OfficerApplicationDetail } from "../pages/officer/OfficerApplicationDetail";
+import { OfficerApplicationDetail } from "../pages/officer/ApplicationDetails";
 import { OfficerProfile } from "../pages/officer/OfficerProfile";
 import { OfficerReports } from "../pages/officer/OfficerReports";
 import { OfficerArticles } from "../pages/officer/OfficerArticles";
@@ -30,11 +30,12 @@ import { DaNangTuitionPage } from "../pages/admission/DaNangTuitionPage";
 import { CanThoTuitionPage } from "../pages/admission/CanThoTuitionPage";
 import { QuyNhonTuitionPage } from "../pages/admission/QuyNhonTuitionPage";
 import { HomePage } from "../pages/homepage/HomePage";
-import { AuthPage } from "../pages/auth/AuthPage";
+import { AuthPage } from "../pages/auth";
 import { ProgramList } from "../pages/programs/ProgramList";
 import { ProgramDetail } from "../pages/programs/ProgramDetail";
 import { AgentLogsPage } from "../pages/qa/AgentLogsPage";
 import { ContactPage } from "../pages/contact/ContactPage";
+import { MajorAdvisorPage } from "../pages/major-advisor/MajorAdvisorPage";
 import { AdminApplicationList } from "../pages/admin/AdminApplicationList";
 import { AdminStudentManagement } from "../pages/admin/AdminStudentManagement";
 import { AdminProgramManagement } from "../pages/admin/AdminProgramManagement";
@@ -65,6 +66,8 @@ export function AppRouter() {
       <Route path="/tin-tuc" element={<ArticlePage />} />
       <Route path="/tin-tuc/:id" element={<ArticleDetail />} />
       <Route path="/lien-he" element={<ContactPage />} />
+      {/* Trang tư vấn chuyên ngành cho guest, không yêu cầu xác thực đăng nhập. */}
+      <Route path="/major-advisor" element={<MajorAdvisorPage />} />
       <Route path="/auth" element={<AuthPage />} />
 
       {/* applicant */}

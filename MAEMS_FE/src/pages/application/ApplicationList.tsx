@@ -853,15 +853,8 @@ export function ApplicationList() {
   // Handlers cho QrPaymentModal — tách riêng để memo tránh re-render không cần thiết.
   const handleQrPaid = useCallback(() => {
     setQrModal(null);
-    notifApi.info({
-      message: "Đang chờ xác nhận thanh toán",
-      description:
-        "Giao dịch đang được xử lý. Trạng thái đơn sẽ cập nhật ngay khi hệ thống xác nhận thành công.",
-      placement: "topRight",
-      duration: 8,
-    });
     loadApps();
-  }, [loadApps, notifApi]);
+  }, [loadApps]);
 
   const handleQrClose = useCallback(() => setQrModal(null), []);
 

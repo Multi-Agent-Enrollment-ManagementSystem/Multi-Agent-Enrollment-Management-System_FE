@@ -10,12 +10,13 @@ import {
   Newspaper,
   Phone,
   X,
+  Brain,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PRIMARY_THEME_COLOR } from "../constants/colors";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../auth";
 import type { AuthRole } from "../types/auth";
 
 const { Header } = Layout;
@@ -35,6 +36,7 @@ const NAV_ITEMS = [
   { to: "/dao-tao", label: "Đào tạo", icon: Newspaper },
   { to: "/tin-tuc", label: "Tin tức", icon: Newspaper },
   { to: "/lien-he", label: "Liên hệ", icon: Phone },
+  { to: "/major-advisor", label: "Cố vấn", icon: Brain },
 ];
 
 export function AppHeader() {
@@ -158,7 +160,10 @@ export function AppHeader() {
                     /* inline style đảm bảo bg + color không bị Ant Design override */
                     style={
                       active
-                        ? { backgroundColor: PRIMARY_THEME_COLOR, color: "white" }
+                        ? {
+                            backgroundColor: PRIMARY_THEME_COLOR,
+                            color: "white",
+                          }
                         : undefined
                     }
                     className={`
@@ -302,7 +307,10 @@ export function AppHeader() {
                             /* inline style đảm bảo bg + color không bị Ant Design override: nền xám, chữ cam theme */
                             style={
                               active
-                                ? { backgroundColor: "#e5e7eb", color: PRIMARY_THEME_COLOR }
+                                ? {
+                                    backgroundColor: "#e5e7eb",
+                                    color: PRIMARY_THEME_COLOR,
+                                  }
                                 : undefined
                             }
                             className={`
@@ -315,7 +323,11 @@ export function AppHeader() {
                               className={
                                 active ? "text-white" : "text-gray-400"
                               }
-                              style={active ? { color: PRIMARY_THEME_COLOR } : undefined}
+                              style={
+                                active
+                                  ? { color: PRIMARY_THEME_COLOR }
+                                  : undefined
+                              }
                             />
                             {label}
                           </Link>
