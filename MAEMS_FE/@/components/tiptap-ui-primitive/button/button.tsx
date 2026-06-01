@@ -5,13 +5,13 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/tiptap-ui-primitive/tooltip"
+} from "@tiptap-ui/components/tiptap-ui-primitive/tooltip"
 
 // --- Lib ---
-import { cn, parseShortcutKeys } from "@/lib/tiptap-utils"
+import { cn, parseShortcutKeys } from "@tiptap-ui/lib/tiptap-utils"
 
-import "@/components/tiptap-ui-primitive/button/button-colors.scss"
-import "@/components/tiptap-ui-primitive/button/button.scss"
+import "@tiptap-ui/components/tiptap-ui-primitive/button/button-colors.scss"
+import "@tiptap-ui/components/tiptap-ui-primitive/button/button.scss"
 
 export type ButtonVariant = "ghost" | "primary"
 export type ButtonSize = "small" | "default" | "large"
@@ -76,7 +76,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <Tooltip delay={200}>
+      <Tooltip delay={300} useDelayGroup>
         <TooltipTrigger
           data-slot="tiptap-button"
           className={cn("tiptap-button", className)}

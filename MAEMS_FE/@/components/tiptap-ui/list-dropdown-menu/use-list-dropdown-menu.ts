@@ -4,15 +4,15 @@ import { useEffect, useMemo, useState } from "react"
 import type { Editor } from "@tiptap/react"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@tiptap-ui/hooks/use-tiptap-editor"
 
 // --- Icons ---
-import { ListIcon } from "@/components/tiptap-icons/list-icon"
-import { ListOrderedIcon } from "@/components/tiptap-icons/list-ordered-icon"
-import { ListTodoIcon } from "@/components/tiptap-icons/list-todo-icon"
+import { ListIcon } from "@tiptap-ui/components/tiptap-icons/list-icon"
+import { ListOrderedIcon } from "@tiptap-ui/components/tiptap-icons/list-ordered-icon"
+import { ListTodoIcon } from "@tiptap-ui/components/tiptap-icons/list-todo-icon"
 
 // --- Lib ---
-import { isNodeInSchema } from "@/lib/tiptap-utils"
+import { isNodeInSchema } from "@tiptap-ui/lib/tiptap-utils"
 
 // --- Tiptap UI ---
 import {
@@ -20,7 +20,7 @@ import {
   isListActive,
   listIcons,
   type ListType,
-} from "@/components/tiptap-ui/list-button"
+} from "@tiptap-ui/components/tiptap-ui/list-button"
 
 /**
  * Configuration for the list dropdown menu functionality
@@ -50,17 +50,17 @@ export interface ListOption {
 
 export const listOptions: ListOption[] = [
   {
-    label: "Bullet List",
+    label: "Danh sách dấu đầu dòng",
     type: "bulletList",
     icon: ListIcon,
   },
   {
-    label: "Ordered List",
+    label: "Danh sách đánh số",
     type: "orderedList",
     icon: ListOrderedIcon,
   },
   {
-    label: "Task List",
+    label: "Danh sách việc cần làm",
     type: "taskList",
     icon: ListTodoIcon,
   },
