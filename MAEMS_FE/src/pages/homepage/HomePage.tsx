@@ -12,6 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CampusHeroBackground } from "../../components/CampusHeroBackground";
 import { GuestLayout } from "../../layouts/GuestLayout";
 
 const { Title, Paragraph, Text } = Typography;
@@ -91,32 +92,8 @@ export function HomePage() {
     <GuestLayout>
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Lớp nền dự phòng giúp giao diện vẫn ổn khi video chưa tải kịp hoặc trình duyệt không hỗ trợ */}
-        <div className="absolute inset-0 bg-[#1a1a2e]" />
-        {/* Video nền chạy tự động để tạo hero sinh động nhưng không ảnh hưởng thao tác vì đã tắt pointer-events */}
-        <video
-          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
-            type="video/mp4"
-          />
-        </video>
-
-        {/* Dot pattern overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
+        {/* Ảnh khuôn viên FPT làm nền hero — đồng bộ với các trang đào tạo, tin tức, auth */}
+        <CampusHeroBackground />
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
             <Sparkles size={14} className="text-orange-300" />
