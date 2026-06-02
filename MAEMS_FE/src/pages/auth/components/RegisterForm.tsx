@@ -84,7 +84,11 @@ export function RegisterForm({
         </Button>
       </Form.Item>
 
-      <Divider plain className="!my-4 !text-gray-400">
+      <Divider
+        plain
+        // Tăng thêm độ rõ của chữ và đường kẻ Divider vì nền white/50 vẫn có thể làm “hoặc” hơi nhạt.
+        className="!my-4 !text-gray-600 [&::before,&::after]:!border-gray-400"
+      >
         hoặc
       </Divider>
       <GoogleLoginButton />

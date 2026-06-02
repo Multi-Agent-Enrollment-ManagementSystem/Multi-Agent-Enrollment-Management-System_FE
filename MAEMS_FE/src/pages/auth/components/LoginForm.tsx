@@ -66,7 +66,8 @@ export function LoginForm({
         <Button
           type="link"
           onClick={onForgotPassword}
-          className="!px-0 !h-auto !text-xs !font-normal !text-slate-400 hover:!text-slate-500 transition-colors"
+          // Tăng tương phản chữ vì nền trắng 50% (white/50) làm text-slate-400 hơi nhạt, khó đọc.
+          className="!px-0 !h-auto !text-xs !font-normal !text-slate-600 hover:!text-slate-700 transition-colors"
         >
           Quên mật khẩu?
         </Button>
@@ -87,7 +88,11 @@ export function LoginForm({
         </Button>
       </Form.Item>
 
-      <Divider plain className="!my-4 !text-gray-400">
+      <Divider
+        plain
+        // Tăng thêm độ rõ của chữ và đường kẻ Divider vì nền white/50 vẫn có thể làm “hoặc” hơi nhạt.
+        className="!my-4 !text-gray-600 [&::before,&::after]:!border-gray-400"
+      >
         hoặc
       </Divider>
       <GoogleLoginButton />

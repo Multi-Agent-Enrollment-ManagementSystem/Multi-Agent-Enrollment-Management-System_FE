@@ -1,5 +1,6 @@
 "use client"
 
+import { FloatingDelayGroup } from "@floating-ui/react"
 import { useEffect, useRef, useState } from "react"
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
 
@@ -13,67 +14,69 @@ import { Highlight } from "@tiptap/extension-highlight"
 import { Subscript } from "@tiptap/extension-subscript"
 import { Superscript } from "@tiptap/extension-superscript"
 import { Selection } from "@tiptap/extensions"
+import { TextStyle, FontSize } from "@tiptap/extension-text-style"
 
 // --- UI Primitives ---
-import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Spacer } from "@/components/tiptap-ui-primitive/spacer"
+import { Button } from "@tiptap-ui/components/tiptap-ui-primitive/button"
+import { Spacer } from "@tiptap-ui/components/tiptap-ui-primitive/spacer"
 import {
   Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
-} from "@/components/tiptap-ui-primitive/toolbar"
+} from "@tiptap-ui/components/tiptap-ui-primitive/toolbar"
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension"
-import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
-import "@/components/tiptap-node/blockquote-node/blockquote-node.scss"
-import "@/components/tiptap-node/code-block-node/code-block-node.scss"
-import "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss"
-import "@/components/tiptap-node/list-node/list-node.scss"
-import "@/components/tiptap-node/image-node/image-node.scss"
-import "@/components/tiptap-node/heading-node/heading-node.scss"
-import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
+import { ImageUploadNode } from "@tiptap-ui/components/tiptap-node/image-upload-node/image-upload-node-extension"
+import { HorizontalRule } from "@tiptap-ui/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
+import "@tiptap-ui/components/tiptap-node/blockquote-node/blockquote-node.scss"
+import "@tiptap-ui/components/tiptap-node/code-block-node/code-block-node.scss"
+import "@tiptap-ui/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss"
+import "@tiptap-ui/components/tiptap-node/list-node/list-node.scss"
+import "@tiptap-ui/components/tiptap-node/image-node/image-node.scss"
+import "@tiptap-ui/components/tiptap-node/heading-node/heading-node.scss"
+import "@tiptap-ui/components/tiptap-node/paragraph-node/paragraph-node.scss"
 
 // --- Tiptap UI ---
-import { HeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
-import { ImageUploadButton } from "@/components/tiptap-ui/image-upload-button"
-import { ListDropdownMenu } from "@/components/tiptap-ui/list-dropdown-menu"
-import { BlockquoteButton } from "@/components/tiptap-ui/blockquote-button"
-import { CodeBlockButton } from "@/components/tiptap-ui/code-block-button"
+import { HeadingDropdownMenu } from "@tiptap-ui/components/tiptap-ui/heading-dropdown-menu"
+import { ImageUploadButton } from "@tiptap-ui/components/tiptap-ui/image-upload-button"
+import { ListDropdownMenu } from "@tiptap-ui/components/tiptap-ui/list-dropdown-menu"
+import { BlockquoteButton } from "@tiptap-ui/components/tiptap-ui/blockquote-button"
+import { CodeBlockButton } from "@tiptap-ui/components/tiptap-ui/code-block-button"
 import {
   ColorHighlightPopover,
   ColorHighlightPopoverContent,
   ColorHighlightPopoverButton,
-} from "@/components/tiptap-ui/color-highlight-popover"
+} from "@tiptap-ui/components/tiptap-ui/color-highlight-popover"
 import {
   LinkPopover,
   LinkContent,
   LinkButton,
-} from "@/components/tiptap-ui/link-popover"
-import { MarkButton } from "@/components/tiptap-ui/mark-button"
-import { TextAlignButton } from "@/components/tiptap-ui/text-align-button"
-import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
+} from "@tiptap-ui/components/tiptap-ui/link-popover"
+import { MarkButton } from "@tiptap-ui/components/tiptap-ui/mark-button"
+import { TextAlignButton } from "@tiptap-ui/components/tiptap-ui/text-align-button"
+import { UndoRedoButton } from "@tiptap-ui/components/tiptap-ui/undo-redo-button"
+import { FontSizeControls } from "@tiptap-ui/components/tiptap-ui/font-size-controls"
 
 // --- Icons ---
-import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon"
-import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon"
-import { LinkIcon } from "@/components/tiptap-icons/link-icon"
+import { ArrowLeftIcon } from "@tiptap-ui/components/tiptap-icons/arrow-left-icon"
+import { HighlighterIcon } from "@tiptap-ui/components/tiptap-icons/highlighter-icon"
+import { LinkIcon } from "@tiptap-ui/components/tiptap-icons/link-icon"
 
 // --- Hooks ---
-import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
-import { useWindowSize } from "@/hooks/use-window-size"
-import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
+import { useIsBreakpoint } from "@tiptap-ui/hooks/use-is-breakpoint"
+import { useWindowSize } from "@tiptap-ui/hooks/use-window-size"
+import { useCursorVisibility } from "@tiptap-ui/hooks/use-cursor-visibility"
 
 // --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
+import { ThemeToggle } from "@tiptap-ui/components/tiptap-templates/simple/theme-toggle"
 
 // --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
+import { handleImageUpload, MAX_FILE_SIZE } from "@tiptap-ui/lib/tiptap-utils"
 
 // --- Styles ---
-import "@/components/tiptap-templates/simple/simple-editor.scss"
+import "@tiptap-ui/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+import content from "@tiptap-ui/components/tiptap-templates/simple/data/content.json"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -89,58 +92,71 @@ const MainToolbarContent = ({
       <Spacer />
 
       <ToolbarGroup>
-        <UndoRedoButton action="undo" />
-        <UndoRedoButton action="redo" />
+        <UndoRedoButton action="undo" tooltip="Hoàn tác" />
+        <UndoRedoButton action="redo" tooltip="Làm lại" />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <HeadingDropdownMenu modal={false} levels={[1, 2, 3, 4]} />
+        <HeadingDropdownMenu
+          modal={false}
+          levels={[1, 2, 3, 4]}
+          tooltip="Tiêu đề"
+        />
         <ListDropdownMenu
           modal={false}
           types={["bulletList", "orderedList", "taskList"]}
+          tooltip="Danh sách"
         />
-        <BlockquoteButton />
-        <CodeBlockButton />
+        <BlockquoteButton tooltip="Trích dẫn" />
+        <CodeBlockButton tooltip="Khối mã" />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MarkButton type="bold" />
-        <MarkButton type="italic" />
-        <MarkButton type="strike" />
-        <MarkButton type="code" />
-        <MarkButton type="underline" />
+        <MarkButton type="bold" tooltip="In đậm" />
+        <MarkButton type="italic" tooltip="In nghiêng" />
+        <MarkButton type="strike" tooltip="Gạch ngang" />
+        <MarkButton type="code" tooltip="Mã nội dòng" />
+        <MarkButton type="underline" tooltip="Gạch chân" />
+        <FontSizeControls />
         {!isMobile ? (
-          <ColorHighlightPopover />
+          <ColorHighlightPopover tooltip="Tô màu nền" />
         ) : (
-          <ColorHighlightPopoverButton onClick={onHighlighterClick} />
+          <ColorHighlightPopoverButton
+            onClick={onHighlighterClick}
+            tooltip="Tô màu nền"
+          />
         )}
-        {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
+        {!isMobile ? (
+          <LinkPopover tooltip="Chèn liên kết" />
+        ) : (
+          <LinkButton onClick={onLinkClick} tooltip="Chèn liên kết" />
+        )}
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <MarkButton type="superscript" />
-        <MarkButton type="subscript" />
+        <MarkButton type="superscript" tooltip="Chỉ số trên" />
+        <MarkButton type="subscript" tooltip="Chỉ số dưới" />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <TextAlignButton align="left" />
-        <TextAlignButton align="center" />
-        <TextAlignButton align="right" />
-        <TextAlignButton align="justify" />
+        <TextAlignButton align="left" tooltip="Căn trái" />
+        <TextAlignButton align="center" tooltip="Căn giữa" />
+        <TextAlignButton align="right" tooltip="Căn phải" />
+        <TextAlignButton align="justify" tooltip="Căn đều" />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
-        <ImageUploadButton text="Add" />
+        <ImageUploadButton text="Thêm ảnh" tooltip="Chèn ảnh" />
       </ToolbarGroup>
 
       <Spacer />
@@ -227,6 +243,8 @@ export function SimpleEditor({
       TaskList,
       TaskItem.configure({ nested: true }),
       Highlight.configure({ multicolor: true }),
+      TextStyle,
+      FontSize,
       Image,
       Typography,
       Superscript,
@@ -267,6 +285,7 @@ export function SimpleEditor({
   }, [editor, value])
 
   return (
+    <FloatingDelayGroup delay={{ open: 400, close: 80 }} timeoutMs={250}>
     <div
       className={`simple-editor-wrapper ${embedded ? "simple-editor-wrapper--embedded" : ""}`}
     >
@@ -302,5 +321,6 @@ export function SimpleEditor({
         />
       </EditorContext.Provider>
     </div>
+    </FloatingDelayGroup>
   )
 }

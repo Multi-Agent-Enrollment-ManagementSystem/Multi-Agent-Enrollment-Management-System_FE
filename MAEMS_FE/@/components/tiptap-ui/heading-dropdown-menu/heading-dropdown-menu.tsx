@@ -1,26 +1,31 @@
 import { forwardRef, useCallback, useState } from "react"
 
 // --- Icons ---
-import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon"
+import { ChevronDownIcon } from "@tiptap-ui/components/tiptap-icons/chevron-down-icon"
 
 // --- Hooks ---
-import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
+import { useTiptapEditor } from "@tiptap-ui/hooks/use-tiptap-editor"
 
 // --- Tiptap UI ---
-import { HeadingButton } from "@/components/tiptap-ui/heading-button"
-import type { UseHeadingDropdownMenuConfig } from "@/components/tiptap-ui/heading-dropdown-menu"
-import { useHeadingDropdownMenu } from "@/components/tiptap-ui/heading-dropdown-menu"
+import { HeadingButton } from "@tiptap-ui/components/tiptap-ui/heading-button"
+import type { UseHeadingDropdownMenuConfig } from "@tiptap-ui/components/tiptap-ui/heading-dropdown-menu"
+import { useHeadingDropdownMenu } from "@tiptap-ui/components/tiptap-ui/heading-dropdown-menu"
 
 // --- UI Primitives ---
-import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
-import { Button } from "@/components/tiptap-ui-primitive/button"
+import type { ButtonProps } from "@tiptap-ui/components/tiptap-ui-primitive/button"
+import { Button } from "@tiptap-ui/components/tiptap-ui-primitive/button"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuGroup,
-} from "@/components/tiptap-ui-primitive/dropdown-menu"
+} from "@tiptap-ui/components/tiptap-ui-primitive/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@tiptap-ui/components/tiptap-ui-primitive/tooltip"
 
 export interface HeadingDropdownMenuProps
   extends Omit<ButtonProps, "type">, UseHeadingDropdownMenuConfig {
@@ -32,6 +37,10 @@ export interface HeadingDropdownMenuProps
    * Whether the dropdown should use a modal
    */
   modal?: boolean
+  /**
+   * Nhãn tooltip khi hover nút mở menu
+   */
+  tooltip?: React.ReactNode
 }
 
 /**
@@ -51,6 +60,7 @@ export const HeadingDropdownMenu = forwardRef<
       onOpenChange,
       children,
       modal = true,
+      tooltip = "Tiêu đề",
       ...buttonProps
     },
     ref
@@ -65,7 +75,9 @@ export const HeadingDropdownMenu = forwardRef<
 
     const handleOpenChange = useCallback(
       (open: boolean) => {
-        if (!editor || !canToggle) return
+        if (!editor) return
+        // Chỉ chặn mở menu khi không thao tác được; vẫn cho phép đóng
+        if (open && !canToggle) return
         setIsOpen(open)
         onOpenChange?.(open)
       },
@@ -78,40 +90,51 @@ export const HeadingDropdownMenu = forwardRef<
 
     return (
       <DropdownMenu modal={modal} open={isOpen} onOpenChange={handleOpenChange}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            data-active-state={isActive ? "on" : "off"}
-            role="button"
-            tabIndex={-1}
-            disabled={!canToggle}
-            data-disabled={!canToggle}
-            aria-label="Format text as heading"
-            aria-pressed={isActive}
-            tooltip="Heading"
-            {...buttonProps}
-            ref={ref}
-          >
-            {children ? (
-              children
-            ) : (
-              <>
-                <Icon className="tiptap-button-icon" />
-                <ChevronDownIcon className="tiptap-button-dropdown-small" />
-              </>
-            )}
-          </Button>
-        </DropdownMenuTrigger>
+        <Tooltip delay={300} useDelayGroup>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                data-active-state={isActive ? "on" : "off"}
+                role="button"
+                tabIndex={-1}
+                disabled={!canToggle}
+                data-disabled={!canToggle}
+                aria-label="Chọn cấp tiêu đề"
+                aria-pressed={isActive}
+                aria-haspopup="menu"
+                aria-expanded={isOpen}
+                showTooltip={false}
+                {...buttonProps}
+                ref={ref}
+              >
+                {children ? (
+                  children
+                ) : (
+                  <>
+                    <Icon className="tiptap-button-icon" />
+                    <ChevronDownIcon className="tiptap-button-dropdown-small" />
+                  </>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>{tooltip}</TooltipContent>
+        </Tooltip>
 
         <DropdownMenuContent align="start">
           <DropdownMenuGroup>
             {levels.map((level) => (
-              <DropdownMenuItem key={`heading-${level}`} asChild>
+              <DropdownMenuItem
+                key={`heading-${level}`}
+                asChild
+                onSelect={() => setIsOpen(false)}
+              >
                 <HeadingButton
                   editor={editor}
                   level={level}
-                  text={`Heading ${level}`}
+                  text={`Tiêu đề ${level}`}
                   showTooltip={false}
                 />
               </DropdownMenuItem>

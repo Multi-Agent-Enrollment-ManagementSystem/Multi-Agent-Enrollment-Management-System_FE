@@ -76,14 +76,16 @@ export function PasswordField({
               {req.met ? (
                 <CheckOutlined className="!text-green-600 mt-0.5 flex-shrink-0" />
               ) : (
-                <CloseOutlined className="!text-slate-300 mt-0.5 flex-shrink-0" />
+                // Tăng độ tương phản dấu ✕ khi nền form là trắng mờ (white/50) để dễ đọc hơn.
+                <CloseOutlined className="!text-slate-400 mt-0.5 flex-shrink-0" />
               )}
-              <span className={req.met ? "text-green-700" : "text-slate-500"}>
+              {/* Tăng tương phản chữ yêu cầu chưa đạt để không bị “chìm” trên nền trắng mờ. */}
+              <span className={req.met ? "text-green-700" : "text-slate-600"}>
                 {req.label}
               </span>
             </li>
           ))}
-          <li className="flex items-start gap-1.5 text-xs leading-snug text-slate-500 pl-0">
+          <li className="flex items-start gap-1.5 text-xs leading-snug text-slate-600 pl-0">
             <span className="w-3.5 flex-shrink-0" />
             Tối đa 100 ký tự
           </li>

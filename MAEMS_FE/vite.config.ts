@@ -9,7 +9,10 @@ export default defineConfig({
   base: "/",
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./@"),
+      // @/* → src/*: import tuyệt đối cho code ứng dụng (vd. @/components/Button)
+      "@": path.resolve(__dirname, "./src"),
+      // @tiptap-ui/* → @/*: scaffold TipTap UI (tránh trùng npm scope @tiptap/*)
+      "@tiptap-ui": path.resolve(__dirname, "./@"),
     },
   },
 });

@@ -114,10 +114,11 @@ export function AppHeader() {
       {/* ── Header chính cố định ── */}
       <Header
         className={`
+          liquid-glass
           !h-auto !leading-none !px-0
-          fixed top-2 left-1/2 -translate-x-1/2
+          !fixed top-2 left-1/2 -translate-x-1/2
           w-[calc(100%-24px)] max-w-4xl
-          z-[60] !bg-white/70 backdrop-blur-xs
+          z-[60] !bg-white/50 backdrop-blur-xs
           rounded-4xl border transition-[border-color,box-shadow,transform] duration-300
           ${
             scrolled

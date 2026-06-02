@@ -16,7 +16,7 @@ import {
   Tooltip,
   Upload,
 } from "antd";
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { SimpleEditor } from "@tiptap-ui/components/tiptap-templates/simple/simple-editor";
 import { ArrowDownUp, ArrowDownWideNarrow, ArrowUpWideNarrow, Newspaper, RefreshCw, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { OfficerLayout } from "../../layouts/OfficerLayout";

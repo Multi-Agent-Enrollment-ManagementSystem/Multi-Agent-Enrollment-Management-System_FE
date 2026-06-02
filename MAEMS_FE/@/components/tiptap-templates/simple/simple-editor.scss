@@ -55,6 +55,8 @@ body,
 }
 
 .simple-editor-wrapper {
+  /* Dropdown/tooltip portal phải cao hơn Ant Modal (~1000) */
+  --tt-floating-overlay-z: 1200;
   width: 100vw;
   height: 100vh;
   overflow: auto;
@@ -95,4 +97,35 @@ body,
   .simple-editor-content .tiptap.ProseMirror.simple-editor {
     padding: 1rem 1.5rem 30vh;
   }
+}
+
+/* Nhóm cỡ chữ: − | Aa 16 | + */
+.tiptap-font-size-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.tiptap-font-size-controls__preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.0625rem;
+  padding: 0 0.125rem;
+  user-select: none;
+  pointer-events: none;
+}
+
+.tiptap-font-size-controls__aa {
+  width: 1.375rem;
+  height: 1.375rem;
+  flex-shrink: 0;
+}
+
+.tiptap-font-size-controls__label {
+  min-width: 1.125rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--tt-theme-text);
 }

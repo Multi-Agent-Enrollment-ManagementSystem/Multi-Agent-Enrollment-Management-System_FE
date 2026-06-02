@@ -10,6 +10,7 @@ import {
 import { ExternalLink, SquareArrowOutUpRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { GuestLayout } from "../../layouts/GuestLayout";
+import { ParallaxImage } from "@/components/ParallaxImage";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -37,17 +38,20 @@ export function AdmissionPage() {
     <GuestLayout>
       <div className="bg-gradient-to-br from-orange-200 via-amber-50 to-gray-50">
         {/* Banner đầu trang: responsive theo tỉ lệ, tránh ép full 100vh trên mobile */}
-        <section className="relative w-full">
-          <img
+        {/* Banner hero chỉ chiếm ~1/2 viewport (đúng yêu cầu), dùng object-cover để giữ bố cục. */}
+        <section className="relative w-full h-[50vh] max-h-[50vh] overflow-hidden">
+          <ParallaxImage
             src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773932965/Bannerweb-kythisotuyenArtboard-2-copy100_mnyvhw.png"
             alt="Admission Hero Banner"
-            className="block w-full h-auto"
+            wrapperClassName="w-full h-full"
+            className="h-full"
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
         </section>
 
         <div className="w-full py-8 px-6 md:px-10 pb-16 box-border text-gray-900 max-md:px-4">
-          <section className="mb-12 min-h-[calc(100vh-160px)] flex items-center">
+          {/* Giảm “hero” còn khoảng 1/2 viewport để tránh chiếm toàn màn hình. */}
+          <section className="mb-12 min-h-[50vh] flex items-center">
             <Row gutter={[24, 24]} align="stretch">
               <Col xs={24} md={12}>
                 <div className="[&>div]:mb-4 [&>div:last-child]:mb-0">
