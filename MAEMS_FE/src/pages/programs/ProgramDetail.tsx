@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { GuestLayout } from "@/layouts/GuestLayout";
 import { getProgramById } from "@/api/programs";
+import { CampusHeroBackground } from "@/components/CampusHeroBackground";
 import type { Program } from "@/types/program";
 
 const { Title, Paragraph, Text } = Typography;
@@ -113,15 +114,8 @@ export function ProgramDetail() {
         <>
           {/* Hero */}
           <section className="relative py-20 px-6 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-900/90 via-orange-700/70 to-gray-900/90" />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle, rgba(255,255,255,0.10) 1px, transparent 1px)",
-                backgroundSize: "28px 28px",
-              }}
-            />
+            {/* Ảnh nền khuôn viên + overlay (có parallax) để đồng bộ với trang /dao-tao và /tin-tuc. */}
+            <CampusHeroBackground />
             <div className="relative z-10 max-w-5xl mx-auto">
               {/* Breadcrumb */}
               <div className="flex items-center gap-1.5 text-sm mb-6 text-orange-200/80">

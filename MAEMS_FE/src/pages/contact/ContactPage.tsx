@@ -1,6 +1,7 @@
 import { ChevronRight, Home, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GuestLayout } from "../../layouts/GuestLayout";
+import { ParallaxImage } from "@/components/ParallaxImage";
 
 type Campus = {
   name: string;
@@ -68,11 +69,13 @@ const campuses: Campus[] = [
 export function ContactPage() {
   return (
     <GuestLayout>
-      <section className="relative w-full">
-        <img
+      {/* Banner đầu trang có parallax, giới hạn 1/2 viewport để không chiếm full màn hình. */}
+      <section className="relative w-full h-[50vh] max-h-[50vh] overflow-hidden">
+        <ParallaxImage
           src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773935766/Banner-lienhe_sxuxng.png"
           alt="Liên hệ"
-          className="block w-full h-auto max-h-[52vh] sm:max-h-[45vh] object-cover"
+          wrapperClassName="w-full h-full"
+          className="h-full"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
       </section>
