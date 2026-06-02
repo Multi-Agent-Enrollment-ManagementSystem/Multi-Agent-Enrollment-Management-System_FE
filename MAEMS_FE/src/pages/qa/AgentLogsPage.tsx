@@ -518,7 +518,7 @@ export function AgentLogsPage() {
                     value={searchTypeDraft}
                     onChange={(value) => setSearchTypeDraft(value)}
                     options={[
-                      { value: "applicationId", label: "ID Thí sinh" },
+                      { value: "applicationId", label: "ID Đơn" },
                       { value: "documentId", label: "ID Tài liệu" },
                     ]}
                     className="w-44"
@@ -529,7 +529,7 @@ export function AgentLogsPage() {
                     placeholder={
                       searchTypeDraft === "documentId"
                         ? "Nhập ID tài liệu..."
-                        : "Nhập ID thí sinh..."
+                        : "Nhập ID đơn..."
                     }
                     value={searchValueDraft}
                     onChange={(e) => setSearchValueDraft(e.target.value)}
