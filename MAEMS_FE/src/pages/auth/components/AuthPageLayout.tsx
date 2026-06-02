@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import type { ReactNode } from "react";
-import { AppHeader } from "../../../components/AppHeader";
-import { CampusHeroBackground } from "../../../components/CampusHeroBackground";
+import { AppHeader } from "@/components/AppHeader";
+import { CampusHeroBackground } from "@/components/CampusHeroBackground";
 
 const { Content } = Layout;
 
@@ -12,7 +12,7 @@ type AuthPageLayoutProps = {
 /** Layout nền ảnh khuôn viên + header cho toàn trang xác thực. */
 export function AuthPageLayout({ children }: AuthPageLayoutProps) {
   return (
-    <Layout className="min-h-screen relative overflow-hidden">
+    <Layout className="min-h-screen relative overflow-hidden !bg-transparent">
       <CampusHeroBackground fixed />
       {/* Lớp tối nhẹ giúp form đăng nhập nổi bật trên ảnh nền */}
       <div className="absolute inset-0 bg-black/45 z-0 pointer-events-none" />

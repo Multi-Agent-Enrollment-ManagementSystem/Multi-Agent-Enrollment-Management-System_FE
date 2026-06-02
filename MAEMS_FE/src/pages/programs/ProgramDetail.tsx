@@ -15,9 +15,9 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { AppHeader } from "../../components/AppHeader";
-import { getProgramById } from "../../api/programs";
-import type { Program } from "../../types/program";
+import { GuestLayout } from "@/layouts/GuestLayout";
+import { getProgramById } from "@/api/programs";
+import type { Program } from "@/types/program";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -89,13 +89,11 @@ export function ProgramDetail() {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-white">
-      <AppHeader />
-
+    <GuestLayout>
       {loading ? (
         <DetailSkeleton />
       ) : notFound || !program ? (
-        <div className="pt-20">
+        <div className="pt-24 px-6">
           <Result
             status="404"
             title="Không tìm thấy chương trình"
@@ -406,6 +404,6 @@ export function ProgramDetail() {
           </section>
         </>
       )}
-    </div>
+    </GuestLayout>
   );
 }

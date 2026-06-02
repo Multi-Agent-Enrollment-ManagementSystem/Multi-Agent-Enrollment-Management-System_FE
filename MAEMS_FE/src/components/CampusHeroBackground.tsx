@@ -1,4 +1,4 @@
-import { CAMPUS_HERO_BG } from "../constants/campusBackground";
+import { CAMPUS_HERO_BG } from "@/constants/campusBackground";
 
 type CampusHeroBackgroundProps = {
   /** Cố định theo viewport khi cuộn — phù hợp trang full-height như /auth. */
