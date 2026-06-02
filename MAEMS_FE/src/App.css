@@ -10,14 +10,49 @@ body,
 /* Liquid-glass utilities (exact CSS, in a <style> block)
 Two variants — .liquid-glass (subtle, for nav/chips/cards) and .liquid-glass-strong (heavier blur, for primary CTA): */
 .liquid-glass {
-  background: rgba(255, 255, 255, 0.01);
-  background-blend-mode: luminosity;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border: none;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  position: relative;
+  /* Apple-like “Liquid Glass” (CSS thuần):
+   * - Khúc xạ giả lập: nhiều lớp gradient + tăng saturate/contrast (không chỉ blur).
+   * - Specular highlight động: lớp ánh sáng chạy nhẹ + có thể “bám” theo biến --lg-x/--lg-y.
+   * - Depth: shadow nhiều tầng (ngoài + inset) để tách lớp khỏi nền.
+   * - Fluidity: transition + trạng thái active “squish” như giọt nước.
+   *
+   * Lưu ý quan trọng:
+   * - Class này KHÔNG tự set `position` để tránh ghi đè `fixed/sticky` ở component (vd: header).
+   * - Để `::before/::after` bám đúng khung, phần tử dùng `.liquid-glass` cần tự có
+   *   `position` khác `static` (Tailwind: `relative` / `fixed` / `sticky`).
+   */
+  isolation: isolate;
   overflow: hidden;
+  border: none;
+
+  /* Điểm bám highlight (có thể set từ JS theo pointer/tilt, mặc định ở giữa). */
+  --lg-x: 50%;
+  --lg-y: 20%;
+
+  /* Lớp “vật liệu” (tint + illumination) — ưu tiên đọc được nội dung. */
+  background:
+    radial-gradient(140% 120% at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 38%, rgba(255, 255, 255, 0.04) 60%, rgba(255, 255, 255, 0.02) 100%),
+    radial-gradient(120% 90% at 10% 0%, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.02) 55%, rgba(255, 255, 255, 0) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 55%, rgba(255, 255, 255, 0.02) 100%);
+
+  /* “Khúc xạ” trong giới hạn CSS: blur + saturate/contrast/brightness để màu nền “hòa tan” tự nhiên. */
+  backdrop-filter: blur(14px) saturate(160%) contrast(108%) brightness(1.06);
+  -webkit-backdrop-filter: blur(14px) saturate(160%) contrast(108%) brightness(1.06);
+
+  /* Depth: tách lớp (shadow mềm) + viền sáng inset mỏng như kính. */
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, 0.14),
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+
+  /* Fluidity: bo góc/độ nổi/độ sáng thay đổi mượt khi hover/focus/active. */
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    backdrop-filter 220ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    filter 220ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  will-change: transform, box-shadow, backdrop-filter;
 }
 .liquid-glass::before {
   content: "";
@@ -25,29 +60,102 @@ Two variants — .liquid-glass (subtle, for nav/chips/cards) and .liquid-glass-s
   inset: 0;
   border-radius: inherit;
   padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
+
+  /* Viền kính (highlight border) — gradient theo chiều dọc + chút “lóe” ngang. */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 255, 255, 0.22) 18%,
+      rgba(255, 255, 255, 0.06) 42%,
+      rgba(255, 255, 255, 0.06) 58%,
+      rgba(255, 255, 255, 0.22) 82%,
+      rgba(255, 255, 255, 0.60) 100%
+    ),
+    radial-gradient(120% 80% at 20% 0%, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0) 60%);
   -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  /* Mask chuẩn để tương thích trình duyệt (giữ đúng ý đồ “chỉ vẽ viền”, không lấp đầy). */
+  mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
 }
-.liquid-glass-strong {
-  /* same but: */
-  backdrop-filter: blur(50px);
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.7;
+
+  /* Specular highlight: 2 vệt sáng (một “đốm” + một “vệt”) để tạo cảm giác 3D. */
+  background:
+    radial-gradient(42% 26% at var(--lg-x) var(--lg-y), rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.18) 28%, rgba(255, 255, 255, 0) 65%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0) 35%, rgba(255, 255, 255, 0.22) 48%, rgba(255, 255, 255, 0) 60%);
+
+  /* Chuyển động highlight nhẹ: giả lập “lấp lánh” khi tương tác/thiết bị chuyển động. */
+  transform: translate3d(-14%, -6%, 0);
+  animation: lg-shimmer 5.6s ease-in-out infinite;
+  filter: blur(0.2px);
+}
+
+.liquid-glass:hover,
+.liquid-glass:focus-visible {
+  /* Khi người dùng tương tác: tăng cảm giác “thấu kính” (độ sống của màu nền). */
+  backdrop-filter: blur(16px) saturate(175%) contrast(112%) brightness(1.08);
+  -webkit-backdrop-filter: blur(16px) saturate(175%) contrast(112%) brightness(1.08);
+  transform: translateY(-1px);
   box-shadow:
-    4px 4px 4px rgba(0, 0, 0, 0.05),
-    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    0 18px 52px rgba(0, 0, 0, 0.16),
+    0 8px 20px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.liquid-glass:active {
+  /* Fluidity khi nhấn: “giọt nước” bị nén nhẹ (squish), không bị giật. */
+  transform: translateY(0) scale(0.985);
+}
+
+@keyframes lg-shimmer {
+  0% {
+    transform: translate3d(-18%, -10%, 0) rotate(-2deg);
+    opacity: 0.45;
+  }
+  45% {
+    transform: translate3d(6%, 3%, 0) rotate(1deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(18%, 12%, 0) rotate(2deg);
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass::after {
+    animation: none;
+  }
+  .liquid-glass {
+    transition: none;
+  }
+}
+.liquid-glass-strong {
+  /* Bản “strong”: tăng độ khúc xạ (blur + saturate) + depth rõ hơn cho CTA. */
+  backdrop-filter: blur(28px) saturate(185%) contrast(112%) brightness(1.08);
+  -webkit-backdrop-filter: blur(28px) saturate(185%) contrast(112%) brightness(1.08);
+  box-shadow:
+    0 22px 64px rgba(0, 0, 0, 0.20),
+    0 10px 24px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 }
 .liquid-glass-strong::before {
-  /* same but 0.5 / 0.2 / 0 / 0 / 0.2 / 0.5 stops */
+  /* Viền kính mạnh hơn để giữ độ “premium” nhưng vẫn đọc được nội dung. */
+  opacity: 0.95;
 }
