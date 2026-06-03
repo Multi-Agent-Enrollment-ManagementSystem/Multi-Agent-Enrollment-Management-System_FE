@@ -1,6 +1,7 @@
 import { Button, Form, Input, Typography } from "antd";
 import type { FormInstance } from "antd";
 import type { AuthApiErrorState, ResetRequestFormValues } from "../types";
+import { authFormClassName } from "../utils/authFormClassName";
 import { AuthApiErrorAlert } from "./AuthApiErrorAlert";
 import { ResetFlowHeader } from "./ResetFlowHeader";
 
@@ -40,7 +41,7 @@ export function ResetPasswordRequestView({
         layout="vertical"
         requiredMark={false}
         onFinish={onSubmit}
-        className="[&_.ant-form-item]:mb-4"
+        className={authFormClassName}
       >
         <Form.Item
           name="email"

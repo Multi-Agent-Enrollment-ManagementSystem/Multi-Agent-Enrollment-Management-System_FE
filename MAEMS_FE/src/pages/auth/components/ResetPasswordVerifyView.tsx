@@ -11,6 +11,7 @@ import {
 } from "../../../utils/authReset";
 import { newPasswordFormRules } from "../../../utils/passwordValidation";
 import type { AuthApiErrorState, ResetVerifyFormValues } from "../types";
+import { authFormClassName } from "../utils/authFormClassName";
 import { AuthApiErrorAlert } from "./AuthApiErrorAlert";
 import { PasswordField } from "./PasswordField";
 import { ResetFlowHeader } from "./ResetFlowHeader";
@@ -105,7 +106,7 @@ export function ResetPasswordVerifyView({
         layout="vertical"
         requiredMark={false}
         onFinish={onSubmit}
-        className="[&_.ant-form-item]:mb-4"
+        className={authFormClassName}
       >
         <Form.Item
           name="otpCode"

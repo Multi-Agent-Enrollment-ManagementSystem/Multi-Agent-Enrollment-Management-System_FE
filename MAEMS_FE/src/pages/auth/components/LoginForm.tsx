@@ -3,6 +3,7 @@ import type { FormInstance } from "antd";
 import { GoogleLoginButton } from "../../../components/GoogleLoginButton";
 import { loginPasswordFormRules } from "../../../utils/passwordValidation";
 import type { AuthApiErrorState, LoginFormValues } from "../types";
+import { authFormClassName } from "../utils/authFormClassName";
 import { AuthApiErrorAlert } from "./AuthApiErrorAlert";
 import { PasswordField } from "./PasswordField";
 
@@ -30,7 +31,7 @@ export function LoginForm({
       layout="vertical"
       requiredMark={false}
       onFinish={onSubmit}
-      className="[&_.ant-form-item]:mb-4"
+      className={authFormClassName}
     >
       <Form.Item
         name="usernameOrEmail"
