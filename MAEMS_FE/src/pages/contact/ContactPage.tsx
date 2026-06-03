@@ -1,7 +1,11 @@
 import { ChevronRight, Home, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
-import { GuestLayout } from "../../layouts/GuestLayout";
 import { ParallaxImage } from "@/components/ParallaxImage";
+import {
+  PublicHeroReveal,
+  PublicItemReveal,
+  PublicSectionReveal,
+} from "@/components/public/PublicPageMotion";
 
 type Campus = {
   name: string;
@@ -68,20 +72,22 @@ const campuses: Campus[] = [
 
 export function ContactPage() {
   return (
-    <GuestLayout>
+    <>
       {/* Banner đầu trang có parallax, giới hạn 1/2 viewport để không chiếm full màn hình. */}
-      <section className="relative w-full h-[50vh] max-h-[50vh] overflow-hidden">
-        <ParallaxImage
+      <PublicHeroReveal>
+        <section className="relative w-full h-[50vh] max-h-[50vh] overflow-hidden">
+          <ParallaxImage
           src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773935766/Banner-lienhe_sxuxng.png"
           alt="Liên hệ"
           wrapperClassName="w-full h-full"
           className="h-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-      </section>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+        </section>
+      </PublicHeroReveal>
 
-      {/* Breadcrumb */}
       <div className="max-w-[1200px] mx-auto px-4 sm:px-5">
+        <PublicSectionReveal delay={0.04}>
         <div className="flex items-center gap-2 py-4 text-sm flex-wrap">
           <Link to="/">
             <Home size={18} className="text-orange-500" fill="currentColor" />
@@ -89,11 +95,12 @@ export function ContactPage() {
           <ChevronRight size={14} className="text-gray-400" />
           <span className="text-gray-600">Liên hệ</span>
         </div>
+        </PublicSectionReveal>
       </div>
 
-      {/* Danh sách campus: mobile ưu tiên dễ đọc, desktop giữ bố cục xen kẽ */}
       <section className="max-w-[1200px] mx-auto px-4 sm:px-5 py-4 sm:py-8 md:py-10 space-y-5 sm:space-y-7">
-        {campuses.map((campus) => (
+        {campuses.map((campus, i) => (
+          <PublicItemReveal key={campus.name} index={i}>
           <article
             key={campus.name}
             className={`rounded-2xl bg-white border border-gray-200/80 shadow-sm overflow-hidden ${
@@ -148,8 +155,9 @@ export function ContactPage() {
               </div>
             </div>
           </article>
+          </PublicItemReveal>
         ))}
       </section>
-    </GuestLayout>
+    </>
   );
 }

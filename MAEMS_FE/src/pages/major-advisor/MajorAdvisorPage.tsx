@@ -27,7 +27,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useState } from "react";
 import type { AxiosError } from "axios";
 import { analyzeMajorAdvisor } from "../../api/major-advisor";
-import { GuestLayout } from "../../layouts/GuestLayout";
 import type {
   MajorAdvisorAnalyzeResponse,
   MajorAdvisorBadRequest,
@@ -135,7 +134,7 @@ export function MajorAdvisorPage() {
   };
 
   return (
-    <GuestLayout>
+    <>
       <section className="relative overflow-hidden bg-gradient-to-b from-orange-50 via-white to-orange-50/50 px-4 pb-14 pt-24 sm:px-5 md:px-6">
         <div className="pointer-events-none absolute -top-24 left-1/2 h-[260px] w-[260px] -translate-x-1/2 rounded-full bg-orange-300/20 blur-3xl" />
 
@@ -547,6 +546,6 @@ export function MajorAdvisorPage() {
           )}
         </div>
       </section>
-    </GuestLayout>
+    </>
   );
 }

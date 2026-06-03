@@ -2,6 +2,7 @@ import { Badge, Input, Select, Tag } from "antd";
 import { ArrowUpDown, BookOpen, Search, SlidersHorizontal } from "lucide-react";
 import type { MajorBasic } from "@/types/major";
 import type { ProgramSortKey } from "../types";
+import { PublicSectionReveal } from "@/components/public/PublicPageMotion";
 
 const { Option } = Select;
 
@@ -38,6 +39,7 @@ export function ProgramListFilters({
   onClearAll,
 }: ProgramListFiltersProps) {
   return (
+    <PublicSectionReveal>
     <section className="py-6 sm:py-8 px-6 bg-gray-50/95 backdrop-blur-sm border-b border-gray-100 z-30">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center">
@@ -114,5 +116,6 @@ export function ProgramListFilters({
         </div>
       </div>
     </section>
+    </PublicSectionReveal>
   );
 }

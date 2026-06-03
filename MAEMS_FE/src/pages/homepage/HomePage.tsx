@@ -13,8 +13,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CampusHeroBackground } from "../../components/CampusHeroBackground";
-import { GuestLayout } from "../../layouts/GuestLayout";
-
+import { ScrollReveal } from "../../components/ScrollReveal";
 const { Title, Paragraph, Text } = Typography;
 
 const features = [
@@ -87,72 +86,90 @@ const actors = [
   },
 ];
 
+/** Độ trễ stagger cho hero — lần lượt badge → tiêu đề → mô tả → CTA */
+const HERO_STAGGER = [0, 0.12, 0.26, 0.4] as const;
+
 export function HomePage() {
   return (
-    <GuestLayout>
-      {/* Hero */}
+    <>
+      {/* Hero — animate ngay khi vào trang, từng khối hiện dần */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Ảnh khuôn viên FPT làm nền hero — đồng bộ với các trang đào tạo, tin tức, auth */}
         <CampusHeroBackground />
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
-            <Sparkles size={14} className="text-orange-300" />
-            <Text className="!text-orange-200 text-sm font-medium">
-              Được hỗ trợ bởi LLM & Multi-Agent AI
-            </Text>
-          </div>
+          <ScrollReveal immediate delay={HERO_STAGGER[0]} offsetY={14}>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
+              <Sparkles size={14} className="text-orange-300" />
+              <Text className="!text-orange-200 text-sm font-medium">
+                Được hỗ trợ bởi LLM & Multi-Agent AI
+              </Text>
+            </div>
+          </ScrollReveal>
 
-          <Title
-            level={1}
-            className="!text-white !text-4xl md:!text-6xl !font-extrabold !leading-tight !mb-6"
-          >
-            Multi-Agent Enrollment
-            <br />
-            <span className="text-orange-400">Management System</span>
-          </Title>
+          <ScrollReveal immediate delay={HERO_STAGGER[1]} offsetY={22}>
+            <Title
+              level={1}
+              className="!text-white !text-4xl md:!text-6xl !font-extrabold !leading-tight !mb-6"
+            >
+              Multi-Agent Enrollment
+              <br />
+              <span className="text-orange-400">Management System</span>
+            </Title>
+          </ScrollReveal>
 
-          <Paragraph className="!text-gray-200 text-lg md:text-xl max-w-2xl mx-auto !mb-10 leading-relaxed">
-            Hệ thống đa tác tử hỗ trợ quản lý tuyển sinh với sự hỗ trợ của LLM —
-            tự động, minh bạch và thông minh 24/7 cho Trường Đại học FPT.
-          </Paragraph>
+          <ScrollReveal immediate delay={HERO_STAGGER[2]} offsetY={18}>
+            <Paragraph className="!text-gray-200 text-lg md:text-xl max-w-2xl mx-auto !mb-10 leading-relaxed">
+              Hệ thống đa tác tử hỗ trợ quản lý tuyển sinh với sự hỗ trợ của LLM —
+              tự động, minh bạch và thông minh 24/7 cho Trường Đại học FPT.
+            </Paragraph>
+          </ScrollReveal>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/auth">
-              <Button
-                type="primary"
-                size="large"
-                icon={<ArrowRight size={16} />}
-                className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 !h-12 !px-8 !rounded-full !font-semibold !text-base"
-              >
-                Bắt đầu đăng ký
-              </Button>
-            </Link>
-            <Link to="/tuyen-sinh">
-              <Button
-                size="large"
-                className="!bg-white/10 !border-white/30 !text-white hover:!bg-white/20 !h-12 !px-8 !rounded-full !font-semibold !text-base backdrop-blur-sm"
-              >
-                Thông tin tuyển sinh
-              </Button>
-            </Link>
-          </div>
+          <ScrollReveal immediate delay={HERO_STAGGER[3]} offsetY={16} blur={false}>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link to="/auth">
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<ArrowRight size={16} />}
+                  className="!bg-orange-500 !border-orange-500 hover:!bg-orange-600 !h-12 !px-8 !rounded-full !font-semibold !text-base"
+                >
+                  Bắt đầu đăng ký
+                </Button>
+              </Link>
+              <Link to="/tuyen-sinh">
+                <Button
+                  size="large"
+                  className="!bg-white/10 !border-white/30 !text-white hover:!bg-white/20 !h-12 !px-8 !rounded-full !font-semibold !text-base backdrop-blur-sm"
+                >
+                  Thông tin tuyển sinh
+                </Button>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
-        {/* Chỉ báo cuộn xuống: icon mập hơn, dễ nhìn và thân thiện hơn */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-10 h-10 rounded-full bg-white/15 border border-white/25 flex items-center justify-center shadow-sm">
-            <ChevronDown
-              size={24}
-              strokeWidth={2.75}
-              className="text-white/90"
-            />
+
+        <ScrollReveal
+          immediate
+          delay={0.55}
+          offsetY={0}
+          blur={false}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <div className="animate-bounce">
+            <div className="w-10 h-10 rounded-full bg-white/15 border border-white/25 flex items-center justify-center shadow-sm">
+              <ChevronDown
+                size={24}
+                strokeWidth={2.75}
+                className="text-white/90"
+              />
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
-      {/* Features */}
+      {/* Features — tiêu đề và từng card hiện khi scroll vào view */}
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <ScrollReveal className="text-center mb-14">
             <Title level={2} className="!font-extrabold !text-gray-900 !mb-3">
               Tại sao chọn hệ thống của chúng tôi?
             </Title>
@@ -160,21 +177,23 @@ export function HomePage() {
               Các tác tử AI và mô hình ngôn ngữ lớn phối hợp để cung cấp hỗ trợ
               tuyển sinh thông minh, minh bạch và hiệu quả.
             </Paragraph>
-          </div>
+          </ScrollReveal>
           <Row gutter={[24, 24]}>
-            {features.map((f) => (
+            {features.map((f, i) => (
               <Col xs={24} sm={12} md={6} key={f.title}>
-                <div className="h-full p-6 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col items-center text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center mb-4">
-                    {f.icon}
+                <ScrollReveal delay={i * 0.08} amount={0.15}>
+                  <div className="h-full p-6 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col items-center text-center">
+                    <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center mb-4">
+                      {f.icon}
+                    </div>
+                    <Text strong className="text-gray-800 text-base block mb-2">
+                      {f.title}
+                    </Text>
+                    <Text className="text-gray-500 text-sm leading-relaxed">
+                      {f.desc}
+                    </Text>
                   </div>
-                  <Text strong className="text-gray-800 text-base block mb-2">
-                    {f.title}
-                  </Text>
-                  <Text className="text-gray-500 text-sm leading-relaxed">
-                    {f.desc}
-                  </Text>
-                </div>
+                </ScrollReveal>
               </Col>
             ))}
           </Row>
@@ -184,7 +203,7 @@ export function HomePage() {
       {/* Pipeline */}
       <section className="py-20 px-6 bg-white">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-14">
+          <ScrollReveal className="text-center mb-14">
             <Title level={2} className="!font-extrabold !text-gray-900 !mb-3">
               Quy trình xử lý đa tác tử
             </Title>
@@ -192,25 +211,24 @@ export function HomePage() {
               Theo dõi từng bước khi các tác tử AI chuyên biệt phối hợp xử lý hồ
               sơ với tính minh bạch và thông minh.
             </Paragraph>
-          </div>
+          </ScrollReveal>
           <div className="space-y-4">
             {pipeline.map((step, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-5 p-5 rounded-2xl border border-gray-100 bg-gray-50 hover:bg-orange-50/40 hover:border-orange-200 transition-colors"
-              >
-                <div className="w-9 h-9 rounded-full bg-orange-500 text-white font-bold text-sm flex items-center justify-center flex-shrink-0">
-                  {i + 1}
+              <ScrollReveal key={i} delay={i * 0.07} amount={0.12}>
+                <div className="flex items-center gap-5 p-5 rounded-2xl border border-gray-100 bg-gray-50 hover:bg-orange-50/40 hover:border-orange-200 transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-orange-500 text-white font-bold text-sm flex items-center justify-center flex-shrink-0">
+                    {i + 1}
+                  </div>
+                  <Text className="text-gray-700 text-sm flex-1">{step}</Text>
+                  <CircleCheck
+                    size={20}
+                    className="text-green-500 flex-shrink-0"
+                  />
                 </div>
-                <Text className="text-gray-700 text-sm flex-1">{step}</Text>
-                <CircleCheck
-                  size={20}
-                  className="text-green-500 flex-shrink-0"
-                />
-              </div>
+              </ScrollReveal>
             ))}
           </div>
-          <div className="flex justify-center mt-10">
+          <ScrollReveal className="flex justify-center mt-10" delay={0.1}>
             <Link to="/auth">
               <Button
                 type="primary"
@@ -221,14 +239,14 @@ export function HomePage() {
                 Trải nghiệm hệ thống
               </Button>
             </Link>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Actors */}
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
+          <ScrollReveal className="text-center mb-14">
             <Title level={2} className="!font-extrabold !text-gray-900 !mb-3">
               Dành cho mọi đối tượng
             </Title>
@@ -236,31 +254,33 @@ export function HomePage() {
               Hệ thống phục vụ đầy đủ các vai trò trong quy trình tuyển sinh, từ
               thí sinh đến quản trị viên hệ thống.
             </Paragraph>
-          </div>
+          </ScrollReveal>
           <Row gutter={[24, 24]}>
-            {actors.map((a) => (
+            {actors.map((a, i) => (
               <Col xs={24} sm={12} key={a.role}>
-                <div className="h-full p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                      {a.icon}
+                <ScrollReveal delay={i * 0.09} amount={0.12}>
+                  <div className="h-full p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+                        {a.icon}
+                      </div>
+                      <Text strong className="text-gray-800 text-base">
+                        {a.role}
+                      </Text>
                     </div>
-                    <Text strong className="text-gray-800 text-base">
-                      {a.role}
-                    </Text>
+                    <ul className="space-y-2">
+                      {a.items.map((item) => (
+                        <li key={item} className="flex items-start gap-2">
+                          <CheckCircle2
+                            size={15}
+                            className="text-orange-400 flex-shrink-0 mt-0.5"
+                          />
+                          <Text className="text-gray-600 text-sm">{item}</Text>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="space-y-2">
-                    {a.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <CheckCircle2
-                          size={15}
-                          className="text-orange-400 flex-shrink-0 mt-0.5"
-                        />
-                        <Text className="text-gray-600 text-sm">{item}</Text>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                </ScrollReveal>
               </Col>
             ))}
           </Row>
@@ -269,7 +289,7 @@ export function HomePage() {
 
       {/* CTA Banner */}
       <section className="py-20 px-6 bg-gradient-to-r from-orange-500 to-orange-600">
-        <div className="max-w-3xl mx-auto text-center">
+        <ScrollReveal className="max-w-3xl mx-auto text-center" amount={0.25}>
           <Title level={2} className="!text-white !font-extrabold !mb-4">
             Sẵn sàng trải nghiệm tuyển sinh thông minh?
           </Title>
@@ -286,8 +306,8 @@ export function HomePage() {
               Bắt đầu đăng ký
             </Button>
           </Link>
-        </div>
+        </ScrollReveal>
       </section>
-    </GuestLayout>
+    </>
   );
 }

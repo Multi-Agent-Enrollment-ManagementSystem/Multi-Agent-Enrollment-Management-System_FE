@@ -1,5 +1,6 @@
 import { Typography } from "antd";
 import { Link } from "react-router-dom";
+import { PublicSectionReveal } from "@/components/public/PublicPageMotion";
 
 const { Title, Paragraph } = Typography;
 
@@ -7,7 +8,7 @@ const { Title, Paragraph } = Typography;
 export function ProgramListCta() {
   return (
     <section className="py-16 px-6 bg-gradient-to-r from-orange-500 to-orange-600">
-      <div className="max-w-3xl mx-auto text-center">
+      <PublicSectionReveal className="max-w-3xl mx-auto text-center" amount={0.2}>
         <Title level={2} className="!text-white !font-extrabold !mb-3">
           Sẵn sàng bắt đầu hành trình?
         </Title>
@@ -27,7 +28,7 @@ export function ProgramListCta() {
             </button>
           </Link>
         </div>
-      </div>
+      </PublicSectionReveal>
     </section>
   );
 }

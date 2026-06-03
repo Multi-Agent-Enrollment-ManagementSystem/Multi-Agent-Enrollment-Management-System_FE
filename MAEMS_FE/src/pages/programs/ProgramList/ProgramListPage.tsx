@@ -1,4 +1,3 @@
-import { GuestLayout } from "@/layouts/GuestLayout";
 import {
   ProgramListCta,
   ProgramListFilters,
@@ -32,7 +31,7 @@ export function ProgramList() {
   } = useProgramList();
 
   return (
-    <GuestLayout>
+    <>
       <ProgramListHero />
       <ProgramListStatsBar totalCount={totalCount} majorCount={majors.length} />
       <ProgramListFilters
@@ -61,6 +60,6 @@ export function ProgramList() {
         onPaginationChange={handlePaginationChange}
       />
       <ProgramListCta />
-    </GuestLayout>
+    </>
   );
 }

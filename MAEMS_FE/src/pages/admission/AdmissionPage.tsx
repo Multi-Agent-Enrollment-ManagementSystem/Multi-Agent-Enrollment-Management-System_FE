@@ -9,8 +9,12 @@ import {
 } from "antd";
 import { ExternalLink, SquareArrowOutUpRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { GuestLayout } from "../../layouts/GuestLayout";
 import { ParallaxImage } from "@/components/ParallaxImage";
+import {
+  PublicHeroReveal,
+  PublicItemReveal,
+  PublicSectionReveal,
+} from "@/components/public/PublicPageMotion";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -35,10 +39,11 @@ export function AdmissionPage() {
   const navigate = useNavigate();
 
   return (
-    <GuestLayout>
+    <>
       <div className="bg-gradient-to-br from-orange-200 via-amber-50 to-gray-50">
         {/* Banner đầu trang: responsive theo tỉ lệ, tránh ép full 100vh trên mobile */}
         {/* Banner hero chỉ chiếm ~1/2 viewport (đúng yêu cầu), dùng object-cover để giữ bố cục. */}
+        <PublicHeroReveal>
         <section className="relative w-full h-[50vh] max-h-[50vh] overflow-hidden">
           <ParallaxImage
             src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773932965/Bannerweb-kythisotuyenArtboard-2-copy100_mnyvhw.png"
@@ -48,12 +53,14 @@ export function AdmissionPage() {
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
         </section>
+        </PublicHeroReveal>
 
         <div className="w-full py-8 px-6 md:px-10 pb-16 box-border text-gray-900 max-md:px-4">
-          {/* Giảm “hero” còn khoảng 1/2 viewport để tránh chiếm toàn màn hình. */}
+          <PublicSectionReveal>
           <section className="mb-12 min-h-[50vh] flex items-center">
             <Row gutter={[24, 24]} align="stretch">
               <Col xs={24} md={12}>
+                <PublicHeroReveal delay={0.08}>
                 <div className="[&>div]:mb-4 [&>div:last-child]:mb-0">
                   <Tag
                     color="orange"
@@ -96,8 +103,10 @@ export function AdmissionPage() {
                     </Space>
                   </div>
                 </div>
+                </PublicHeroReveal>
               </Col>
               <Col xs={24} md={12}>
+                <PublicHeroReveal delay={0.16}>
                 <div className="flex items-center justify-center h-full">
                   <img
                     src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1773934919/491019351_1072133974944865_282059016334971388_n_npcbok.jpg"
@@ -105,11 +114,14 @@ export function AdmissionPage() {
                     className="w-full max-w-full h-auto object-cover rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.12),0_0_0_1px_rgba(249,115,22,0.1)]"
                   />
                 </div>
+                </PublicHeroReveal>
               </Col>
             </Row>
           </section>
+          </PublicSectionReveal>
 
-          <section className="mt-12 max-w-[980px] mx-auto">
+          <PublicSectionReveal className="mt-12 max-w-[980px] mx-auto block">
+          <section>
             <Title
               level={2}
               className="!text-center !mb-3 !text-2xl md:!text-4xl !leading-tight"
@@ -269,8 +281,10 @@ export function AdmissionPage() {
               </Button>
             </div>
           </section>
+          </PublicSectionReveal>
 
-          <section className="mt-12">
+          <PublicSectionReveal className="mt-12 block">
+          <section>
             <Title
               level={2}
               className="!mb-8 !text-right !font-black !text-3xl md:!text-4xl"
@@ -320,8 +334,10 @@ export function AdmissionPage() {
               </Col>
             </Row>
           </section>
+          </PublicSectionReveal>
 
-          <section className="mt-12 w-full">
+          <PublicSectionReveal className="mt-12 w-full block">
+          <section>
             <Title level={2} className="!text-orange-500 !font-bold !mb-6">
               Học phí
             </Title>
@@ -336,9 +352,9 @@ export function AdmissionPage() {
                 "Campus Đà Nẵng",
                 "Campus Cần Thơ",
                 "Campus Quy Nhơn",
-              ].map((label) => (
+              ].map((label, i) => (
+                <PublicItemReveal key={label} index={i}>
                 <div
-                  key={label}
                   className="flex flex-col p-5 rounded-xl bg-white border border-dashed border-gray-300 shadow-sm"
                 >
                   <span className="text-sm text-gray-500 mb-1">Học phí</span>
@@ -362,11 +378,13 @@ export function AdmissionPage() {
                     Xem thêm
                   </Button>
                 </div>
+                </PublicItemReveal>
               ))}
             </div>
           </section>
+          </PublicSectionReveal>
         </div>
       </div>
-    </GuestLayout>
+    </>
   );
 }

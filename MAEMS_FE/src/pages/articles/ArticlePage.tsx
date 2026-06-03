@@ -3,7 +3,11 @@ import { CalendarDays, Newspaper } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CampusHeroBackground } from "../../components/CampusHeroBackground";
-import { GuestLayout } from "../../layouts/GuestLayout";
+import {
+  PublicHeroReveal,
+  PublicItemReveal,
+  PublicSectionReveal,
+} from "@/components/public/PublicPageMotion";
 import { getPublishedArticlesBasic } from "../../api/articles";
 import type { ArticleBasic } from "../../types/article";
 
@@ -62,38 +66,47 @@ export function ArticlePage() {
   }, [pageNumber, pageSize]);
 
   return (
-    <GuestLayout>
+    <>
       {/* Hero ảnh khuôn viên — đồng bộ visual với home và /dao-tao */}
       <section className="relative min-h-[min(52vh,420px)] flex items-end overflow-hidden px-4 md:px-6 pb-10 pt-28">
         <CampusHeroBackground />
         <div className="relative z-10 max-w-4xl mx-auto w-full">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-4">
-            <Newspaper size={14} className="text-orange-300" />
-            <Typography.Text className="!text-orange-200 text-sm font-medium">
-              Cập nhật từ Trường Đại học FPT
-            </Typography.Text>
-          </div>
-          <Title
-            level={1}
-            className="!text-white !text-3xl md:!text-5xl !font-extrabold !mb-2"
-          >
-            Tin tức
-          </Title>
-          <Typography.Paragraph className="!text-gray-200 !mb-0 max-w-xl">
-            Thông báo, sự kiện và hoạt động mới nhất của nhà trường.
-          </Typography.Paragraph>
+          <PublicHeroReveal delay={0}>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-4">
+              <Newspaper size={14} className="text-orange-300" />
+              <Typography.Text className="!text-orange-200 text-sm font-medium">
+                Cập nhật từ Trường Đại học FPT
+              </Typography.Text>
+            </div>
+          </PublicHeroReveal>
+          <PublicHeroReveal delay={0.12}>
+            <Title
+              level={1}
+              className="!text-white !text-3xl md:!text-5xl !font-extrabold !mb-2"
+            >
+              Tin tức
+            </Title>
+          </PublicHeroReveal>
+          <PublicHeroReveal delay={0.22}>
+            <Typography.Paragraph className="!text-gray-200 !mb-0 max-w-xl">
+              Thông báo, sự kiện và hoạt động mới nhất của nhà trường.
+            </Typography.Paragraph>
+          </PublicHeroReveal>
         </div>
       </section>
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-10 -mt-2 relative z-10">
-        <Breadcrumb
-          className="mb-6 text-sm"
-          items={[
-            { title: <Link to="/">Trang chủ</Link> },
-            { title: "Tin tức" },
-          ]}
-        />
+        <PublicSectionReveal delay={0.04}>
+          <Breadcrumb
+            className="mb-6 text-sm"
+            items={[
+              { title: <Link to="/">Trang chủ</Link> },
+              { title: "Tin tức" },
+            ]}
+          />
+        </PublicSectionReveal>
 
+        <PublicSectionReveal delay={0.08}>
         <div className="flex flex-col gap-6 rounded-2xl bg-white/95 backdrop-blur-sm border border-gray-100 shadow-sm p-4 sm:p-6 md:p-8">
           {/* Danh sách bài viết + trạng thái loading/empty */}
           {loading ? (
@@ -107,9 +120,9 @@ export function ArticlePage() {
               </Typography.Text>
             </div>
           ) : (
-            articles.map((article) => (
+            articles.map((article, i) => (
+              <PublicItemReveal key={article.articleId} index={i}>
               <Link
-                key={article.articleId}
                 to={`/tin-tuc/${article.articleId}`}
                 className="group block"
               >
@@ -145,6 +158,7 @@ export function ArticlePage() {
                   </div>
                 </Card>
               </Link>
+              </PublicItemReveal>
             ))
           )}
 
@@ -174,7 +188,8 @@ export function ArticlePage() {
             </div>
           )}
         </div>
+        </PublicSectionReveal>
       </div>
-    </GuestLayout>
+    </>
   );
 }

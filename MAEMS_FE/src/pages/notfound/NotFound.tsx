@@ -1,14 +1,14 @@
 import { Button, Typography } from "antd";
 import { Home } from "lucide-react";
 import { Link } from "react-router-dom";
-import { GuestLayout } from "../../layouts/GuestLayout";
+import { PublicSectionReveal } from "@/components/public/PublicPageMotion";
 
 const { Title, Paragraph } = Typography;
 
 export function NotFound() {
   return (
-    <GuestLayout>
-      <div className="max-w-[1200px] mx-auto px-4 py-24 flex flex-col items-center text-center">
+    <>
+      <PublicSectionReveal className="max-w-[1200px] mx-auto px-4 py-24 flex flex-col items-center text-center">
         <p className="text-8xl font-bold text-orange-500/90 mb-2">404</p>
         <Title level={2} className="!mb-3 !mt-0">
           Không tìm thấy trang
@@ -22,7 +22,7 @@ export function NotFound() {
             Về trang chủ
           </Button>
         </Link>
-      </div>
-    </GuestLayout>
+      </PublicSectionReveal>
+    </>
   );
 }

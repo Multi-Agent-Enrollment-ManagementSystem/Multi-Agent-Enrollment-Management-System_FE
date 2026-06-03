@@ -2,6 +2,7 @@ import { Col, Empty, Pagination, Row } from "antd";
 import type { ProgramListItem } from "../types";
 import { ProgramCard } from "./ProgramCard";
 import { ProgramCardSkeleton } from "./ProgramCardSkeleton";
+import { PublicItemReveal } from "@/components/public/PublicPageMotion";
 
 type ProgramListGridProps = {
   programs: ProgramListItem[];
@@ -61,9 +62,11 @@ export function ProgramListGrid({
                       <ProgramCardSkeleton />
                     </Col>
                   ))
-                : programs.map((p) => (
+                : programs.map((p, i) => (
                     <Col xs={24} sm={12} lg={8} key={p.programId}>
-                      <ProgramCard program={p} />
+                      <PublicItemReveal index={i}>
+                        <ProgramCard program={p} />
+                      </PublicItemReveal>
                     </Col>
                   ))}
             </Row>
