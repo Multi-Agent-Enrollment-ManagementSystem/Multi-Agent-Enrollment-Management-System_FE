@@ -9,8 +9,10 @@ import {
   Typography,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import type { SortOrder } from "antd/es/table/interface";
 import { Bot, Eye, SendHorizonal } from "lucide-react";
 import type { ApplicationMe } from "@/types/application";
+import type { ApplicationListSortField } from "../types";
 import {
   formatApplicationDate,
   relativeApplicationTime,
@@ -22,12 +24,24 @@ const { Text } = Typography;
 type UseApplicationListColumnsParams = {
   submittingId: number | null;
   onSubmitFinal: (app: ApplicationMe) => void;
+  sortField: ApplicationListSortField;
+  sortOrder: Exclude<SortOrder, null>;
 };
 
-/** Định nghĩa cột bảng desktop — tách khỏi page để giảm kích thước component chính. */
+function columnSortOrder(
+  field: ApplicationListSortField,
+  activeField: ApplicationListSortField,
+  order: Exclude<SortOrder, null>,
+): SortOrder {
+  return activeField === field ? order : null;
+}
+
+/** Định nghĩa cột bảng desktop — có sorter cho submittedAt, lastUpdated, applicationId. */
 export function useApplicationListColumns({
   submittingId,
   onSubmitFinal,
+  sortField,
+  sortOrder,
 }: UseApplicationListColumnsParams) {
   const navigate = useNavigate();
 
@@ -59,13 +73,13 @@ export function useApplicationListColumns({
             app.status === "under_review" || app.status === "submitted";
           return (
             <Space size={6} wrap className="max-w-[200px]">
-              <Tag color={sc.color} className="!m-0 text-xs">
+              <Tag color={sc.color} className="!m-0 text-xs !rounded-full">
                 {sc.label}
               </Tag>
               {isAiProcessing && (
                 <Tag
                   color="purple"
-                  className="!m-0 inline-flex items-center gap-0.5 text-xs"
+                  className="!m-0 inline-flex items-center gap-0.5 text-xs !rounded-full"
                 >
                   <Bot size={11} className="shrink-0" />
                   AI
@@ -100,9 +114,12 @@ export function useApplicationListColumns({
       {
         title: "Mã đơn",
         dataIndex: "applicationId",
-        key: "id",
+        key: "applicationId",
         width: 96,
         responsive: ["lg"],
+        sorter: true,
+        sortOrder: columnSortOrder("applicationId", sortField, sortOrder),
+        showSorterTooltip: { title: "Sắp xếp theo mã đơn" },
         render: (id: number) => (
           <span className="font-mono text-sm text-gray-700 tabular-nums">
             {id}
@@ -111,9 +128,14 @@ export function useApplicationListColumns({
       },
       {
         title: "Nộp ngày",
-        key: "submitted",
+        dataIndex: "submittedAt",
+        key: "submittedAt",
         width: 118,
         responsive: ["lg"],
+        sorter: true,
+        sortOrder: columnSortOrder("submittedAt", sortField, sortOrder),
+        defaultSortOrder: "descend",
+        showSorterTooltip: { title: "Sắp xếp theo ngày nộp" },
         render: (_, app) => (
           <Text className="text-sm text-gray-600">
             {app.submittedAt ? formatApplicationDate(app.submittedAt) : "—"}
@@ -122,9 +144,13 @@ export function useApplicationListColumns({
       },
       {
         title: "Cập nhật",
-        key: "updated",
+        dataIndex: "lastUpdated",
+        key: "lastUpdated",
         width: 124,
         responsive: ["lg"],
+        sorter: true,
+        sortOrder: columnSortOrder("lastUpdated", sortField, sortOrder),
+        showSorterTooltip: { title: "Sắp xếp theo lần cập nhật" },
         render: (_, app) => (
           <Tooltip
             title={
@@ -174,7 +200,7 @@ export function useApplicationListColumns({
                   okText={isResubmit ? "Xác nhận nộp lại" : "Xác nhận nộp"}
                   cancelText="Hủy"
                   okButtonProps={{
-                    className: "!bg-green-600 !border-green-600",
+                    className: "!bg-green-600 !border-green-600 !rounded-xl",
                   }}
                   onConfirm={() => onSubmitFinal(app)}
                 >
@@ -182,7 +208,7 @@ export function useApplicationListColumns({
                     size="small"
                     icon={<SendHorizonal size={14} />}
                     loading={isSubmitting}
-                    className="!rounded-lg !border-green-400 !text-green-600 hover:!bg-green-50"
+                    className="!rounded-xl !border-green-400 !text-green-600 hover:!bg-green-50"
                   >
                     {isResubmit ? "Nộp lại" : "Nộp đơn"}
                   </Button>
@@ -192,7 +218,7 @@ export function useApplicationListColumns({
                 type="primary"
                 size="small"
                 icon={<Eye size={14} />}
-                className="!rounded-lg !bg-orange-500 !border-orange-500 hover:!bg-orange-600"
+                className="!rounded-xl !bg-orange-500 !border-orange-500 hover:!bg-orange-600"
                 onClick={() =>
                   navigate(`/applicant/applications/${app.applicationId}`)
                 }
@@ -204,6 +230,6 @@ export function useApplicationListColumns({
         },
       },
     ],
-    [navigate, onSubmitFinal, submittingId],
+    [navigate, onSubmitFinal, submittingId, sortField, sortOrder],
   );
 }

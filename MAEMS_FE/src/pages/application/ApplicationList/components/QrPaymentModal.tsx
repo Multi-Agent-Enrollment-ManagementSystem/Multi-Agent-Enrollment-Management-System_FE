@@ -66,16 +66,17 @@ export function QrPaymentModal({
       getContainer={() => document.body}
       zIndex={2000}
       centered
+      className="[&_.ant-modal-content]:!rounded-3xl"
       onCancel={onClose}
       footer={[
-        <Button key="cancel" onClick={onClose}>
+        <Button key="cancel" onClick={onClose} className="!rounded-xl">
           Đóng
         </Button>,
         <Button
           key="paid"
           type="primary"
           disabled={expired}
-          className="!bg-green-600 !border-green-600 disabled:!opacity-50"
+          className="!rounded-xl !bg-green-600 !border-green-600 disabled:!opacity-50"
           onClick={onPaid}
         >
           Đã thanh toán

@@ -1,12 +1,30 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { notification } from "antd";
+import { message } from "antd";
+import type { TableProps } from "antd";
+import type {
+  FilterValue,
+  SorterResult,
+  TablePaginationConfig,
+} from "antd/es/table/interface";
 import type { ApplicationMe, ApplicationStatus } from "@/types/application";
 import {
-  fetchMyApplications,
-  submitApplicationFinal,
+  parseApiWrapper,
+  parseAxiosApiError,
+  showApiWrapperFailure,
+  showApiWrapperSuccess,
+  showAxiosApiFailure,
+} from "@/utils/apiFeedback";
+import {
+  fetchMyApplicationsForList,
+  submitApplicationFinalForList,
 } from "../api/applicationListApi";
-import type { QrModalState, StatusFilterValue } from "../types";
+import type {
+  ApplicationListSortField,
+  ApplicationListSortState,
+  QrModalState,
+  StatusFilterValue,
+} from "../types";
 import {
   meAdmissionFilterKey,
   meAdmissionOptionLabel,
@@ -20,22 +38,32 @@ import {
   hasPaymentQr,
 } from "../utils/applicationListPayment";
 import {
+  DEFAULT_APPLICATION_LIST_SORT,
+  sortApplicationList,
+} from "../utils/applicationListSort";
+import {
   isApplicationStatus,
   STATUS_FILTER_ORDER,
   statusConfig,
 } from "../utils/applicationListStatus";
 import { useApplicationListColumns } from "./useApplicationListColumns";
 
-/** Hook tập trung state, fetch, lọc và handler nộp đơn / QR cho trang danh sách đơn. */
+const LOAD_ERROR_FALLBACK =
+  "Không tải được danh sách đơn đăng ký. Vui lòng thử lại.";
+
+/** Hook tập trung state, fetch, lọc, sort và handler nộp đơn / QR. */
 export function useApplicationList() {
   const navigate = useNavigate();
-  const [notifApi, notifContextHolder] = notification.useNotification();
+  const [messageApi, messageContextHolder] = message.useMessage();
 
   const [apps, setApps] = useState<ApplicationMe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submittingId, setSubmittingId] = useState<number | null>(null);
   const [qrModal, setQrModal] = useState<QrModalState | null>(null);
+  const [sort, setSort] = useState<ApplicationListSortState>(
+    DEFAULT_APPLICATION_LIST_SORT,
+  );
 
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
@@ -129,6 +157,11 @@ export function useApplicationList() {
     admissionFilter,
   ]);
 
+  const sortedFilteredApps = useMemo(
+    () => sortApplicationList(filteredApps, sort.field, sort.order),
+    [filteredApps, sort.field, sort.order],
+  );
+
   const hasActiveFilters =
     searchText.trim() !== "" ||
     statusFilter !== "all" ||
@@ -144,23 +177,72 @@ export function useApplicationList() {
     setAdmissionFilter("all");
   }, []);
 
-  const loadApps = useCallback(() => {
+  const loadApps = useCallback(async (options?: { silent?: boolean }) => {
     setLoading(true);
-    fetchMyApplications()
-      .then((appList) => setApps(appList ?? []))
-      .catch(() => setError("Không tìm thấy đơn đăng ký cho ứng viên này."))
-      .finally(() => setLoading(false));
-  }, []);
+    setError(null);
+    try {
+      const { items, wrapper } = await fetchMyApplicationsForList();
+      setApps(items);
+
+      if (wrapper.success) {
+        if (!options?.silent) {
+          showApiWrapperSuccess(messageApi, wrapper);
+        }
+      } else {
+        showApiWrapperFailure(messageApi, wrapper, LOAD_ERROR_FALLBACK);
+        const { message: main, errors } = parseApiWrapper(
+          wrapper,
+          LOAD_ERROR_FALLBACK,
+        );
+        setError(errors[0] ?? main);
+      }
+    } catch (err: unknown) {
+      showAxiosApiFailure(messageApi, err, LOAD_ERROR_FALLBACK);
+      const { message: main, errors } = parseAxiosApiError(
+        err,
+        LOAD_ERROR_FALLBACK,
+      );
+      setError(errors[0] ?? main);
+      setApps([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [messageApi]);
 
   useEffect(() => {
     loadApps();
   }, [loadApps]);
 
+  const handleTableChange: TableProps<ApplicationMe>["onChange"] = useCallback(
+    (
+      _pagination: TablePaginationConfig,
+      _filters: Record<string, FilterValue | null>,
+      sorter: SorterResult<ApplicationMe> | SorterResult<ApplicationMe>[],
+    ) => {
+      const single = Array.isArray(sorter) ? sorter[0] : sorter;
+      if (!single?.field || !single.order) {
+        setSort(DEFAULT_APPLICATION_LIST_SORT);
+        return;
+      }
+      const field = String(single.field) as ApplicationListSortField;
+      if (
+        field === "submittedAt" ||
+        field === "lastUpdated" ||
+        field === "applicationId"
+      ) {
+        setSort({ field, order: single.order });
+      }
+    },
+    [],
+  );
+
   const handleSubmitFinal = useCallback(
     async (app: ApplicationMe) => {
       setSubmittingId(app.applicationId);
       try {
-        const payment = await submitApplicationFinal(Number(app.applicationId));
+        const payment = await submitApplicationFinalForList(
+          Number(app.applicationId),
+        );
 
         if (hasPaymentQr(payment)) {
           setQrModal({
@@ -172,58 +254,44 @@ export function useApplicationList() {
           return;
         }
 
-        notifApi.success({
-          message: "Thanh toán đã xác nhận",
-          description: `Bạn đã thanh toán trước đó. Đơn "${app.programName}" đang được gửi xét duyệt!`,
-          placement: "topRight",
-          duration: 6,
-        });
-        loadApps();
+        messageApi.success(
+          `Bạn đã thanh toán trước đó. Đơn "${app.programName}" đang được gửi xét duyệt!`,
+        );
+        loadApps({ silent: true });
       } catch (err: unknown) {
-        const errData = (
-          err as {
-            response?: { data?: { message?: string; errors?: string[] } };
-          }
-        ).response?.data;
-        const msg =
-          errData?.message ||
-          (errData?.errors?.length ? errData.errors.join("; ") : null) ||
-          "Nộp đơn thất bại. Vui lòng thử lại.";
-        notifApi.error({
-          message: "Nộp đơn thất bại",
-          description: msg,
-          placement: "topRight",
-          duration: 6,
-        });
+        showAxiosApiFailure(
+          messageApi,
+          err,
+          "Nộp đơn thất bại. Vui lòng thử lại.",
+        );
       } finally {
         setSubmittingId(null);
       }
     },
-    [loadApps, notifApi],
+    [loadApps, messageApi],
   );
 
   const applicationColumns = useApplicationListColumns({
     submittingId,
     onSubmitFinal: handleSubmitFinal,
+    sortField: sort.field,
+    sortOrder: sort.order,
   });
 
   const handleQrPaid = useCallback(() => {
     setQrModal(null);
-    loadApps();
+    loadApps({ silent: true });
   }, [loadApps]);
 
   const handleQrClose = useCallback(() => setQrModal(null), []);
 
   const handleQrExpire = useCallback(() => {
     setQrModal(null);
-    notifApi.warning({
-      message: "Phiên thanh toán hết hạn",
-      description:
-        "Mã QR đã hết hiệu lực sau 5 phút. Vui lòng nộp đơn lại để nhận mã QR mới.",
-      placement: "topRight",
-      duration: 8,
-    });
-  }, [notifApi]);
+    messageApi.warning(
+      "Mã QR đã hết hiệu lực sau 5 phút. Vui lòng nộp đơn lại để nhận mã QR mới.",
+      8,
+    );
+  }, [messageApi]);
 
   const goToApplicationDetail = useCallback(
     (id: number) => navigate(`/applicant/applications/${id}`),
@@ -236,7 +304,7 @@ export function useApplicationList() {
   );
 
   return {
-    notifContextHolder,
+    messageContextHolder,
     qrModal,
     handleQrPaid,
     handleQrClose,
@@ -244,7 +312,7 @@ export function useApplicationList() {
     loading,
     error,
     apps,
-    filteredApps,
+    sortedFilteredApps,
     hasActiveFilters,
     clearFilters,
     searchText,
@@ -266,5 +334,8 @@ export function useApplicationList() {
     submittingId,
     goToApplicationDetail,
     goToNewApplication,
+    handleTableChange,
+    sort,
+    reload: loadApps,
   };
 }

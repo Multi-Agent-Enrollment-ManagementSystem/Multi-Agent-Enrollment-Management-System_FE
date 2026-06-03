@@ -1,4 +1,5 @@
 import { Button, Popconfirm, Tag } from "antd";
+import { motion } from "motion/react";
 import { Bot, Eye, SendHorizonal } from "lucide-react";
 import type { ApplicationMe } from "@/types/application";
 import {
@@ -23,7 +24,7 @@ export function ApplicationCardList({
 }: ApplicationCardListProps) {
   return (
     <div className="flex flex-col gap-3">
-      {apps.map((app) => {
+      {apps.map((app, index) => {
         const sc = statusConfig[app.status];
         const canSubmitFinal =
           app.status === "draft" || app.status === "document_required";
@@ -33,9 +34,16 @@ export function ApplicationCardList({
           app.status === "under_review" || app.status === "submitted";
 
         return (
-          <div
+          <motion.div
             key={app.applicationId}
-            className="bg-white rounded-2xl border border-gray-200/80 shadow-sm p-4 flex flex-col gap-3 active:bg-gray-50 transition-colors"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.28,
+              delay: Math.min(index * 0.04, 0.24),
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="bg-white/95 rounded-3xl border border-gray-200/70 shadow-sm shadow-gray-900/[0.03] p-4 flex flex-col gap-3 active:bg-orange-50/30 transition-colors"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
@@ -47,7 +55,7 @@ export function ApplicationCardList({
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0 flex-wrap justify-end">
-                <Tag color={sc.color} className="!m-0 text-xs">
+                <Tag color={sc.color} className="!m-0 text-xs !rounded-full">
                   {sc.label}
                 </Tag>
                 {isAiProcessing && (
@@ -62,7 +70,7 @@ export function ApplicationCardList({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs bg-gray-50/70 rounded-xl px-3 py-2.5">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs bg-gray-50/80 rounded-2xl px-3 py-2.5 border border-gray-100/80">
               {app.campusName?.trim() && (
                 <div className="min-w-0">
                   <span className="text-gray-400 block">Cơ sở</span>
@@ -125,7 +133,7 @@ export function ApplicationCardList({
                     size="small"
                     icon={<SendHorizonal size={14} />}
                     loading={isSubmitting}
-                    className="!rounded-xl !border-green-400 !text-green-600 hover:!bg-green-50 flex-1"
+                    className="!rounded-2xl !border-green-400 !text-green-600 hover:!bg-green-50 flex-1"
                     block
                   >
                     {isResubmit ? "Nộp lại" : "Nộp đơn"}
@@ -136,14 +144,14 @@ export function ApplicationCardList({
                 type="primary"
                 size="small"
                 icon={<Eye size={14} />}
-                className="!rounded-xl !bg-orange-500 !border-orange-500 hover:!bg-orange-600 flex-1"
+                className="!rounded-2xl !bg-orange-500 !border-orange-500 hover:!bg-orange-600 flex-1 shadow-sm"
                 block
                 onClick={() => onView(app.applicationId)}
               >
                 Chi tiết
               </Button>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>
