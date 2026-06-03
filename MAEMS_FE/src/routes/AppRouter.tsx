@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { GuestLayout } from "../layouts/GuestLayout";
 import { RoleGuard } from "./RoleGuard";
 // dashboard pages
 import { ApplicantDashboard } from "../pages/applicant/ApplicantDashboard";
@@ -53,21 +54,25 @@ import { SystemMonitorPage } from "../pages/admin/SystemMonitor";
 export function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/tuyen-sinh" element={<AdmissionPage />} />
-      <Route path="/tuyen-sinh/phuong-thuc" element={<AdmissionTypesPage />} />
-      <Route path="/tuyen-sinh/hoc-phi-ha-noi" element={<HanoiTuitionPage />} />
-      <Route path="/tuyen-sinh/hoc-phi-hcm" element={<HCMTuitionPage />} />
-      <Route path="/tuyen-sinh/hoc-phi-da-nang" element={<DaNangTuitionPage />} />
-      <Route path="/tuyen-sinh/hoc-phi-can-tho" element={<CanThoTuitionPage />} />
-      <Route path="/tuyen-sinh/hoc-phi-quy-nhon" element={<QuyNhonTuitionPage />} />
-      <Route path="/dao-tao" element={<ProgramList />} />
-      <Route path="/dao-tao/:id" element={<ProgramDetail />} />
-      <Route path="/tin-tuc" element={<ArticlePage />} />
-      <Route path="/tin-tuc/:id" element={<ArticleDetail />} />
-      <Route path="/lien-he" element={<ContactPage />} />
-      {/* Trang tư vấn chuyên ngành cho guest, không yêu cầu xác thực đăng nhập. */}
-      <Route path="/major-advisor" element={<MajorAdvisorPage />} />
+      {/* Layout chung: header/footer giữ instance, Outlet đổi nội dung + transition */}
+      <Route element={<GuestLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/tuyen-sinh" element={<AdmissionPage />} />
+        <Route path="/tuyen-sinh/phuong-thuc" element={<AdmissionTypesPage />} />
+        <Route path="/tuyen-sinh/hoc-phi-ha-noi" element={<HanoiTuitionPage />} />
+        <Route path="/tuyen-sinh/hoc-phi-hcm" element={<HCMTuitionPage />} />
+        <Route path="/tuyen-sinh/hoc-phi-da-nang" element={<DaNangTuitionPage />} />
+        <Route path="/tuyen-sinh/hoc-phi-can-tho" element={<CanThoTuitionPage />} />
+        <Route path="/tuyen-sinh/hoc-phi-quy-nhon" element={<QuyNhonTuitionPage />} />
+        <Route path="/dao-tao" element={<ProgramList />} />
+        <Route path="/dao-tao/:id" element={<ProgramDetail />} />
+        <Route path="/tin-tuc" element={<ArticlePage />} />
+        <Route path="/tin-tuc/:id" element={<ArticleDetail />} />
+        <Route path="/lien-he" element={<ContactPage />} />
+        <Route path="/major-advisor" element={<MajorAdvisorPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+
       <Route path="/auth" element={<AuthPage />} />
 
       {/* applicant */}
@@ -334,7 +339,6 @@ export function AppRouter() {
         }
       />
 
-      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

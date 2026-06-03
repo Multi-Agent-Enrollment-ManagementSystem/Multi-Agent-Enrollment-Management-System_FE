@@ -5,6 +5,7 @@ import { passwordFormRules } from "../../../utils/passwordValidation";
 import { emailFormRules } from "../../../utils/emailValidation";
 import { usernameFormRules } from "../../../utils/usernameValidation";
 import type { AuthApiErrorState, RegisterFormValues } from "../types";
+import { authFormClassName } from "../utils/authFormClassName";
 import { AuthApiErrorAlert } from "./AuthApiErrorAlert";
 import { PasswordField } from "./PasswordField";
 
@@ -30,7 +31,7 @@ export function RegisterForm({
       layout="vertical"
       requiredMark={false}
       onFinish={onSubmit}
-      className="[&_.ant-form-item]:mb-4"
+      className={authFormClassName}
     >
       <Form.Item
         name="username"

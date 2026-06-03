@@ -2,12 +2,15 @@ import { Breadcrumb, Button, Form, Input, Spin, Typography, message } from "antd
 import { CalendarDays, ClipboardCheck, UserRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { GuestLayout } from "../../layouts/GuestLayout";
 import { getArticleById } from "../../api/articles";
 import { registerEvent } from "../../api/register-events";
 import type { Article } from "../../types/article";
 import type { RegisterEventBody } from "../../types/register-event";
 import { extractApiError } from "../../utils/apiError";
+import {
+  PublicItemReveal,
+  PublicSectionReveal,
+} from "@/components/public/PublicPageMotion";
 
 const { Title } = Typography;
 
@@ -80,17 +83,19 @@ export function ArticleDetail() {
   }
 
   return (
-    <GuestLayout>
+    <>
       {contextHolder}
       <div className="max-w-4xl mx-auto px-4 md:px-6 py-10 mt-[84px]">
-        <Breadcrumb
-          className="mb-6 text-sm"
-          items={[
-            { title: <Link to="/">Trang chủ</Link> },
-            { title: <Link to="/tin-tuc">Tin tức</Link> },
-            { title: article?.title ?? "Chi tiết bài viết" },
-          ]}
-        />
+        <PublicSectionReveal delay={0.04}>
+          <Breadcrumb
+            className="mb-6 text-sm"
+            items={[
+              { title: <Link to="/">Trang chủ</Link> },
+              { title: <Link to="/tin-tuc">Tin tức</Link> },
+              { title: article?.title ?? "Chi tiết bài viết" },
+            ]}
+          />
+        </PublicSectionReveal>
 
         {loading ? (
           <div className="py-20 flex items-center justify-center">
@@ -102,6 +107,7 @@ export function ArticleDetail() {
           </div>
         ) : (
           <>
+            <PublicSectionReveal delay={0.08}>
             <Title level={1} className="!font-extrabold !text-gray-900 !leading-snug !mb-4">
               {article.title}
             </Title>
@@ -126,14 +132,17 @@ export function ArticleDetail() {
                 />
               </div>
             ) : null}
+            </PublicSectionReveal>
 
+            <PublicSectionReveal delay={0.12}>
             <div
               className="text-gray-700 leading-relaxed [&_p]:mb-4 [&_img]:max-w-full"
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
+            </PublicSectionReveal>
 
-            {/* Phần đăng ký sự kiện — chỉ hiển thị khi bài viết có isRegisterable = true */}
             {article.isRegisterable && (
+              <PublicItemReveal index={0}>
               <div className="mt-10">
                 {/* Đường kẻ ngăn cách */}
                 <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-8" />
@@ -236,10 +245,11 @@ export function ArticleDetail() {
                   )}
                 </div>
               </div>
+              </PublicItemReveal>
             )}
           </>
         )}
       </div>
-    </GuestLayout>
+    </>
   );
 }

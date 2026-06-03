@@ -13,7 +13,7 @@ export function AuthPage() {
   return (
     <AuthPageLayout>
       <div className="max-w-md mx-auto mt-4 sm:mt-8 md:mt-12">
-        <div className="rounded-2xl bg-white/50 backdrop-blur-sm border border-orange-200/30 shadow-[0_8px_40px_rgba(0,0,0,0.45)] p-5 sm:p-6 md:p-8 overflow-hidden">
+        <div className="rounded-2xl bg-white/60 backdrop-blur-sm border border-orange-200/30 shadow-[0_8px_40px_rgba(0,0,0,0.45)] p-5 sm:p-6 md:p-8 overflow-hidden">
           {auth.authView === "auth" && (
             <div key="auth" className={auth.animClass}>
               <AuthCredentialsPanel

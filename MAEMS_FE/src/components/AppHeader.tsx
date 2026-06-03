@@ -12,7 +12,12 @@ import {
   X,
   Brain,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+} from "motion/react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PRIMARY_THEME_COLOR } from "../constants/colors";
@@ -39,6 +44,11 @@ const NAV_ITEMS = [
   { to: "/major-advisor", label: "Cố vấn", icon: Brain },
 ];
 
+/** layoutId dùng chung để pill active trượt mượt giữa các mục nav desktop */
+const NAV_ACTIVE_PILL_ID = "guest-nav-active-pill";
+
+const HEADER_INTRO_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 export function AppHeader() {
   // Trạng thái mở/đóng drawer điều hướng trên mobile
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -49,6 +59,7 @@ export function AppHeader() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const reduceMotion = useReducedMotion();
 
   // Lắng nghe sự kiện cuộn để kích hoạt shadow/border cho header
   useEffect(() => {
@@ -128,10 +139,13 @@ export function AppHeader() {
         `}
         style={{ borderBottom: "none" }}
       >
-        {/* ── Thanh ngang: logo / nav desktop / tài khoản + hamburger ── */}
-        <div className="flex items-center justify-between px-4 sm:px-5 lg:px-6 py-3 gap-4">
-          {/* Logo */}
-          {/* Tăng cảm giác "premium" cho thương hiệu bằng hover nhấc nhẹ và scale rất nhỏ. */}
+        {/* Thanh header: intro một lần khi layout mount; pill active dùng layoutId để trượt giữa các route */}
+        <motion.div
+          className="flex items-center justify-between px-4 sm:px-5 lg:px-6 py-3 gap-4"
+          initial={reduceMotion ? false : { opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: HEADER_INTRO_EASE }}
+        >
           <motion.div
             whileHover={{ y: -1, scale: 1.02 }}
             transition={{ duration: 0.18 }}
@@ -145,9 +159,9 @@ export function AppHeader() {
             </Link>
           </motion.div>
 
-          {/* Nav desktop — pill fill đặc; active: nền cam đậm + chữ trắng qua inline style để không bị Ant Design ghi đè */}
-          <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
-            {NAV_ITEMS.map(({ to, label }) => {
+          <LayoutGroup id="guest-nav">
+            <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
+              {NAV_ITEMS.map(({ to, label }) => {
               const active = isActive(to);
               return (
                 <motion.div
@@ -158,32 +172,35 @@ export function AppHeader() {
                   <Link
                     to={to}
                     aria-current={active ? "page" : undefined}
-                    /* inline style đảm bảo bg + color không bị Ant Design override */
-                    style={
-                      active
-                        ? {
-                            backgroundColor: PRIMARY_THEME_COLOR,
-                            color: "white",
-                          }
-                        : undefined
-                    }
                     className={`
-                      inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200
+                      relative z-[1] inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-200
                       ${
                         active
-                          ? "hover:opacity-90"
+                          ? "!text-white hover:opacity-90"
                           : "!text-gray-600 hover:!text-[#ff6900] hover:bg-[#ff6900]/10"
                       }
                     `}
                   >
-                    {label}
+                    {active && (
+                      <motion.span
+                        layoutId={NAV_ACTIVE_PILL_ID}
+                        className="absolute inset-0 rounded-full -z-[1] shadow-sm"
+                        style={{ backgroundColor: PRIMARY_THEME_COLOR }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 34,
+                        }}
+                      />
+                    )}
+                    <span className="relative">{label}</span>
                   </Link>
                 </motion.div>
               );
-            })}
-          </nav>
+              })}
+            </nav>
+          </LayoutGroup>
 
-          {/* Khu vực phải: tài khoản (desktop) + hamburger (mobile) */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Tài khoản desktop — ẩn trên mobile để tránh vỡ layout */}
             <div className="hidden md:block">
@@ -245,7 +262,7 @@ export function AppHeader() {
               </motion.span>
             </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* ── Drawer điều hướng mobile với AnimatePresence để mount/unmount mượt ── */}
         <AnimatePresence initial={false}>

@@ -15,10 +15,13 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { GuestLayout } from "@/layouts/GuestLayout";
 import { getProgramById } from "@/api/programs";
 import { CampusHeroBackground } from "@/components/CampusHeroBackground";
 import type { Program } from "@/types/program";
+import {
+  PublicHeroReveal,
+  PublicSectionReveal,
+} from "@/components/public/PublicPageMotion";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -90,7 +93,7 @@ export function ProgramDetail() {
   }, [id]);
 
   return (
-    <GuestLayout>
+    <>
       {loading ? (
         <DetailSkeleton />
       ) : notFound || !program ? (
@@ -117,7 +120,7 @@ export function ProgramDetail() {
             {/* Ảnh nền khuôn viên + overlay (có parallax) để đồng bộ với trang /dao-tao và /tin-tuc. */}
             <CampusHeroBackground />
             <div className="relative z-10 max-w-5xl mx-auto">
-              {/* Breadcrumb */}
+              <PublicHeroReveal delay={0}>
               <div className="flex items-center gap-1.5 text-sm mb-6 text-orange-200/80">
                 <Link to="/" className="!text-orange-200/80 hover:!text-orange-300 transition-colors">
                   Trang chủ
@@ -131,7 +134,9 @@ export function ProgramDetail() {
                   {program.programName}
                 </span>
               </div>
+              </PublicHeroReveal>
 
+              <PublicHeroReveal delay={0.1}>
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <span className="bg-white/15 border border-white/25 text-orange-100 text-xs font-semibold px-3 py-1 rounded-full backdrop-blur-sm">
                   {program.majorName}
@@ -146,14 +151,18 @@ export function ProgramDetail() {
                   </span>
                 )}
               </div>
+              </PublicHeroReveal>
 
+              <PublicHeroReveal delay={0.18}>
               <Title
                 level={1}
                 className="!text-white !text-3xl md:!text-4xl !font-extrabold !leading-tight !mb-3"
               >
                 {program.programName}
               </Title>
+              </PublicHeroReveal>
 
+              <PublicHeroReveal delay={0.26}>
               <div className="flex flex-wrap gap-5 mt-5">
                 {[
                   { icon: <Clock size={14} />, text: program.duration || "4 năm" },
@@ -169,15 +178,14 @@ export function ProgramDetail() {
                   </div>
                 ))}
               </div>
+              </PublicHeroReveal>
             </div>
           </section>
 
-          {/* Content */}
           <section className="py-14 px-6">
             <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-10">
-              {/* Main */}
               <div className="lg:col-span-2 space-y-10">
-                {/* Description */}
+                <PublicSectionReveal>
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-1 h-6 bg-orange-500 rounded-full" />
@@ -325,9 +333,10 @@ export function ProgramDetail() {
                     ))}
                   </div>
                 </div>
+                </PublicSectionReveal>
               </div>
 
-              {/* Sidebar */}
+              <PublicSectionReveal delay={0.1} className="space-y-6">
               <div className="space-y-6">
                 {/* Quick info card */}
                 <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
@@ -394,10 +403,11 @@ export function ProgramDetail() {
                   Quay lại danh sách
                 </button>
               </div>
+              </PublicSectionReveal>
             </div>
           </section>
         </>
       )}
-    </GuestLayout>
+    </>
   );
 }

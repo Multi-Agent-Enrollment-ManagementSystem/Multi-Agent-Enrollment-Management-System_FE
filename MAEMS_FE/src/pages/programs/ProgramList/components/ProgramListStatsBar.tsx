@@ -1,3 +1,5 @@
+import { PublicSectionReveal } from "@/components/public/PublicPageMotion";
+
 type ProgramListStatsBarProps = {
   totalCount: number;
   majorCount: number;
@@ -24,11 +26,13 @@ export function ProgramListStatsBar({
   return (
     <div className="bg-orange-500 py-4 px-6">
       <div className="max-w-6xl mx-auto flex flex-wrap justify-center gap-8">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
+        {stats.map((s, i) => (
+          <PublicSectionReveal key={s.label} delay={i * 0.06} amount={0.3}>
+          <div className="text-center">
             <div className="text-white font-extrabold text-2xl">{s.value}</div>
             <div className="text-orange-100 text-xs mt-0.5">{s.label}</div>
           </div>
+          </PublicSectionReveal>
         ))}
       </div>
     </div>

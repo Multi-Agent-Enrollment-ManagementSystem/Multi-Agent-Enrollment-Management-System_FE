@@ -1,20 +1,23 @@
 import { Home, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { GuestLayout } from "../../layouts/GuestLayout";
+import {
+  PublicHeroReveal,
+  PublicSectionReveal,
+} from "@/components/public/PublicPageMotion";
 
 export function AdmissionTypesPage() {
   return (
-    <GuestLayout>
-      <img
-        src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1774154695/Bannerweb-phuongthuctuyensinh_guq1np.png"
-        alt="Phương thức tuyển sinh"
-        style={{
-          width: "100%",
-          display: "block",
-        }}
-      />
+    <>
+      <PublicHeroReveal>
+        <img
+          src="https://res.cloudinary.com/ddtkccfxp/image/upload/v1774154695/Bannerweb-phuongthuctuyensinh_guq1np.png"
+          alt="Phương thức tuyển sinh"
+          className="w-full block"
+        />
+      </PublicHeroReveal>
 
       <div className="max-w-[1200px] mx-auto px-4">
+        <PublicSectionReveal delay={0.04}>
         <div className="flex items-center gap-2 py-4 text-sm">
           <Link to="/">
             <Home size={18} className="text-orange-500" fill="currentColor" />
@@ -26,9 +29,11 @@ export function AdmissionTypesPage() {
           <ChevronRight size={14} className="text-gray-400" />
           <span className="text-gray-600">Phương thức tuyển sinh</span>
         </div>
+        </PublicSectionReveal>
       </div>
 
       <div className="max-w-[1200px] mx-auto px-4 py-10">
+        <PublicSectionReveal delay={0.08}>
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           TRƯỜNG ĐẠI HỌC FPT CÔNG BỐ DỰ KIẾN PHƯƠNG THỨC TUYỂN SINH 2026
         </h1>
@@ -163,7 +168,8 @@ export function AdmissionTypesPage() {
           – Các đợt tuyển bổ sung (nếu có) căn cứ vào kết quả đợt tuyển sinh
           trước đó và sẽ được thông báo.
         </p>
+        </PublicSectionReveal>
       </div>
-    </GuestLayout>
+    </>
   );
 }

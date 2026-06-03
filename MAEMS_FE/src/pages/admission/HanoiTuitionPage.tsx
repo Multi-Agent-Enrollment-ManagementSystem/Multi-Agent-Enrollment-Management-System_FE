@@ -1,8 +1,6 @@
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Home, ChevronRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import { GuestLayout } from "../../layouts/GuestLayout";
+import { TuitionPageShell } from "./components/TuitionPageShell";
 
 type TuitionRow = {
   key: string;
@@ -108,35 +106,12 @@ const columns: ColumnsType<TuitionRow> = [
 
 export function HanoiTuitionPage() {
   return (
-    <GuestLayout>
-      <img
-        src="https://daihoc.fpt.edu.vn/wp-content/uploads/2025/12/Bannerweb-Hocphi-Artboard-2-copy-4100.png"
-        alt="Học phí Hà Nội"
-        style={{ width: "100%", display: "block" }}
-      />
-
-      <div className="max-w-[1200px] mx-auto px-4">
-        <div className="flex items-center gap-2 py-4 text-sm">
-          <Link to="/">
-            <Home size={18} className="text-orange-500" fill="currentColor" />
-          </Link>
-          <ChevronRight size={14} className="text-gray-400" />
-          <Link to="/tuyen-sinh" className="text-orange-500 hover:underline">
-            Tuyển sinh
-          </Link>
-          <ChevronRight size={14} className="text-gray-400" />
-          <span className="text-gray-600">Học phí Hà Nội</span>
-        </div>
-      </div>
-
-      <div className="max-w-[1200px] mx-auto px-4 py-10">
-        <h1
-          className="text-3xl font-bold text-center mb-2"
-          style={{ color: "#f97316" }}
-        >
-          HỌC PHÍ TẠI CAMPUS HÀ NỘI
-        </h1>
-
+    <TuitionPageShell
+      bannerSrc="https://daihoc.fpt.edu.vn/wp-content/uploads/2025/12/Bannerweb-Hocphi-Artboard-2-copy-4100.png"
+      bannerAlt="Học phí Hà Nội"
+      breadcrumbLabel="Học phí Hà Nội"
+      title="HỌC PHÍ TẠI CAMPUS HÀ NỘI"
+    >
         <p className="text-center text-base text-gray-600 mb-1">(Học phí chuẩn)</p>
         <p className="text-center text-base text-gray-600 mb-8">
           Học phí áp dụng cho tân sinh viên khóa K22 (nhập học năm 2026)
@@ -200,7 +175,6 @@ export function HanoiTuitionPage() {
             <span className="font-medium">(+)</span> Từ HK4 sẽ tăng 6,3% so với HK1, HK7 sẽ tăng 6,5% so với HK4
           </p>
         </div>
-      </div>
-    </GuestLayout>
+    </TuitionPageShell>
   );
 }
