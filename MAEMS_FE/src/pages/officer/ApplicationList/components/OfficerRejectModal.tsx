@@ -13,7 +13,6 @@ type OfficerRejectModalProps = {
 /** Modal từ chối hồ sơ ngay trên danh sách (không cần vào chi tiết). */
 export function OfficerRejectModal({
   open,
-  applicationId,
   form,
   confirmLoading,
   onCancel,

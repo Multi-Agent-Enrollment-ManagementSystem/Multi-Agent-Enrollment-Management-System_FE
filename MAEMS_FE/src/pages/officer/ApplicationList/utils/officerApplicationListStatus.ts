@@ -3,7 +3,6 @@ import {
   type Application,
   type ApplicationStatus,
 } from "@/types/application";
-import type { ApplicationLevel } from "@/types/enums";
 import type { ApplicationLevelKey } from "../types";
 
 /** Màu Tag Ant Design theo trạng thái — đồng bộ với các trang officer khác. */
