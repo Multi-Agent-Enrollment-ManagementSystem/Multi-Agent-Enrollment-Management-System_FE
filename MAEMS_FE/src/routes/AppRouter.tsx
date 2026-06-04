@@ -9,7 +9,7 @@ import { ApplicantProfilePage } from "../pages/applicant/ApplicantProfilePage";
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { AdminProfile } from "../pages/admin/AdminProfile";
 import { OfficerDashboard } from "../pages/officer/OfficerDashboard";
-import { OfficerApplicationList } from "../pages/officer/OfficerApplicationList";
+import { OfficerApplicationList } from "../pages/officer/ApplicationList";
 import { OfficerApplicationDetail } from "../pages/officer/ApplicationDetails";
 import { OfficerProfile } from "../pages/officer/OfficerProfile";
 import { OfficerReports } from "../pages/officer/OfficerReports";
