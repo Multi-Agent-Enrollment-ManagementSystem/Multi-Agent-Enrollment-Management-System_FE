@@ -1,6 +1,3 @@
-/** Kích thước trang khi merge preset dashboard (draft+submitted, v.v.). */
-export const PRESET_PAGE_SIZE = 20;
-
 /** Giới hạn bản ghi dùng suy ra facet filter từ response phân trang. */
 export const FACET_LIST_PAGE_CAP = 1000;
 

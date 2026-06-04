@@ -16,6 +16,7 @@ export {
   requestAdditionalDocuments,
   getAdmissionTypeById,
 };
+export { fetchAllApplicationsComplete } from "@/utils/fetchAllApplicationsComplete";
 
 /** Tải song song dữ liệu dropdown bộ lọc (cơ sở, ngành, phương thức). */
 export async function loadOfficerListFilterOptions() {

@@ -68,7 +68,7 @@ export function OfficerApplicationList() {
             <Title level={4} className="!mb-1 !text-gray-800 !font-bold">
               Quản Lý Hồ Sơ Tuyển Sinh
             </Title>
-            <Text className="text-gray-400 text-sm">
+            <Text type="secondary">
               Tổng cộng {totalCount} hồ sơ
               {activeFilterCount > 0 && ` (đang lọc)`}
             </Text>

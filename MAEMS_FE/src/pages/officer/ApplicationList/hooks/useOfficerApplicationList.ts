@@ -10,6 +10,7 @@ import type { CampusBasic } from "@/types/campus";
 import type { ProgramBasic } from "@/types/program";
 import {
   fetchAllApplications,
+  fetchAllApplicationsComplete,
   getAdmissionTypeById,
   loadOfficerListFilterOptions,
   patchApplication,
@@ -20,10 +21,7 @@ import type {
   DashboardListPreset,
   FilterDimensionAvailability,
 } from "../types";
-import {
-  FACET_LIST_PAGE_CAP,
-  PRESET_PAGE_SIZE,
-} from "../utils/officerApplicationListConstants";
+import { FACET_LIST_PAGE_CAP } from "../utils/officerApplicationListConstants";
 import {
   buildAvailabilityFromApps,
   emptyFilterAvailability,
@@ -137,21 +135,13 @@ export function useOfficerApplicationList() {
     try {
       if (dashboardPreset === "pending") {
         const [draftRes, subRes] = await Promise.all([
-          fetchAllApplications({
+          fetchAllApplicationsComplete({
             ...listQueryBase,
             status: "draft",
-            pageNumber: 1,
-            pageSize: PRESET_PAGE_SIZE,
-            sortBy: "lastUpdated",
-            sortDesc: true,
           }),
-          fetchAllApplications({
+          fetchAllApplicationsComplete({
             ...listQueryBase,
             status: "submitted",
-            pageNumber: 1,
-            pageSize: PRESET_PAGE_SIZE,
-            sortBy: "lastUpdated",
-            sortDesc: true,
           }),
         ]);
         const merged = mergeApplicationsById([draftRes.items, subRes.items]);
@@ -163,21 +153,13 @@ export function useOfficerApplicationList() {
       }
 
       const [urRes, rrRes] = await Promise.all([
-        fetchAllApplications({
+        fetchAllApplicationsComplete({
           ...listQueryBase,
           status: "under_review",
-          pageNumber: 1,
-          pageSize: PRESET_PAGE_SIZE,
-          sortBy: "lastUpdated",
-          sortDesc: true,
         }),
-        fetchAllApplications({
+        fetchAllApplicationsComplete({
           ...listQueryBase,
           requiresReview: true,
-          pageNumber: 1,
-          pageSize: PRESET_PAGE_SIZE,
-          sortBy: "lastUpdated",
-          sortDesc: true,
         }),
       ]);
       const merged = mergeApplicationsById([urRes.items, rrRes.items]);
@@ -215,14 +197,7 @@ export function useOfficerApplicationList() {
       setApplications(result.items);
       setTotalCount(result.totalCount);
 
-      const facetPageSize = Math.min(
-        FACET_LIST_PAGE_CAP,
-        Math.max(result.totalCount, 1),
-      );
-      const facetSort = {
-        sortBy: "lastUpdated" as const,
-        sortDesc: true as const,
-      };
+      const facetOptions = { maxPageSize: FACET_LIST_PAGE_CAP } as const;
       const esc = onlyEscalated
         ? ({ requiresReview: true as const } as const)
         : {};
@@ -236,46 +211,46 @@ export function useOfficerApplicationList() {
       } else {
         const [forStatus, forCampus, forProgram, forAdmission] =
           await Promise.all([
-            fetchAllApplications({
-              search: listQueryBase.search,
-              campusId: listQueryBase.campusId,
-              programId: listQueryBase.programId,
-              admissionTypeId: listQueryBase.admissionTypeId,
-              ...esc,
-              pageNumber: 1,
-              pageSize: facetPageSize,
-              ...facetSort,
-            }),
-            fetchAllApplications({
-              search: listQueryBase.search,
-              programId: listQueryBase.programId,
-              admissionTypeId: listQueryBase.admissionTypeId,
-              ...st,
-              ...esc,
-              pageNumber: 1,
-              pageSize: facetPageSize,
-              ...facetSort,
-            }),
-            fetchAllApplications({
-              search: listQueryBase.search,
-              campusId: listQueryBase.campusId,
-              admissionTypeId: listQueryBase.admissionTypeId,
-              ...st,
-              ...esc,
-              pageNumber: 1,
-              pageSize: facetPageSize,
-              ...facetSort,
-            }),
-            fetchAllApplications({
-              search: listQueryBase.search,
-              campusId: listQueryBase.campusId,
-              programId: listQueryBase.programId,
-              ...st,
-              ...esc,
-              pageNumber: 1,
-              pageSize: facetPageSize,
-              ...facetSort,
-            }),
+            fetchAllApplicationsComplete(
+              {
+                search: listQueryBase.search,
+                campusId: listQueryBase.campusId,
+                programId: listQueryBase.programId,
+                admissionTypeId: listQueryBase.admissionTypeId,
+                ...esc,
+              },
+              facetOptions,
+            ),
+            fetchAllApplicationsComplete(
+              {
+                search: listQueryBase.search,
+                programId: listQueryBase.programId,
+                admissionTypeId: listQueryBase.admissionTypeId,
+                ...st,
+                ...esc,
+              },
+              facetOptions,
+            ),
+            fetchAllApplicationsComplete(
+              {
+                search: listQueryBase.search,
+                campusId: listQueryBase.campusId,
+                admissionTypeId: listQueryBase.admissionTypeId,
+                ...st,
+                ...esc,
+              },
+              facetOptions,
+            ),
+            fetchAllApplicationsComplete(
+              {
+                search: listQueryBase.search,
+                campusId: listQueryBase.campusId,
+                programId: listQueryBase.programId,
+                ...st,
+                ...esc,
+              },
+              facetOptions,
+            ),
           ]);
         setFilterAvailability(
           mergeAvailabilityFromFacetSlices(

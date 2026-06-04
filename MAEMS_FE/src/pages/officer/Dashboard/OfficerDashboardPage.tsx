@@ -35,7 +35,7 @@ export function OfficerDashboard() {
           <Title level={4} className="!mb-1 !text-gray-800 !font-bold">
             Dashboard Tuyển Sinh
           </Title>
-          <Text className="text-gray-400 text-sm">
+          <Text type="secondary">
             Theo dõi tình trạng tuyển sinh tổng quan — cập nhật lúc{" "}
             {updatedAtLabel}
           </Text>
