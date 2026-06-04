@@ -8,7 +8,7 @@ import { ApplicantPaymentHistoryPage } from "../pages/applicant/ApplicantPayment
 import { ApplicantProfilePage } from "../pages/applicant/ApplicantProfilePage";
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { AdminProfile } from "../pages/admin/AdminProfile";
-import { OfficerDashboard } from "../pages/officer/OfficerDashboard";
+import { OfficerDashboard } from "../pages/officer/Dashboard";
 import { OfficerApplicationList } from "../pages/officer/ApplicationList";
 import { OfficerApplicationDetail } from "../pages/officer/ApplicationDetails";
 import { OfficerProfile } from "../pages/officer/OfficerProfile";
