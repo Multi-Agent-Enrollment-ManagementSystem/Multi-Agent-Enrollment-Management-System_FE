@@ -172,7 +172,6 @@ type ApplicantFormValues = Omit<
 type DocUploadItem = {
   uid: string;
   file: File;
-  documentType: string;
   status: "idle" | "uploading" | "success" | "error";
   errorMsg?: string;
   /** URL blob để xem trước ảnh cục bộ; cần revoke khi xóa item hoặc đóng modal. */
@@ -275,12 +274,6 @@ export function ApplicantProfilePage() {
     const idleItems = docItems.filter((i) => i.status === "idle");
     if (idleItems.length === 0) return;
 
-    // Kiểm tra tất cả item chờ upload đã chọn loại tài liệu chưa
-    if (idleItems.some((i) => !i.documentType)) {
-      messageApi.warning("Vui lòng chọn loại tài liệu cho tất cả các file.");
-      return;
-    }
-
     // Lớp bảo vệ cuối: kiểm tra lại kích thước/đuôi file trước khi gọi API
     const invalidItem = idleItems.find(
       (item) => !validateDocumentFile(item.file).valid,
@@ -302,7 +295,6 @@ export function ApplicantProfilePage() {
     await Promise.allSettled(
       idleItems.map(async (item) => {
         const formData = new FormData();
-        formData.append("documentType", item.documentType);
         formData.append("file", item.file);
         try {
           await uploadApplicantDocuments(formData);
@@ -922,7 +914,7 @@ export function ApplicantProfilePage() {
         </Modal>
 
         {/* Upload modal — hỗ trợ tải lên đồng thời tối đa 5 tài liệu,
-            mỗi file có loại riêng và hiển thị kết quả kiểm tra riêng biệt */}
+            mỗi file hiển thị kết quả kiểm tra riêng biệt */}
         <Modal
           open={uploadOpen}
           onCancel={handleCloseUpload}
@@ -989,7 +981,6 @@ export function ApplicantProfilePage() {
                       {
                         uid: f.uid,
                         file: f,
-                        documentType: "",
                         status: "idle",
                         previewUrl,
                       },
@@ -1019,8 +1010,7 @@ export function ApplicantProfilePage() {
               </Upload.Dragger>
             )}
 
-            {/* Danh sách file đã thêm — mỗi item layout 2 dòng để Select có đủ chỗ,
-                tránh dropdown bị tràn khi đặt ngang trong flex row chật */}
+            {/* Danh sách file đã thêm — mỗi item hiển thị preview, tên file và trạng thái upload */}
             {docItems.length > 0 && (
               <div className="space-y-2">
                 {docItems.map((item) => (
@@ -1088,42 +1078,7 @@ export function ApplicantProfilePage() {
                       )}
                     </div>
 
-                    {/* Dòng 2: dùng <select> native thay Ant Design Select để tránh hoàn toàn
-                        vấn đề z-index / portal của rc-virtual-list bên trong modal */}
-                    <div className="mt-2 pl-6">
-                      <select
-                        value={item.documentType}
-                        onChange={(e) =>
-                          setDocItems((prev) =>
-                            prev.map((i) =>
-                              i.uid === item.uid
-                                ? { ...i, documentType: e.target.value }
-                                : i,
-                            ),
-                          )
-                        }
-                        disabled={item.status !== "idle"}
-                        className={`w-full rounded-lg border px-2.5 py-1.5 text-xs transition-colors
-                          focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-orange-400
-                          disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400
-                          ${
-                            item.status === "idle"
-                              ? "cursor-pointer border-gray-200 bg-white text-gray-700 hover:border-gray-300"
-                              : "border-gray-100 bg-gray-50 text-gray-500"
-                          }`}
-                      >
-                        <option value="" disabled>
-                          Chọn loại tài liệu...
-                        </option>
-                        {DOC_TYPE_OPTIONS.map((opt) => (
-                          <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Lý do từ chối từ BE — hiển thị inline dưới Select để user thấy ngay */}
+                    {/* Lý do từ chối từ BE — hiển thị inline để user thấy ngay */}
                     {item.status === "error" && item.errorMsg && (
                       <p className="text-xs text-red-500 mt-2 pl-6 leading-relaxed">
                         {item.errorMsg}
