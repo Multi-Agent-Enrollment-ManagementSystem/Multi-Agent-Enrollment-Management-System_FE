@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Modal, Upload } from "antd";
 import type { MessageInstance } from "antd/es/message/interface";
-import { extractApiError } from "@/utils/apiError";
+import { parseAxiosApiError } from "@/utils/apiError";
 import type { Document as ApplicantDocument } from "@/types/document";
 import {
   validateDocumentFile,
@@ -71,14 +71,20 @@ export function useApplicantDocuments(messageApi: MessageInstance) {
             ),
           );
         } catch (err) {
-          const msg = extractApiError(
+          // Tách `message` và `errors[]` để hiển thị riêng trên modal upload.
+          const { message, errors } = parseAxiosApiError(
             err,
             "Tải lên thất bại. Vui lòng thử lại.",
           );
           setDocItems((prev) =>
             prev.map((i) =>
               i.uid === item.uid
-                ? { ...i, status: "error" as const, errorMsg: msg }
+                ? {
+                    ...i,
+                    status: "error" as const,
+                    errorMessage: message || undefined,
+                    errorDetails: errors.length > 0 ? errors : undefined,
+                  }
                 : i,
             ),
           );

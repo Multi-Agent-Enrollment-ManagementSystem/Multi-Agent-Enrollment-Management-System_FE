@@ -15,7 +15,10 @@ export type DocUploadItem = {
   uid: string;
   file: File;
   status: "idle" | "uploading" | "success" | "error";
-  errorMsg?: string;
+  /** Thông báo lỗi chung từ field `message` của ApiWrapper. */
+  errorMessage?: string;
+  /** Chi tiết lỗi từ field `errors[]` của ApiWrapper. */
+  errorDetails?: string[];
   /** URL blob xem trước ảnh cục bộ; cần revoke khi xóa item hoặc đóng modal. */
   previewUrl?: string;
 };

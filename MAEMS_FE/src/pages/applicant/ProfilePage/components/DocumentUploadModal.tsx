@@ -36,6 +36,10 @@ export function DocumentUploadModal({
   onBeforeUpload,
 }: DocumentUploadModalProps) {
   const idleCount = docItems.filter((i) => i.status === "idle").length;
+  // Lấy message lỗi chung từ API — hiển thị một card riêng, không gộp với errors từng file.
+  const uploadFailureMessage = docItems.find(
+    (i) => i.status === "error" && i.errorMessage,
+  )?.errorMessage;
 
   return (
     <Modal
@@ -102,6 +106,20 @@ export function DocumentUploadModal({
           </Upload.Dragger>
         )}
 
+        {uploadFailureMessage && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
+            <div className="flex items-start gap-2">
+              <AlertCircle
+                size={16}
+                className="mt-0.5 shrink-0 text-red-500"
+              />
+              <p className="text-sm font-medium leading-relaxed text-red-600">
+                {uploadFailureMessage}
+              </p>
+            </div>
+          </div>
+        )}
+
         {docItems.length > 0 && (
           <div className="space-y-2">
             {docItems.map((item) => (
@@ -163,11 +181,18 @@ export function DocumentUploadModal({
                   )}
                 </div>
 
-                {item.status === "error" && item.errorMsg && (
-                  <p className="text-xs text-red-500 mt-2 pl-6 leading-relaxed">
-                    {item.errorMsg}
-                  </p>
-                )}
+                {item.status === "error" && item.errorDetails?.length ? (
+                  <div className="mt-2 space-y-1 pl-6">
+                    {item.errorDetails.map((detail, idx) => (
+                      <p
+                        key={`${idx}-${detail}`}
+                        className="text-xs leading-relaxed text-red-500"
+                      >
+                        {detail}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
