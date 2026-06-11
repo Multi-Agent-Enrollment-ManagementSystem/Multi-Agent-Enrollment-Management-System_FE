@@ -5,7 +5,7 @@ import { RoleGuard } from "./RoleGuard";
 import { ApplicantDashboard } from "../pages/applicant/ApplicantDashboard";
 import { ApplicantChatboxHistoryPage } from "../pages/applicant/ApplicantChatboxHistoryPage";
 import { ApplicantPaymentHistoryPage } from "../pages/applicant/ApplicantPaymentHistoryPage";
-import { ApplicantProfilePage } from "../pages/applicant/ApplicantProfilePage";
+import { ApplicantProfilePage } from "../pages/applicant/ProfilePage";
 import { AdminDashboard } from "../pages/admin/AdminDashboard";
 import { AdminProfile } from "../pages/admin/AdminProfile";
 import { OfficerDashboard } from "../pages/officer/Dashboard";
